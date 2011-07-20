@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+  
+   <TextView
+   android:text="@string/notification_ringtone_options" 
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:background="@android:drawable/title_bar"
+   android:textColor="#FFFFFF"
+   android:layout_marginTop="10dip"/>
+   
+  <TableLayout
+  	android:layout_width="match_parent"
+ 	 android:layout_height="wrap_content"
+ 	 android:stretchColumns="0,1">
+   <TableRow >
+	   <ToggleButton
+	   android:id="@+id/notification_silent_toggle"
+	   android:textOn="@string/silent_enabled"
+	   android:textOff="@string/silent_disabled"
+	   android:layout_width="fill_parent"
+	   android:layout_height="wrap_content"
+	   android:layout_gravity="center_vertical"/>
+	   
+	   
+	  	<Button
+		  	android:id="@+id/notification_ringtone_button"
+		   android:text="@string/select_tone"
+	   		android:layout_width="fill_parent"
+	  	 android:layout_height="wrap_content"/>
+   	</TableRow>
+   	</TableLayout>
+   
+   
+   <EditText
+   android:id="@+id/notification_ringtone"
+   android:editable="false"
+   android:layout_width="fill_parent"
+   android:layout_height="wrap_content"/>
+   
+   <TextView
+   android:text="@string/volume" 
+   android:layout_width="wrap_content"
+   android:layout_height="wrap_content"/>
+   
+   <SeekBar
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   android:id="@+id/notification_ringtone_volume"
+   android:layout_marginLeft="10dip"
+   android:layout_marginRight="10dip"/>
+    
+</LinearLayout>

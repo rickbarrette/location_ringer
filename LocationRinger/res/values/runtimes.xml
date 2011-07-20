@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="runtimes">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+        <item>60</item>
+        <item>90</item>
+        <item>120</item>
+        <item>240</item>
+        <item>480</item>
+        <item>600</item>
+    </string-array>
+    <string-array name="runtime_string">
+        <item>5 Minutes</item>
+        <item>10 Minutes</item>
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>45 Minutes</item>
+        <item>1 Hour</item>
+        <item>1 Hour and 30 Minutes</item>
+        <item>2 Hours</item>
+        <item>4 Hours</item>
+        <item>8 hours</item>
+        <item>10 Hours</item>
+</string-array>
+</resources>

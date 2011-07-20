@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical">
+  
+  <RelativeLayout
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content">
+  
+	  <ProgressBar
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:id="@+id/search_progress"
+	  android:visibility="invisible"
+	  android:layout_alignParentRight="true"
+	  />
+	  
+	  <Button
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content"
+	  android:text="@android:string/ok"
+	  android:id="@+id/ok"
+	  android:layout_toLeftOf="@id/search_progress"
+	  
+	  />
+	  
+	  <EditText
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"
+	  android:hint="@string/address"
+	  android:id="@+id/address"
+	  android:layout_toLeftOf="@id/ok"
+	  />
+	  
+  </RelativeLayout>
+	 
+  <ListView
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:id="@+id/address_list"
+  />
+</LinearLayout>

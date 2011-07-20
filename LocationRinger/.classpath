@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="/LocationLib/lib/wpsapi.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://tcdevsvn1/ShyHookdocumentation"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="LocationLib_src"/>
+	<classpathentry kind="src" path="ExceptionHandlerLib_src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

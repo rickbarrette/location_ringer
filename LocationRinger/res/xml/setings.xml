@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<ListPreference android:key="update_interval"
+		android:title="@string/update_interval" android:entryValues="@array/runtimes"
+		android:entries="@array/runtime_string" />
+
+	<ListPreference android:entryValues="@array/accuracy"
+		android:entries="@array/accuracy_strings" android:title="@string/accuracy"
+		android:key="accuracy" android:summary="@string/accuracy_about"></ListPreference>
+	<ListPreference android:entryValues="@array/ignore"
+		android:entries="@array/ignore_strings" android:key="ignore_location"
+		android:title="@string/ignore_location" android:summary="@string/ignore_location_about"></ListPreference>
+	<CheckBoxPreference android:key="toasty"
+		android:title="@string/toasty" android:summary="@string/toasty_about" android:defaultValue="false"></CheckBoxPreference>
+	<CheckBoxPreference android:key="start_on_boot"
+		android:title="@string/start_on_boot" android:summary="@string/start_on_boot_about"
+		android:defaultValue="false"></CheckBoxPreference>
+		
+	<PreferenceScreen android:title="@string/about">
+		<com.TwentyCodes.android.LocationRinger.ui.TextViewPreference android:title="@string/hello"/>
+	</PreferenceScreen>
+	
+	<PreferenceCategory android:title="@string/contact_us">
+		<Preference android:key="email" android:summary="@string/email_about"
+			android:title="@string/email"></Preference>
+
+	</PreferenceCategory><PreferenceCategory android:title="@string/version_info">
+	<com.TwentyCodes.android.LocationRinger.ui.VersionInformationPreference />
+	
+</PreferenceCategory>
+	
+		
+
+</PreferenceScreen>

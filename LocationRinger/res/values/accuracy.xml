@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="accuracy">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="accuracy_strings">
+        <item>High (10m)</item>
+        <item>Medium (25m)</item>
+        <item>Medium (50m)</item>
+        <item>Low (100m)</item>
+    </string-array>
+</resources>

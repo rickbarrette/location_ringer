@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="ignore">
+        <item>150</item>
+        <item>200</item>
+        <item>250</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
+        <item>1000</item>
+    </string-array>
+    <string-array name="ignore_strings">
+        <item>150 m</item>
+        <item>200 m</item>
+        <item>250 m</item>
+        <item>300 m</item>
+        <item>400 m</item>
+        <item>500 m</item>
+        <item>1000 m</item>
+    </string-array>
+</resources>

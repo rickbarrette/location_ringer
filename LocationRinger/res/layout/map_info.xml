@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+						    
+	 <LinearLayout
+	 android:layout_width="match_parent"
+	 android:layout_height="wrap_content"
+	 android:orientation="vertical"
+	 android:layout_marginBottom="10dip"
+	 android:layout_alignParentTop="true"
+	 android:id="@+id/map_controls">
+		
+	  <TextView
+	  android:text="@string/location_and_radius" 
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:background="@android:drawable/title_bar"
+	  android:textColor="#FFFFFF"
+	  />
+	  
+	  <ToggleButton
+	  android:id="@+id/map_edit_toggle"
+	  android:textOn="@string/editing_location"
+	  android:textOff="@string/edit_location"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content"/>
+	  
+	  <TextView
+	  android:text="@string/radius" 
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  />
+	  
+	  <SeekBar
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+	  android:id="@+id/radius"
+	  android:layout_marginLeft="10dip"
+	  android:layout_marginRight="10dip"/>
+	 
+	</LinearLayout>
+	
+	<!-- 
+	ricky beta release	0rKmsWMM0D-IRAEgcSZEqwZCs_8AUwxjYjj0bnA
+	ricky				0rKmsWMM0D-KC9KXr1WbA5aEb-2ozQ0SHTvV46g
+	TWENTYCODES 		0rKmsWMM0D-K15bEM_kwabPbNhsn4dp4rcq2q5Q
+	-->
+	<com.TwentyCodes.android.location.MapView
+	android:id="@+id/mapview"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:apiKey="0rKmsWMM0D-K15bEM_kwabPbNhsn4dp4rcq2q5Q"
+	android:layout_alignParentBottom="true"
+	android:layout_below="@id/map_controls"
+	/>
+</RelativeLayout>
