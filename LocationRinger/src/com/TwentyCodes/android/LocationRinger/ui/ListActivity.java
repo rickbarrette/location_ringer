@@ -39,7 +39,7 @@ import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSReturnCode;
 
-public class RingerListActivity extends Activity implements OnItemClickListener, OnClickListener, DatabaseListener, RegistrationCallback {
+public class ListActivity extends Activity implements OnItemClickListener, OnClickListener, DatabaseListener, RegistrationCallback {
 	
     private RingerDatabase mDb;
 	private ListView mListView;
@@ -48,6 +48,7 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 	
 	public static final String KEY_RINGER = "key_ringer";
 	public static final String KEY_INFO = "key_info";
+	public static final String KEY_IS_DEFAULT = "key_is_default";
 	private static final int NEW_RINGER = 0;
 	private static final int DELETE_ID = 1;
 	private static final int ACTIVITY_CREATE = 3;
@@ -55,6 +56,7 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 	private static final int SETTINGS = 7;
 	private static final int BACKUP = 8;
 	private static final int RESTORE = 9;
+	private static final String KEY_ROWID = "key_row_id";
 	
 	@Override
 	public void done() {
@@ -89,8 +91,7 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 				    populate();
 				    break;
 				case ACTIVITY_EDIT:
-					mDb.updateRinger(intent.getLongExtra(RingerInformationActivity.KEY_ROWID, 0), 
-							(ContentValues) intent.getParcelableExtra(KEY_RINGER), (ContentValues) intent.getParcelableExtra(KEY_INFO));
+					mDb.updateRinger(intent.getLongExtra(KEY_ROWID, 1), (ContentValues) intent.getParcelableExtra(KEY_RINGER), (ContentValues) intent.getParcelableExtra(KEY_INFO));
 				    populate();
 				    break;
 			}
@@ -99,7 +100,7 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 
 	@Override
 	public void onClick(View v) {
-		Intent i = new Intent(this, RingerInformationActivity.class);
+		Intent i = new Intent(this, HowActivity.class);
 		startActivityForResult(i, ACTIVITY_CREATE );		
 	}
 
@@ -226,38 +227,28 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 			 public void run(){
 				 Looper.prepare();
 				 
-		    	Intent i = new Intent(RingerListActivity.this, RingerInformationActivity.class);
+		    	Intent i = new Intent(ListActivity.this, HowActivity.class)
+		    	.putExtra(KEY_ROWID, id+1);
 		    	
 		    	/*
 		    	 * get the ringer
 		    	 */
 		    	Cursor ringer = mDb.getRingerFromId(id+1);
-		    	if (ringer.moveToFirst()) {
-			    	i.putExtra(RingerInformationActivity.KEY_ROWID, id+1)
-			    	.putExtra(RingerDatabase.KEY_RINGER_NAME,	ringer.getString(0))
-			    	.putExtra(RingerDatabase.KEY_IS_ENABLED, ringer.getString(1)== null ? true :(Integer.parseInt(ringer.getString(1)) == 1 ? true : false))//5
-			    	.putExtra(RingerDatabase.KEY_RADIUS, ringer.getInt(2))
-			    	.putExtra(RingerDatabase.KEY_LOCATION_LAT, ringer.getInt(3))
-			    	.putExtra(RingerDatabase.KEY_LOCATION_LON, ringer.getInt(4));
-				}
+		    	if (ringer.moveToFirst()) 
+		    		i.putExtra(RingerDatabase.KEY_RINGER_NAME,	ringer.getString(0))
+			    	.putExtra(RingerDatabase.KEY_IS_ENABLED, RingerDatabase.parseBoolean(ringer.getString(1)));
+		    	
 				if (ringer != null && !ringer.isClosed()) {
 					ringer.close();
 				}
+				
+				if(id == 0)
+					i.putExtra(KEY_IS_DEFAULT, true);
 		    	
 		    	/*
 		    	 * get the ringer's info, and parse it into content values
 		    	 */
-		    	ContentValues values = new ContentValues();
-		    	Cursor info = mDb.getRingerInfo(i.getStringExtra(RingerDatabase.KEY_RINGER_NAME));
-				if (info.moveToFirst()) {
-					do {
-						values.put(info.getString(0), info.getString(1));
-					} while (info.moveToNext());
-				}
-				if (info != null && !info.isClosed()) {
-					info.close();
-				}
-				i.putExtra(KEY_INFO, values);
+				i.putExtra(KEY_INFO, mDb.getRingerInfo(i.getStringExtra(RingerDatabase.KEY_RINGER_NAME)));
 				
 				progress.dismiss();
 				
@@ -278,7 +269,7 @@ public class RingerListActivity extends Activity implements OnItemClickListener,
 	public boolean onOptionsItemSelected (MenuItem item) {
     	switch (item.getItemId()){
     		case NEW_RINGER:
-    			Intent i = new Intent(this, RingerInformationActivity.class);
+    			Intent i = new Intent(this, WhatActivity.class);
     			startActivityForResult(i, ACTIVITY_CREATE );
     			return true;
     			

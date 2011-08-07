@@ -8,7 +8,7 @@
 			<attribute name="javadoc_location" value="http://tcdevsvn1/ShyHookdocumentation"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="LocationLib_src"/>
 	<classpathentry kind="src" path="ExceptionHandlerLib_src"/>
+	<classpathentry kind="src" path="LocationLib_src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

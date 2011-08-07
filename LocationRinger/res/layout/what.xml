@@ -25,11 +25,12 @@
 		  android:layout_alignParentTop="true"
 		  android:id="@+id/scrollview"
 		  >
-		    
-		    <RelativeLayout
-		    android:layout_width="match_parent"
-		  	android:layout_height="wrap_content">
 		
+			<LinearLayout
+				android:layout_alignParentTop="true"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:orientation="vertical">
 				<LinearLayout
 				android:id="@+id/ringer_options"
 				android:layout_alignParentTop="true"
@@ -142,18 +143,8 @@
 				  	android:visibility="gone"
 				  	/>
 				     </LinearLayout>
+				    </LinearLayout>
 				    
-				    <!-- Location Options -->
-				    
-				    <include android:id="@+id/map_info" 
-				    layout="@layout/map_info"
-				    android:layout_width="match_parent"
-				  	android:layout_height="350dip"
-				  	android:layout_alignParentBottom="true"
-				  	android:layout_below="@id/info"
-				  	android:layout_marginLeft="10dip"
-				    android:layout_marginRight="10dip"/>
-		    </RelativeLayout>
 		</com.TwentyCodes.android.LocationRinger.ui.ScrollView>
 		
     </RelativeLayout>

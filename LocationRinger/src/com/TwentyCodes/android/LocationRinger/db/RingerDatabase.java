@@ -47,7 +47,7 @@ public class RingerDatabase {
 	/*
 	 * database information values
 	 */
-	private final int DATABASE_VERSION = 3;	
+	private final int DATABASE_VERSION = 4;	
 
 	/*
 	 * the following is for the table that holds the other table names 
@@ -58,15 +58,15 @@ public class RingerDatabase {
 	/*
 	 * Database keys 
 	 */
+	public final static String KEY_RADIUS = "radius";
+	public final static String KEY_LOCATION_LAT = "location_lat";
+	public final static String KEY_LOCATION_LON = "location_lon";
 	public final static String KEY_RINGER_NAME = "ringer_name";
 	public final static String KEY_RINGTONE = "home_ringtone";
 	public final static String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
 	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
 	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
 	public final static String KEY_IS_ENABLED = "is_enabled";
-	public final static String KEY_RADIUS = "radius";
-	public final static String KEY_LOCATION_LAT = "location_lat";
-	public final static String KEY_LOCATION_LON = "location_lon";
 	public final static String KEY_RINGTONE_URI = "ringtone_uri";
 	public final static String KEY_NOTIFICATION_RINGTONE_URI = "away_notification_uri";
 	public final static String KEY_RINGTONE_VOLUME = "ringtone_volume";
@@ -165,10 +165,7 @@ private class OpenHelper extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE " + RINGER_TABLE + 
 				"(id INTEGER PRIMARY KEY, " +
 				KEY_RINGER_NAME+" TEXT, " +
-				KEY_IS_ENABLED+" TEXT, " +
-				KEY_RADIUS+" INTEGER, " +
-				KEY_LOCATION_LAT+" INTEGER, " +
-				KEY_LOCATION_LON+" INTEGER)");
+				KEY_IS_ENABLED+" TEXT)");
 		db.execSQL("CREATE TABLE " + RINGER_INFO_TABLE + 
 				"(id INTEGER PRIMARY KEY, " +
 				KEY_RINGER_NAME+" TEXT, " +
@@ -232,6 +229,31 @@ private class OpenHelper extends SQLiteOpenHelper {
 						convert2to3(db);
 						//remove old tables
 						db.execSQL("DROP TABLE IF EXISTS two");
+					case 3:
+						Cursor c = db.query(RINGER_TABLE, new String[] { "id", KEY_RINGER_NAME, KEY_LOCATION_LAT, KEY_LOCATION_LON, KEY_RADIUS }, null, null, null, null, null);;
+						c.moveToFirst();
+						if (c.moveToFirst()) {
+							do {
+								if(Debug.DEBUG)
+									Log.d(TAG, "Moving: "+c.getInt(0)+" "+c.getString(1)+" "+c.getInt(2)+", "+c.getInt(3)+" @ "+ c.getInt(4) +"m");
+									ContentValues ringer = new ContentValues();
+									ContentValues info = new ContentValues();
+									ringer.put(KEY_RINGER_NAME, c.getString(1));
+									info.put(KEY_LOCATION_LAT, c.getInt(2));
+									info.put(KEY_LOCATION_LON, c.getInt(3));
+									info.put(KEY_RADIUS, c.getInt(4));
+									updateRinger(c.getInt(0), ringer, info);
+							} while (c.moveToNext());
+						}
+						//drop old location trigger information
+						db.execSQL("CREATE TABLE ringers_new (" +
+								"id INTEGER PRIMARY KEY, " +
+								KEY_RINGER_NAME+" TEXT, " +
+								KEY_IS_ENABLED+" TEXT)");
+						db.execSQL("INSERT INTO ringers_new SELECT id, "+ KEY_RINGER_NAME +", "+ KEY_IS_ENABLED +" FROM "+RINGER_TABLE);
+						db.execSQL("DROP TABLE "+ RINGER_TABLE);
+						db.execSQL("ALTER TABLE ringers_new RENAME TO "+ RINGER_TABLE);
+						
 				}
 				handler.sendEmptyMessage(0);					
 				RingerDatabase.this.isUpgrading = false;
@@ -380,7 +402,7 @@ private class OpenHelper extends SQLiteOpenHelper {
 	 * @author ricky barrette
 	 */
 	public Cursor getAllRingers(){
-		return this.mDb.query(RINGER_TABLE, new String[] { KEY_RINGER_NAME, KEY_IS_ENABLED, KEY_RADIUS, KEY_LOCATION_LAT, KEY_LOCATION_LON }, null, null, null, null, null);
+		return this.mDb.query(RINGER_TABLE, new String[] { KEY_RINGER_NAME, KEY_IS_ENABLED }, null, null, null, null, null);
 	}
 	
 	/**
@@ -409,7 +431,7 @@ private class OpenHelper extends SQLiteOpenHelper {
 	 * @author ricky barrette
 	 */
 	public Cursor getRingerFromId(long id) {
-		return this.mDb.query(RINGER_TABLE, new String[]{ KEY_RINGER_NAME, KEY_IS_ENABLED, KEY_RADIUS, KEY_LOCATION_LAT, KEY_LOCATION_LON }, "id = "+id, null, null, null, null);
+		return this.mDb.query(RINGER_TABLE, new String[]{ KEY_RINGER_NAME, KEY_IS_ENABLED }, "id = "+id, null, null, null, null);
 	}
 
 	/**
@@ -418,9 +440,18 @@ private class OpenHelper extends SQLiteOpenHelper {
 	 * @return
 	 * @author ricky barrette
 	 */
-	public Cursor getRingerInfo(String ringerName){
-		return this.mDb.query(RINGER_INFO_TABLE, 
-				new String[]{ KEY, KEY_VALUE }, KEY_RINGER_NAME +" = "+ DatabaseUtils.sqlEscapeString(ringerName), null, null, null, null);
+	public ContentValues getRingerInfo(String ringerName){
+		ContentValues values = new ContentValues();
+    	Cursor info = this.mDb.query(RINGER_INFO_TABLE, new String[]{ KEY, KEY_VALUE }, KEY_RINGER_NAME +" = "+ DatabaseUtils.sqlEscapeString(ringerName), null, null, null, null);
+		if (info.moveToFirst()) {
+			do {
+				values.put(info.getString(0), info.getString(1));
+			} while (info.moveToNext());
+		}
+		if (info != null && !info.isClosed()) {
+			info.close();
+		}
+		return values;
 	}
 	
 	/**
@@ -540,7 +571,11 @@ private class OpenHelper extends SQLiteOpenHelper {
 	 * @param info values
 	 * @author ricky barrette
 	 */
-	public void updateRinger(long id, ContentValues ringer, ContentValues info){
+	public void updateRinger(long id, ContentValues ringer, ContentValues info) throws NullPointerException{
+		
+		if(ringer == null || info == null)
+			throw new NullPointerException("ringer content was null");
+		
 		String ringer_name = getRingerName(id);
 		
 		if(!ringer_name.equals(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)))

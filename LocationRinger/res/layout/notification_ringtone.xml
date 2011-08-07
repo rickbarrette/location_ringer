@@ -40,7 +40,7 @@
    android:id="@+id/notification_ringtone"
    android:editable="false"
    android:layout_width="fill_parent"
-   android:layout_height="wrap_content"/>
+   android:layout_height="wrap_content" android:cursorVisible="false"/>
    
    <TextView
    android:text="@string/volume" 

@@ -326,16 +326,19 @@ public class RingerProcessingService extends Service {
 		if (c.moveToFirst()) {
 			do {
 				if(Debug.DEBUG)
-					Log.d(TAG, "Checking ringer "+c.getString(0)+" "+c.getInt(3)+", "+c.getInt(4)+" @ "+ c.getInt(2) +"m");
+					Log.d(TAG, "Checking ringer "+c.getString(0));
 				
-				if(RingerDatabase.parseBoolean(c.getString(1)))
-					if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(c.getInt(3), c.getInt(4)), new Float(c.getInt(2)) / 1000, Debug.FUDGE_FACTOR)){
-						c.close();
-						getRinger(ringer, index);
-						isDeafult = false;
-						//break loop, we will only apply the first applicable ringer
-						break;
-					}
+				if(RingerDatabase.parseBoolean(c.getString(1))){
+					ContentValues info = this.mDb.getRingerInfo(c.getString(0));
+					if(info.containsKey(RingerDatabase.KEY_LOCATION_LAT) && info.containsKey(RingerDatabase.KEY_LOCATION_LON) && info.containsKey(RingerDatabase.KEY_RADIUS))
+						if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(info.getAsInteger(RingerDatabase.KEY_LOCATION_LAT), info.getAsInteger(RingerDatabase.KEY_LOCATION_LON)), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){
+							c.close();
+							getRinger(ringer, index);
+							isDeafult = false;
+							//break loop, we will only apply the first applicable ringer
+							break;
+						}
+				}
 				index++;
 			} while (c.moveToNext());
 		}
@@ -363,22 +366,13 @@ public class RingerProcessingService extends Service {
 	 * @return
 	 */
 	private ContentValues getRinger(ContentValues values, long id) {
-		
 		String name = this.mDb.getRingerName(id);
 		values.put(RingerDatabase.KEY_RINGER_NAME, name);
 		
 		/*
     	 * get the ringer's info, and parse it into content values
     	 */   	
-    	Cursor c = this.mDb.getRingerInfo(name);
-		if (c.moveToFirst()) {
-			do {
-				values.put(c.getString(0), c.getString(1));
-			} while (c.moveToNext());
-		}
-		if (c != null && !c.isClosed()) {
-			c.close();
-		}
+    	values.putAll(this.mDb.getRingerInfo(name));
 		return values;
 	}
 	

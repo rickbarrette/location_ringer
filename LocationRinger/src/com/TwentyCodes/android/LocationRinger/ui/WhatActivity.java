@@ -7,6 +7,7 @@
  */
 package com.TwentyCodes.android.LocationRinger.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -19,68 +20,45 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.TwentyCodes.android.LocationRinger.LocationSelectedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
-import com.TwentyCodes.android.SkyHook.SkyHook;
-import com.TwentyCodes.android.location.GeoPointLocationListener;
-import com.TwentyCodes.android.location.MapView;
-import com.google.android.maps.GeoPoint;
 
 /**
- * This activity will be used to display all the ringers information, and handle modification to that information
+ * This activity will be used to display what this ringer controls. here the user will be able to add or modify features they wish to control
  * @author ricky barrette
  */
-public class RingerInformationActivity extends com.google.android.maps.MapActivity implements OnCheckedChangeListener, OnClickListener, OnSeekBarChangeListener, GeoPointLocationListener, LocationSelectedListener {
+public class WhatActivity extends Activity implements OnCheckedChangeListener, OnClickListener {
 
-	public static final String KEY_ROWID = "row_id";
 	private static final int SAVE_ID = 0;
-	private static final String TAG = "RingerInformationActivity";
+	//private static final String TAG = "RingerInformationWhatActivity";
 	private static final int ADD_ID = 1;
 	private SeekBar mRingtonVolume;
-	private SeekBar mRadius;
 	private SeekBar mNotificationRingtoneVolume;
-	private MapView mMapView;
 	private EditText mNotificationRingtone;
 	private EditText mRingerName;
 	private EditText mRingtone;
 	private ToggleButton mNotificationRingtoneToggle;
 	private ToggleButton mRingerToggle;
 	private ToggleButton mRingtoneToggle;
-	private ScrollView mScrollView;
 	private String mRingtoneURI;
 	private String mNotificationRingtoneURI;
-	private ToggleButton mMapEditToggle;
-	private RadiusOverlay mRadiusOverlay;
-	private long mRowID;
 	private ToggleButton mWifiToggle;
 	private ToggleButton mBTToggle;
-	private GeoPoint mPoint;
 	private SeekBar mAlarmVolume;
 	private ProgressBar mMusicVolume;
-	private SkyHook mSkyHook;
-	private ProgressDialog mGpsProgress;
-	private boolean isFirstFix;
 	
 	private void addFeature(int item) {
 		String feature = this.getResources().getStringArray(R.array.features)[item];
@@ -122,6 +100,14 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 	 * @author ricky
 	 */
 	private void displayFeaturesDialog() {
+		
+		/*
+		 * TODO
+		 * Check to see if wifi is available
+		 * check to see if bluetooth is available,
+		 * remove unavailable options
+		 */
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle(this.getText(R.string.add_feature));
 		builder.setItems(R.array.features, new DialogInterface.OnClickListener() {
@@ -154,12 +140,6 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri == null ? null : Uri.parse(uri));
         startActivityForResult( intent, ringtoneCode);  
 	}
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		//UNUSED
-		return false;
-	}
 	
 	/**
 	 * Called when the rintone picker activity returns it's result
@@ -191,64 +171,27 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		switch(buttonView.getId()){
 			case R.id.ringer_toggle:
-				this.mRadius.setEnabled(isChecked);
-				this.mRingtone.setEnabled(isChecked);
-				this.mRingtonVolume.setEnabled(isChecked);
-				this.mNotificationRingtone.setEnabled(isChecked);
-				this.mNotificationRingtoneVolume.setEnabled(isChecked);
-				this.mNotificationRingtoneToggle.setEnabled(isChecked);
-				this.mMapView.setEnabled(isChecked);
-				this.mNotificationRingtoneToggle.setEnabled(isChecked);
-				this.mRingtoneToggle.setEnabled(isChecked);
-				this.mMapEditToggle.setEnabled(isChecked);
+				//TODO disable all the child views, or find xml tag to allow setting of child view enabled via parent 
+				findViewById(R.id.ringtone_info).setEnabled(isChecked);
+				findViewById(R.id.notification_ringtone_info).setEnabled(isChecked);
+				findViewById(R.id.alarm_volume_info).setEnabled(isChecked);
+				findViewById(R.id.music_volume_info).setEnabled(isChecked);
+				findViewById(R.id.bluetooth_toggle).setEnabled(isChecked);
+				findViewById(R.id.wifi_toggle).setEnabled(isChecked);
+				findViewById(R.id.update_interval_info).setEnabled(isChecked);
+				findViewById(R.id.data_label).setEnabled(isChecked);
 				break;
 				
 			case R.id.notification_silent_toggle:
+				findViewById(R.id.notification_ringtone_button).setEnabled(!isChecked);
 				this.mNotificationRingtone.setEnabled(!isChecked);
 				this.mNotificationRingtoneVolume.setEnabled(!isChecked);
 				break;
 			
 			case R.id.ringtone_silent_toggle:
 				this.mRingtone.setEnabled(!isChecked);
+				findViewById(R.id.ringtone_button).setEnabled(!isChecked);
 				this.mRingtonVolume.setEnabled(!isChecked);
-				break;
-				
-			case R.id.map_edit_toggle:
-				this.isFirstFix = isChecked;
-				
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, 
-						isChecked 
-							? (this.getResources().getDisplayMetrics().heightPixels -  findViewById(R.id.map_controls).getHeight()) 
-								: (int) (TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 350, getResources().getDisplayMetrics())));
-				if(isChecked){
-					this.mSkyHook.getUpdates();
-					params.addRule(RelativeLayout.ALIGN_PARENT_TOP );
-					this.mGpsProgress = ProgressDialog.show(this, "", this.getText(R.string.gps_fix), true, true);
-				} else {
-					this.mSkyHook.removeUpdates();
-					params.addRule(RelativeLayout.BELOW, R.id.info);
-					params.addRule(RelativeLayout.ALIGN_BOTTOM );
-					if(this.mGpsProgress != null)
-						this.mGpsProgress.dismiss();
-				}
-				findViewById(R.id.map_info).setLayoutParams(params );
-				
-				this.mMapView.setDoubleTapZoonEnabled(isChecked);
-				//views
-				findViewById(R.id.info).setVisibility(isChecked ? View.GONE : View.VISIBLE);
-				findViewById(R.id.ringer_options).setVisibility(isChecked ? View.GONE : View.VISIBLE);
-				//buttons
-				findViewById(R.id.mark_my_location).setVisibility(isChecked ? View.VISIBLE : View.GONE);
-				findViewById(R.id.my_location).setVisibility(isChecked ? View.VISIBLE : View.GONE);
-				findViewById(R.id.map_mode).setVisibility(isChecked ? View.VISIBLE : View.GONE);
-				findViewById(R.id.search).setVisibility(isChecked ? View.VISIBLE : View.GONE);
-				findViewById(R.id.add_feature_button).setVisibility(isChecked ? View.GONE : View.VISIBLE);
-				this.mScrollView.invalidate();
-				this.mScrollView.setScrollEnabled(! isChecked);
-				this.mMapView.setBuiltInZoomControls(isChecked);
-				this.mMapView.setClickable(isChecked);
-				this.mRadius.setEnabled(isChecked);
-				Toast.makeText(this, isChecked ? getString(R.string.map_editing_enabled) : getString(R.string.map_editiing_disabled), Toast.LENGTH_SHORT).show();
 				break;
 		}
 	}
@@ -269,22 +212,6 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 			case R.id.save_ringer_button:
 				save();
 				break;
-			case R.id.mark_my_location:
-				if(this.mPoint != null){
-					this.mRadiusOverlay.setLocation(mPoint);
-					this.mMapView.getController().setCenter(mPoint);
-				}
-				break;
-			case R.id.my_location:
-				if(this.mPoint != null)
-					this.mMapView.getController().setCenter(mPoint);
-				break;
-			case R.id.map_mode:
-				this.mMapView.setSatellite(mMapView.isSatellite() ? false : true);
-				break;
-			case R.id.search:
-				new SearchDialog(this, this).show();
-				break;
 			case R.id.add_feature_button:
 				findViewById(R.id.add_a_feature_label).setVisibility(View.GONE);
 				displayFeaturesDialog();
@@ -300,41 +227,17 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
-		/*
-		 * TODO
-		 * Check to see if wifi is available
-		 * check to see if bluetooth is available,
-		 * remove unavailable options
-		 */
-		
 		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.ringer_info);
+		this.setContentView(R.layout.what);
 		
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 		AudioManager mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		
-		this.mSkyHook = new SkyHook(this);
-		this.mSkyHook.setLocationListener(this);
-		
-		this.mScrollView = (ScrollView) findViewById(R.id.scrollview);
-		
 		this.mRingerName = (EditText) findViewById(R.id.ringer_name);
 		this.mRingerToggle = (ToggleButton) findViewById(R.id.ringer_toggle);
 		this.mRingerToggle.setChecked(true);
 		this.mRingerToggle.setOnCheckedChangeListener(this);
-		
-		this.mMapView = (MapView) findViewById(R.id.mapview);
-		this.mRadius = (SeekBar) findViewById(R.id.radius);
-		this.mRadius.setMax(Debug.MAX_RADIUS_IN_METERS);
-		this.mMapView.setClickable(false);
-		this.mMapEditToggle = (ToggleButton) findViewById(R.id.map_edit_toggle);
-		this.mMapEditToggle.setChecked(false);
-		this.mMapEditToggle.setOnCheckedChangeListener(this);
-		this.mRadiusOverlay = new RadiusOverlay();
-		this.mRadius.setOnSeekBarChangeListener(this);
-		this.mMapView.getOverlays().add(mRadiusOverlay);
-		this.mRadius.setEnabled(false);
 		
 		this.mRingtone = (EditText) findViewById(R.id.ringtone);
 		this.mRingtoneToggle = (ToggleButton) findViewById(R.id.ringtone_silent_toggle);
@@ -396,20 +299,32 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 		
 		Intent data = this.getIntent();
 		
-		if(data.hasExtra(KEY_ROWID)){
+		if(data.hasExtra(ListActivity.KEY_INFO)){
 			
-			this.mRowID = data.getLongExtra(KEY_ROWID, 0);
 			this.mRingerToggle.setChecked(data.getBooleanExtra(RingerDatabase.KEY_IS_ENABLED, true));
-			this.mRadiusOverlay.setLocation(new GeoPoint(data.getIntExtra(RingerDatabase.KEY_LOCATION_LAT, 0), data.getIntExtra(RingerDatabase.KEY_LOCATION_LON, 0)));
-			this.mRadius.setProgress(data.getIntExtra(RingerDatabase.KEY_RADIUS, 0));
 			this.mRingerName.setText(data.getStringExtra(RingerDatabase.KEY_RINGER_NAME));
 			this.setTitle(getString(R.string.editing)+" "+mRingerName.getText().toString());
-
 			
+			/*
+			 * if this is the default ringer, then we will display everything
+			 */
+			if(data.getBooleanExtra(ListActivity.KEY_IS_DEFAULT, false)){
+				findViewById(R.id.ringer_options).setVisibility(View.GONE);
+				findViewById(R.id.notification_ringtone_info).setVisibility(View.VISIBLE);
+				findViewById(R.id.ringtone_info).setVisibility(View.VISIBLE);
+				findViewById(R.id.wifi_toggle).setVisibility(View.VISIBLE);
+				findViewById(R.id.data_label).setVisibility(View.VISIBLE);
+				findViewById(R.id.bluetooth_toggle).setVisibility(View.VISIBLE);
+				findViewById(R.id.music_volume_info).setVisibility(View.VISIBLE);
+				findViewById(R.id.alarm_volume_info).setVisibility(View.VISIBLE);
+				findViewById(R.id.update_interval_info).setVisibility(View.VISIBLE);
+				findViewById(R.id.add_feature_button).setVisibility(View.GONE);
+			}
+
 			/*
 			 * We need to null check all the values 
 			 */			
-			ContentValues info = (ContentValues) data.getParcelableExtra(RingerListActivity.KEY_INFO);
+			ContentValues info = (ContentValues) data.getParcelableExtra(ListActivity.KEY_INFO);
 			
 			if(RingerDatabase.parseBoolean(info.getAsString(RingerDatabase.KEY_PLUS_BUTTON_HINT)));
 				findViewById(R.id.add_a_feature_label).setVisibility(View.GONE);
@@ -482,29 +397,6 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 		} else
 			this.setTitle(R.string.new_ringer);
 		
-		if(this.mRadiusOverlay.getLocation() != null){
-			this.mMapView.getController().setCenter(this.mRadiusOverlay.getLocation());
-			this.mMapView.getController().setZoom(16);
-		}
-		
-		if(this.mRingerName.getText().toString().equals(getString(R.string.default_ringer))){
-			this.mMapView.setEnabled(false);
-			this.mMapEditToggle.setEnabled(false);
-			this.mRingerName.setEnabled(false);
-			this.mRingerToggle.setEnabled(false);
-			findViewById(R.id.ringer_options).setVisibility(View.GONE);
-			findViewById(R.id.map_info).setVisibility(View.GONE);
-			findViewById(R.id.notification_ringtone_info).setVisibility(View.VISIBLE);
-			findViewById(R.id.ringtone_info).setVisibility(View.VISIBLE);
-			findViewById(R.id.wifi_toggle).setVisibility(View.VISIBLE);
-			findViewById(R.id.data_label).setVisibility(View.VISIBLE);
-			findViewById(R.id.bluetooth_toggle).setVisibility(View.VISIBLE);
-			findViewById(R.id.music_volume_info).setVisibility(View.VISIBLE);
-			findViewById(R.id.alarm_volume_info).setVisibility(View.VISIBLE);
-			findViewById(R.id.update_interval_info).setVisibility(View.VISIBLE);
-		}
-		
-		this.mMapView.setDoubleTapZoonEnabled(false);
 	}
 
 	/**
@@ -516,66 +408,6 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 		menu.add(0, SAVE_ID, 0, getString(R.string.save_ringer)).setIcon(android.R.drawable.ic_menu_save);
 		menu.add(0, ADD_ID, 0, getString(R.string.add_feature)).setIcon(android.R.drawable.ic_menu_add);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.google.android.maps.MapActivity#onDestroy()
-	 * @author ricky barrette
-	 */
-	@Override
-	protected void onDestroy() {
-		this.mSkyHook.removeUpdates();
-		super.onDestroy();
-	}
-
-	/**
-	 * Called when skyhook has a location to report
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onLocationChanged(GeoPoint point, int accuracy) {
-		this.mPoint = point;
-		
-		if(point != null){
-			
-			/*
-			 * if this is the first fix and the radius overlay does not have a point specified
-			 * then pan the map, and zoom in to the users current location
-			 */
-			if(this.isFirstFix)
-				if(this.mRadiusOverlay.getLocation() == null){
-					if(this.mMapView != null){
-						this.mMapView.getController().setCenter(point);
-						this.mMapView.getController().setZoom((this.mMapView.getMaxZoomLevel() - 5));
-					}
-					this.isFirstFix = false;
-				}
-			
-			/*
-			 * dismiss the acquiring gps dialog
-			 */
-			if(this.mGpsProgress != null)
-				this.mGpsProgress.dismiss();
-		}
-	}
-
-	/*
-	 */
-	@Override
-	public void onLocationSelected(GeoPoint point) {
-		if(point != null){
-			if(Debug.DEBUG)
-				Log.d(TAG, "onLocationSelected() "+ point.toString());
-
-			if(this.mRadiusOverlay != null)
-				this.mRadiusOverlay.setLocation(point);
-			
-			if(this.mMapView != null){
-				this.mMapView.getController().setCenter(point);
-				this.mMapView.getController().setZoom((this.mMapView.getMaxZoomLevel() - 5));
-			}
-		} else if(Debug.DEBUG)
-			Log.d(TAG, "onLocationSelected() Location was null");
 	}
 
 	/* (non-Javadoc)
@@ -596,30 +428,6 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 	}
 
 	/**
-	 * Called when a seekbar is has its progress changed
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		switch (seekBar.getId()){
-			case R.id.radius:
-				this.mRadiusOverlay.setRadius(progress);
-				this.mMapView.invalidate();
-				break;
-		}
-	}
-
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-		//UNUSED
-	}
-
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		//UNUSED
-	}
-
-	/**
 	 * Prepares a bundle containing all the information that needs to be saved, and returns it to the starting activity
 	 * @author ricky barrette
 	 */
@@ -632,68 +440,64 @@ public class RingerInformationActivity extends com.google.android.maps.MapActivi
 			 public void run(){
 				 Looper.prepare();
 				 
-				 Intent data = new Intent();
-				 GeoPoint point = RingerInformationActivity.this.mRadiusOverlay.getLocation();
+				 Intent data = new Intent().putExtras(WhatActivity.this.getIntent());
 				 
-				 //to prevent null pointers
-				 if(point == null)
-					 point = new GeoPoint(0,0);
+				 ContentValues ringer = WhatActivity.this.getIntent().getParcelableExtra(ListActivity.KEY_RINGER);
+				 ContentValues info = WhatActivity.this.getIntent().getParcelableExtra(ListActivity.KEY_INFO);
 				 
-				 if(RingerInformationActivity.this.mRowID > 0)
-					 data.putExtra(KEY_ROWID, mRowID);
+				 if(ringer == null)
+					 ringer = new ContentValues();
 				 
-				 ContentValues ringer = new ContentValues();
-				 ContentValues info = new ContentValues();
+				 if(info == null)
+					 info = new ContentValues();
 				 
 				 /*
 				  * package the ringer table information
 				  */
-				 ringer.put(RingerDatabase.KEY_RINGER_NAME, RingerInformationActivity.this.mRingerName.getText().toString());
-				 ringer.put(RingerDatabase.KEY_IS_ENABLED, RingerInformationActivity.this.mRingerToggle.isChecked());
-				 ringer.put(RingerDatabase.KEY_LOCATION_LAT, point.getLatitudeE6());
-				 ringer.put(RingerDatabase.KEY_LOCATION_LON, point.getLongitudeE6());
-				 ringer.put(RingerDatabase.KEY_RADIUS, RingerInformationActivity.this.mRadius.getProgress());
+				 ringer.put(RingerDatabase.KEY_RINGER_NAME, WhatActivity.this.mRingerName.getText().toString());
+				 ringer.put(RingerDatabase.KEY_IS_ENABLED, WhatActivity.this.mRingerToggle.isChecked());
 				 
 				 /*
 				  * package the ringer_info table information
 				  */
 				 if(findViewById(R.id.notification_ringtone_info).isShown()){
-					 info.put(RingerDatabase.KEY_NOTIFICATION_IS_SILENT, RingerInformationActivity.this.mNotificationRingtoneToggle.isChecked());
-					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE, RingerInformationActivity.this.mNotificationRingtone.getText().toString());
-					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingerInformationActivity.this.mNotificationRingtoneURI);
-					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME, RingerInformationActivity.this.mNotificationRingtoneVolume.getProgress());
+					 info.put(RingerDatabase.KEY_NOTIFICATION_IS_SILENT, WhatActivity.this.mNotificationRingtoneToggle.isChecked());
+					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE, WhatActivity.this.mNotificationRingtone.getText().toString());
+					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, WhatActivity.this.mNotificationRingtoneURI);
+					 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME, WhatActivity.this.mNotificationRingtoneVolume.getProgress());
 				 }
 				 
 				 if(findViewById(R.id.ringtone_info).isShown()){
-					 info.put(RingerDatabase.KEY_RINGTONE, RingerInformationActivity.this.mRingtone.getText().toString());
-					 info.put(RingerDatabase.KEY_RINGTONE_IS_SILENT, RingerInformationActivity.this.mRingtoneToggle.isChecked());
-					 info.put(RingerDatabase.KEY_RINGTONE_URI, RingerInformationActivity.this.mRingtoneURI);
-					 info.put(RingerDatabase.KEY_RINGTONE_VOLUME, RingerInformationActivity.this.mRingtonVolume.getProgress());
+					 info.put(RingerDatabase.KEY_RINGTONE, WhatActivity.this.mRingtone.getText().toString());
+					 info.put(RingerDatabase.KEY_RINGTONE_IS_SILENT, WhatActivity.this.mRingtoneToggle.isChecked());
+					 info.put(RingerDatabase.KEY_RINGTONE_URI, WhatActivity.this.mRingtoneURI);
+					 info.put(RingerDatabase.KEY_RINGTONE_VOLUME, WhatActivity.this.mRingtonVolume.getProgress());
 				 }
 				 
 				 if(findViewById(R.id.wifi_toggle).isShown())
-					 info.put(RingerDatabase.KEY_WIFI, RingerInformationActivity.this.mWifiToggle.isChecked());
+					 info.put(RingerDatabase.KEY_WIFI, WhatActivity.this.mWifiToggle.isChecked());
 				 
 				 if(findViewById(R.id.bluetooth_toggle).isShown())
-					 info.put(RingerDatabase.KEY_BT, RingerInformationActivity.this.mBTToggle.isChecked());
+					 info.put(RingerDatabase.KEY_BT, WhatActivity.this.mBTToggle.isChecked());
 				 
 				 if(findViewById(R.id.music_volume_info).isShown())
-					 info.put(RingerDatabase.KEY_MUSIC_VOLUME, RingerInformationActivity.this.mMusicVolume.getProgress());
+					 info.put(RingerDatabase.KEY_MUSIC_VOLUME, WhatActivity.this.mMusicVolume.getProgress());
 				 
 				 if(findViewById(R.id.alarm_volume_info).isShown())
-					 info.put(RingerDatabase.KEY_ALARM_VOLUME, RingerInformationActivity.this.mAlarmVolume.getProgress());
+					 info.put(RingerDatabase.KEY_ALARM_VOLUME, WhatActivity.this.mAlarmVolume.getProgress());
 				 
 				 if(findViewById(R.id.update_interval_info).isShown())
 					 info.put(RingerDatabase.KEY_UPDATE_INTERVAL, 
-							 RingerInformationActivity.this.getResources().getStringArray(R.array.runtimes)[((Spinner) findViewById(R.id.update_interval)).getSelectedItemPosition()]);
+							 WhatActivity.this.getResources().getStringArray(R.array.runtimes)[((Spinner) findViewById(R.id.update_interval)).getSelectedItemPosition()]);
 				 
 				 info.put(RingerDatabase.KEY_PLUS_BUTTON_HINT, true);
 				 
 				 //package the intent
-				 data.putExtra(RingerListActivity.KEY_RINGER, ringer).putExtra(RingerListActivity.KEY_INFO, info);
-				 RingerInformationActivity.this.setResult(RESULT_OK, data);
+				 data.putExtra(ListActivity.KEY_RINGER, ringer).putExtra(ListActivity.KEY_INFO, info);
+				 
+				 WhatActivity.this.setResult(RESULT_OK, data);
 				 progress.dismiss();
-				 RingerInformationActivity.this.finish();
+				 WhatActivity.this.finish();
 			 }
 		 }).start();
 	}
