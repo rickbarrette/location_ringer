@@ -366,4 +366,10 @@ public class HowActivity extends com.google.android.maps.MapActivity implements 
 		 }).start();
 	}
 
+	@Override
+	public void onFirstFix(boolean isFirstFix) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
