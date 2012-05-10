@@ -69,7 +69,7 @@ public class LocationService extends SkyHookService {
 	 */
 	private void startOnGoingNotification() {
 		this.mNotificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notifyDetails = new Notification(R.drawable.newstatusbar_icon, this.getString(R.string.app_name), System.currentTimeMillis());
+		Notification notifyDetails = new Notification(R.drawable.icon, this.getString(R.string.app_name), System.currentTimeMillis());
 		PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, LocationRinger.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 		notifyDetails.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.gathering), intent);
 		notifyDetails.flags |= Notification.FLAG_ONGOING_EVENT;

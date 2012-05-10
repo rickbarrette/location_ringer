@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello">Location Ringer allows you to create location based ringer profiles called Ringers. Ringers allow you to have your phone automatically change basic settings based on where you are. For example you can have your phone automatically become silent when you go to work, or automatically enable your wireless when you get home.\n\nTo Start simply set your default settings in the Default Ringer, and create new ringers as they are needed.\n\nThe Default Ringer is applied when there are no applicable Ringers for your current location.</string>
     <string name="app_name">Location Ringer beta</string>
     <string name="silent_enabled">Silent Enabled</string>
     <string name="silent_disabled">Silent Disabled</string>
-    <string name="edit_location">Edit Location</string>
-    <string name="editing_location">Editing Location</string>
     <string name="ringer_options">Ringer Options</string>
     <string name="enable">Enabled</string>
     <string name="disable">Disabled</string>
@@ -34,8 +33,6 @@
     <string name="ignore_location_about">Ignore location when the reported accuracy is greater than the selected amount</string>
     <string name="address">Address</string>
     <string name="search">Search</string>
-    <string name="ringer_name">Ringer Name</string>
-    <string name="new_ringer">New Ringer</string>
     <string name="backup">Backup</string>
     <string name="restore">Restore</string>
     <string name="start_service">Start Service</string>
@@ -55,22 +52,19 @@
     <string name="version_info">Version Information</string>
     <string name="start_on_boot">Start on boot</string>
     <string name="start_on_boot_about">Enable Location Ringer to start on boot</string>
-    <string name="saving">Saving...</string>
-    <string name="loading">Loading...</string>
-    <string name="upgrading">Upgrading database...</string>
-    <string name="deleteing">Deleting ringer...</string>
-    <string name="gathering">Gathering Location...</string>
+    <string name="saving">Saving…</string>
+    <string name="loading">Loading…</string>
+    <string name="upgrading">Upgrading database…</string>
+    <string name="deleteing">Deleting ringer…</string>
+    <string name="gathering">Gathering Location…</string>
     <string name="welcome">Welcome</string>
     <string name="registered">Registered with Skyhook</string>
     <string name="skyhook_error_registration">There was an error registering with Skyhook, please try again when you have an Internet connection.</string>
     <string name="add_feature">Add Feature</string>
-    <string name="update_interval">Update Interval</string>
     <string name="ringtone">Ringtone</string>
     <string name="notification_ringtone">Notification Ringtone</string>
     <string name="wifi">Wifi</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="music_volume">Music Volume</string>
-    <string name="alarm_volume">Alarm Volume</string>
     <string name="radius">Radius</string>
     <string name="select_tone">Select Tone</string>
     <string name="add_a_feature">Click the plus to add a feature</string>
@@ -80,4 +74,18 @@
     <string name="restore_about">Restores your ringers and settings from exteranal storage</string>
     <string name="default_save_hint">This is the first time you edited your Default ringer. When you are done editing please click save to save.</string>
     <string name="default_hint">Click Default to edit your default ringer.</string>
+    <string name="how">How</string>
+    <string name="what">What</string>
+    <string name="notification_volume">Notification Volume</string>
+    <string name="call_volume">Call Volume</string>
+    <string name="system_volume">System Volume</string>
+    <string name="ringtone_volume">Ringtone Volume</string>
+    <string name="dtmf_volume">DTMF Volume</string>
+    <string name="ringer_description">Ringer Description</string>
+    <string name="silent">Silent</string>
+    <string name="location">Location</string>
+    <string name="about_default_ringer">This Ringer is applied when there is no applicable ringers</string>
+    <string name="delete">Delete</string>
+    <string name="ringer_name">Ringer Name</string>
+
 </resources>

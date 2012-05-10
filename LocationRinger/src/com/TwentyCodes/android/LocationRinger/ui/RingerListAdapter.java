@@ -31,18 +31,10 @@ public class RingerListAdapter extends BaseAdapter {
 
 	private static final String TAG = "RingerListAdapter";
 
-	/* (non-Javadoc)
-	 * @see android.widget.BaseAdapter#notifyDataSetChanged()
-	 * @author ricky barrette
-	 */
-	@Override
-	public void notifyDataSetChanged() {
-		super.notifyDataSetChanged();
-	}
-
 	private RingerDatabase mDb;
-	private List<String> mList;
+	private List<String> mTitles;
 	private LayoutInflater mInflater;
+	private List<String> mDescriptions;
 
 	/**
 	 * Creates a new RingerListAdapter
@@ -56,17 +48,18 @@ public class RingerListAdapter extends BaseAdapter {
 		// Cache the LayoutInflate to avoid asking for a new one each time.
         mInflater = LayoutInflater.from(context);
 		mDb = db;
-		mList = db.getAllRingerTitles();
+		mTitles = db.getAllRingerTitles();
+		mDescriptions = db.getAllRingerDescriptions();
 	}
 
 	@Override
 	public int getCount() {
-		return mList.size();
+		return mTitles.size();
 	}
 
 	@Override
 	public String getItem(int position) {
-		return mList.get(position);
+		return mTitles.get(position);
 	}
 
 	@Override
@@ -90,7 +83,8 @@ public class RingerListAdapter extends BaseAdapter {
             // Creates a ViewHolder and store references to the two children views
             // we want to bind data to.
             holder = new ViewHolder();
-            holder.text = (TextView) convertView.findViewById(android.R.id.text1);
+            holder.title = (TextView) convertView.findViewById(android.R.id.text1);
+            holder.description = (TextView) convertView.findViewById(android.R.id.text2);
             holder.checkbox = (CheckBox) convertView.findViewById(R.id.ringer_enabled_checkbox);
 
             convertView.setTag(holder);
@@ -109,7 +103,7 @@ public class RingerListAdapter extends BaseAdapter {
 	        if(holder == null)
 	        	Log.e(TAG,"holder is null!!!");
 	        
-	        if(holder.text == null)
+	        if(holder.title == null)
 	        	Log.e(TAG,"holder.text is null!!!");
 	        
 	        if(holder.checkbox == null)
@@ -121,7 +115,8 @@ public class RingerListAdapter extends BaseAdapter {
          * Remember that you should always call setChecked() after calling setOnCheckedChangedListener.
          * This will prevent the list from changing the values on you.
          */
-        holder.text.setText(getItem(position));
+        holder.title.setText(getItem(position));
+        holder.description.setText(mDescriptions.get(position));
         holder.checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView,	boolean isChecked) {
@@ -131,15 +126,19 @@ public class RingerListAdapter extends BaseAdapter {
         holder.checkbox.setChecked(mDb.isRingerEnabled(position +1));
         
         //Remove the checkbox for the default ringer
-        if(position == 0)
+        if(position == 0) {
         	holder.checkbox.setVisibility(View.INVISIBLE);
+        	if(holder.description.getText().toString() == null)
+        		holder.description.setText(R.string.about_default_ringer);
+        }
         else
         	holder.checkbox.setVisibility(View.VISIBLE);
         return convertView;
 	}
 	
 	class ViewHolder {
-        TextView text;
+        TextView title;
+        TextView description;
         CheckBox checkbox;
     }
 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/map_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dip"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/title_bar"
+            android:text="@string/location_and_radius"
+            android:textColor="#FFFFFF" />
+
+        <ToggleButton
+            android:id="@+id/map_edit_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textOff="@string/edit_location"
+            android:textOn="@string/editing_location" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/radius" />
+
+        <SeekBar
+            android:id="@+id/radius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        layout="@layout/ringer_info_button_bar"
+        android:visibility="gone" />
+
+    <fragment
+        android:id="@+id/mapview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/buttons"
+        android:layout_below="@id/map_controls"
+        class="com.TwentyCodes.android.fragments.SkyHoookUserOverlayMapFragment" >
+    </fragment>
+
+</RelativeLayout>

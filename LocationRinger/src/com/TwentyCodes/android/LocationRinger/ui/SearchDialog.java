@@ -24,9 +24,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.TwentyCodes.android.LocationRinger.LocationSelectedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.TwentyCodes.android.location.ReverseGeocoder;
 import com.google.android.maps.GeoPoint;
 
@@ -43,14 +43,14 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 	private ProgressBar mProgress;
 	private Handler mHandler;
 	private Context mContext;
-	private LocationSelectedListener mListener;
+	private OnLocationSelectedListener mListener;
 
 	/**
 	 * Creates a new search dialog
 	 * @param context
 	 * @author ricky barrette
 	 */
-	public SearchDialog(Context context, LocationSelectedListener listener) {
+	public SearchDialog(Context context, OnLocationSelectedListener listener) {
 		super(context);
 		this.setTitle(R.string.search);
 		this.setContentView(R.layout.address_dialog);

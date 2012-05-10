@@ -41,7 +41,6 @@ public class RingerDatabase {
 	private Context mContext;
 	private SQLiteDatabase mDb;
 	public boolean isUpgrading = false;
-	private static final String RINGER_INFO_TABLE = "ringer_info";	
 	private DatabaseListener mListener;
 	
 	/*
@@ -54,6 +53,7 @@ public class RingerDatabase {
 	 */
 	private final String DATABASE_NAME = "ringers.db";
 	private final String RINGER_TABLE = "ringers";
+	private static final String RINGER_INFO_TABLE = "ringer_info";	
 
 	/*
 	 * Database keys 
@@ -79,6 +79,10 @@ public class RingerDatabase {
 	public static final String KEY = "key";
 	public static final String KEY_UPDATE_INTERVAL = "update_interval";
 	public static final String KEY_PLUS_BUTTON_HINT = "plus_button_hint";
+	public static final String KEY_DTMF_VOLUME = "dtmf_volume";
+	public static final String KEY_SYSTEM_VOLUME = "system_volume";
+	public static final String KEY_CALL_VOLUME = "call_volume";
+	public static final String KEY_RINGER_DESCRIPTION = "ringer_description";
 	
 	
 /**
@@ -420,6 +424,20 @@ private class OpenHelper extends SQLiteOpenHelper {
 		}
 		if (cursor != null && !cursor.isClosed()) {
 			cursor.close();
+		}
+		return list;
+	}
+	
+	/**
+	 * returns all ringer descriptions in the database, where or not if they are enabled
+	 * @return list of all strings in the database table
+	 * @author ricky barrette
+	 */
+	public List<String> getAllRingerDescriptions() {
+		List<String> list = new ArrayList<String>();
+		List<String> ringers = getAllRingerTitles();
+		for(String ringer: ringers){
+			list.add(getRingerInfo(ringer).getAsString(KEY_RINGER_DESCRIPTION));
 		}
 		return list;
 	}

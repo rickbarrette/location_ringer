@@ -1,6 +1,6 @@
 /**
- * ScrollView.java
- * @date May 3, 2011
+ * ViewPager.java
+ * @date Aug 13, 2011
  * @author Twenty Codes, LLC
  * @author ricky barrette
  */
@@ -11,11 +11,10 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 /**
- * This is a simple scroll view that i have made to enable and disable scrolling
- * @author ricky barrette
+ * @author ricky
  */
-public class ScrollView extends android.widget.ScrollView {
-
+public class ViewPager extends android.support.v4.view.ViewPager {
+	
 	private boolean isEnabled = true;
 
 	/**
@@ -23,7 +22,7 @@ public class ScrollView extends android.widget.ScrollView {
 	 * @param apiKey
 	 * @author ricky barrette
 	 */
-	public ScrollView(Context context) {
+	public ViewPager(Context context) {
 		super(context);
 	}
 
@@ -32,18 +31,8 @@ public class ScrollView extends android.widget.ScrollView {
 	 * @param attrs
 	 * @author ricky barrette
 	 */
-	public ScrollView(Context context, AttributeSet attrs) {
+	public ViewPager(Context context, AttributeSet attrs) {
 		super(context, attrs);
-	}
-
-	/**
-	 * @param context
-	 * @param attrs
-	 * @param defStyle
-	 * @author ricky barrette
-	 */
-	public ScrollView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
 	}
 	
 	/**

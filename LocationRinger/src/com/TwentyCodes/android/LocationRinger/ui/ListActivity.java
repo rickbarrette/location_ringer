@@ -100,7 +100,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 
 	@Override
 	public void onClick(View v) {
-		Intent i = new Intent(this, HowActivity.class);
+		Intent i = new Intent(this, RingerInformationActivity.class);
 		startActivityForResult(i, ACTIVITY_CREATE );		
 	}
 
@@ -227,28 +227,31 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			 public void run(){
 				 Looper.prepare();
 				 
-		    	Intent i = new Intent(ListActivity.this, HowActivity.class)
+		    	Intent i = new Intent(ListActivity.this, RingerInformationActivity.class)
 		    	.putExtra(KEY_ROWID, id+1);
 		    	
 		    	/*
 		    	 * get the ringer
 		    	 */
 		    	Cursor ringer = mDb.getRingerFromId(id+1);
-		    	if (ringer.moveToFirst()) 
-		    		i.putExtra(RingerDatabase.KEY_RINGER_NAME,	ringer.getString(0))
-			    	.putExtra(RingerDatabase.KEY_IS_ENABLED, RingerDatabase.parseBoolean(ringer.getString(1)));
+		    	if (ringer.moveToFirst()){
+		    		ContentValues r = new ContentValues();
+		    		r.put(RingerDatabase.KEY_RINGER_NAME, ringer.getString(0));
+		    		r.put(RingerDatabase.KEY_IS_ENABLED, RingerDatabase.parseBoolean(ringer.getString(1)));
+		    		i.putExtra(KEY_RINGER, r);
 		    	
-				if (ringer != null && !ringer.isClosed()) {
-					ringer.close();
-				}
-				
-				if(id == 0)
-					i.putExtra(KEY_IS_DEFAULT, true);
-		    	
-		    	/*
-		    	 * get the ringer's info, and parse it into content values
-		    	 */
-				i.putExtra(KEY_INFO, mDb.getRingerInfo(i.getStringExtra(RingerDatabase.KEY_RINGER_NAME)));
+					if (ringer != null && !ringer.isClosed()) {
+						ringer.close();
+					}
+					
+					if(id == 0)
+						i.putExtra(KEY_IS_DEFAULT, true);
+			    	
+			    	/*
+			    	 * get the ringer's info, and parse it into content values
+			    	 */
+					i.putExtra(KEY_INFO, mDb.getRingerInfo(r.getAsString(RingerDatabase.KEY_RINGER_NAME)));
+		    	}
 				
 				progress.dismiss();
 				
@@ -269,7 +272,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	public boolean onOptionsItemSelected (MenuItem item) {
     	switch (item.getItemId()){
     		case NEW_RINGER:
-    			Intent i = new Intent(this, WhatActivity.class);
+    			Intent i = new Intent(this, RingerInformationActivity.class);
     			startActivityForResult(i, ACTIVITY_CREATE );
     			return true;
     			
