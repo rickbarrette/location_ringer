@@ -24,6 +24,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 /**
  * This Adaptor Class will be used to display fragments in a ListFragment.
  * TODO
+ * + Get this code working
  * + Add/Remove fragments on the fly
  * @author ricky barrette
  */
@@ -114,20 +115,21 @@ public class FragmentListAdaptor extends BaseAdapter {
             convertView.setTag(holder);
             
             //add the fragment to the new view
-            transaction.add(holder.view.getId(), getItem(position), holder.tag);
+//            transaction.add(holder.view.getId(), getItem(position), holder.tag);
+            transaction.replace(holder.view.getId(), getItem(position),holder.tag);
         } else {
             // Get the ViewHolder back to get fast access to the Old Views
             holder = (Holder) convertView.getTag();
             Fragment shown = mFragmentManager.findFragmentByTag(holder.tag);
                        
             //replace the old fragment with a new one
+            transaction.addToBackStack(holder.tag);
             holder.tag = createTag(position);
             if(shown != null)
             	transaction.remove(shown);
-            transaction.add(holder.view.getId(), getItem(position), holder.tag);
-            transaction.addToBackStack(null);            
+//            transaction.add(holder.view.getId(), getItem(position), holder.tag);
+            transaction.replace(holder.view.getId(), getItem(position),holder.tag);
         }
-        
 		transaction.commit();
 
 		return convertView;
