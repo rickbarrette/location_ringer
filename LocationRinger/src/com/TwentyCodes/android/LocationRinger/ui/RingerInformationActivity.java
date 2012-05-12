@@ -29,7 +29,7 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.FeatureListFragment;
-import com.TwentyCodes.android.LocationRinger.ui.fragments.MapFragment;
+import com.TwentyCodes.android.LocationRinger.ui.fragments.LocationInfomationFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.RingtoneFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.ToggleButtonFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.VolumeFragment;
@@ -91,7 +91,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		/*
 		 * Location page
 		 */
-		fragments.add(new MapFragment(this.mInfo, this, this));
+		fragments.add(new LocationInfomationFragment(this.mInfo, this, this));
 		
 		/*
 		 * What page

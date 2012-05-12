@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:orientation="horizontal"
-	><Button
-        android:id="@+id/add_feature_button"
-        android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?android:attr/buttonBarStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <!-- <ImageButton -->
+    <!-- style="?android:attr/buttonBarStyle" -->
+    <!-- android:id="@+id/add_feature_button" -->
+    <!-- android:layout_width="0dp" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_weight="1" -->
+    <!-- android:src="@android:drawable/ic_menu_add" /> -->
+
+
+    <!-- <ImageButton -->
+    <!-- style="?android:attr/buttonBarStyle" -->
+    <!-- android:src="@android:drawable/ic_menu_save" -->
+    <!-- android:id="@+id/save_ringer_button" -->
+    <!-- android:layout_width="0dp" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_weight="1" -->
+
+
+    <!-- /> -->
+
+    <ImageButton
+        android:id="@+id/mark_my_location"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dip"
-        android:background="@android:drawable/ic_menu_add" />
-			    
-	  	<Button
-		  android:background="@android:drawable/ic_menu_save"
-		  android:id="@+id/save_ringer_button"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  />
-		  
-		<Button
-		  android:background="@android:drawable/ic_menu_myplaces"
-		  android:id="@+id/mark_my_location"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:layout_marginLeft="20dip"
-		  />
-		  
-		  <Button
-		  android:background="@android:drawable/ic_menu_mylocation"
-		  android:id="@+id/my_location"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:layout_centerHorizontal="true"
-		  android:layout_marginLeft="20dip"
-		  />
-		  
-		  <Button
-		  android:background="@android:drawable/ic_menu_mapmode"
-		  android:id="@+id/map_mode"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:layout_centerHorizontal="true"
-		  android:layout_marginLeft="20dip"
-		  />
-		  
-		  <Button
-		  android:background="@android:drawable/ic_menu_search"
-		  android:id="@+id/search"
-		  android:layout_width="wrap_content"
-		  android:layout_height="wrap_content"
-		  android:layout_centerHorizontal="true"
-		  android:layout_marginLeft="20dip"
-		  />
-	 </LinearLayout>
+        android:layout_weight="1"
+        android:src="@android:drawable/ic_menu_myplaces" />
+
+    <ImageButton
+        android:id="@+id/my_location"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@android:drawable/ic_menu_mylocation" />
+
+    <ImageButton
+        android:id="@+id/map_mode"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@android:drawable/ic_menu_mapmode" />
+
+    <ImageButton
+        android:id="@+id/search"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:src="@android:drawable/ic_menu_search" />
+
+</LinearLayout>
