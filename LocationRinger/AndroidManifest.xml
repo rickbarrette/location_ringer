@@ -36,7 +36,8 @@
 
     <application
         android:icon="@drawable/icon"
-        android:label="@string/app_name" >
+        android:label="@string/app_name"
+        android:theme="@style/Theme.Custom" >
         <activity
             android:name="LocationRinger"
             android:configChanges="keyboard|orientation"
@@ -83,13 +84,11 @@
         <service
             android:name=".services.LocationService"
             android:enabled="true"
-            android:exported="true"
             android:process=":LocationService" >
         </service>
         <service
             android:name=".services.RingerProcessingService"
             android:enabled="true"
-            android:exported="true"
             android:process=":RingerProcessingService" >
         </service>
 

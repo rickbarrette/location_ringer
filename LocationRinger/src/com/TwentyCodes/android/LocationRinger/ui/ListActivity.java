@@ -46,6 +46,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	private SharedPreferences mSettings;
 	private ProgressDialog mProgress;
 	
+	public static final String NO_SPLASH = "no splash";
 	public static final String KEY_RINGER = "key_ringer";
 	public static final String KEY_INFO = "key_info";
 	public static final String KEY_IS_DEFAULT = "key_is_default";
@@ -130,6 +131,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.ringer_list);
+        this.setTitle(R.string.app_name);
         this.mDb = new RingerDatabase(this, this);
         this.mListView = (ListView) findViewById(R.id.ringer_list);
         this.mListView.setOnItemClickListener(this);
@@ -146,7 +148,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         	new SkyHookRegistration(this).registerNewUser(this);
         }
         
-        this.startActivity(new Intent(this, Splash.class));
+        if(!this.getIntent().hasExtra(NO_SPLASH))
+        	this.startActivity(new Intent(this, Splash.class));
     }
     
     /**

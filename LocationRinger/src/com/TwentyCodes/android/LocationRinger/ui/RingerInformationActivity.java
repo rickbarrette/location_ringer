@@ -23,8 +23,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
-import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
+import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment;
@@ -53,6 +54,13 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.ringer_information_activity);
+		
+
+		/*
+		 * Set up the action bar if required
+		 */
+		if(Integer.valueOf(android.os.Build.VERSION.SDK_INT) > 11)
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		this.mData = new Intent().putExtras(RingerInformationActivity.this.getIntent());
 		
@@ -147,11 +155,15 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 * @author ricky barrette
 	 */
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch(item.getItemId()){
 			case SAVE_ID:
 				save();
 				break;
+			case android.R.id.home:
+	            final Intent intent = new Intent(this, LocationRinger.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
+	            startActivity(intent);
+	            return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}

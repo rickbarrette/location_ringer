@@ -1,44 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:orientation="vertical">
-  
-  <RelativeLayout
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-  
-	  <ProgressBar
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:id="@+id/search_progress"
-	  android:visibility="invisible"
-	  android:layout_alignParentRight="true"
-	  />
-	  
-	  <Button
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@android:string/ok"
-	  android:id="@+id/ok"
-	  android:layout_toLeftOf="@id/search_progress"
-	  
-	  />
-	  
-	  <EditText
-	  android:layout_width="fill_parent"
-	  android:layout_height="wrap_content"
-	  android:hint="@string/address"
-	  android:id="@+id/address"
-	  android:layout_toLeftOf="@id/ok"
-	  android:inputType="textPostalAddress"/>
-	  
-  </RelativeLayout>
-	 
-  <ListView
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:id="@+id/address_list"
-  />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ProgressBar
+            android:id="@+id/search_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/search_progress"
+            android:text="@android:string/ok" />
+
+        <EditText
+            android:id="@+id/address"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/ok"
+            android:hint="@string/address"
+            android:inputType="textPostalAddress" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/address_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
