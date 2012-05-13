@@ -6,7 +6,6 @@
  */
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -49,7 +48,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	private RadiusOverlay mRadiusOverlay;
 	private GeoPoint mPoint;
 	private SkyHook mSkyHook;
-	private boolean isFirstFix;
 	private View view;
 	private EnableScrollingListener mEnableScrollingListener;
 	
@@ -70,20 +68,15 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 */
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-			this.isFirstFix = isChecked;
-			
 			view.findViewById(R.id.buttons).setVisibility(isChecked ? View.VISIBLE : View.GONE);
 			
 			if(mEnableScrollingListener != null)
 				mEnableScrollingListener.setScrollEnabled(!isChecked);
 			
-			if(isChecked){
+			if(isChecked)
 				this.mSkyHook.getUpdates();
-				mMap.enableGPSProgess();
-			} else {
+			else
 				this.mSkyHook.removeUpdates();
-				mMap.disableGPSProgess();
-			}
 			
 			this.mMap.setDoubleTapZoonEnabled(isChecked);
 			//buttons
@@ -139,22 +132,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	public void onLocationChanged(GeoPoint point, int accuracy) {
 		this.mPoint = point;
 		
-		if(point != null){
-			
-			/*
-			 * if this is the first fix and the radius overlay does not have a point specified
-			 * then pan the map, and zoom in to the users current location
-			 */
-			if(this.isFirstFix)
-				if(this.mRadiusOverlay.getLocation() == null){
-					if(this.mMap != null){
-						this.mMap.setMapCenter(point);
-						this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
-					}
-					this.isFirstFix = false;
-				}
-			mMap.disableGPSProgess();
-		}
+		
 	}
 
 	/*
@@ -278,10 +256,32 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		
 	}
 
+	/**
+	 * Called when the location is a first fix
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.location.GeoPointLocationListener#onFirstFix(boolean)
+	 */
 	@Override
 	public void onFirstFix(boolean isFirstFix) {
-		// TODO Auto-generated method stub
+		if (isFirstFix)
+			mMap.enableGPSProgess();
+		else
+			mMap.disableGPSProgess();
 		
+		if(mPoint != null){
+			
+			/*
+			 * if this is the first fix and the radius overlay does not have a point specified
+			 * then pan the map, and zoom in to the users current location
+			 */
+			if(isFirstFix)
+				if(this.mRadiusOverlay.getLocation() == null){
+					if(this.mMap != null){
+						this.mMap.setMapCenter(mPoint);
+						this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
+					}
+				}
+		}
 	}
 
 }
