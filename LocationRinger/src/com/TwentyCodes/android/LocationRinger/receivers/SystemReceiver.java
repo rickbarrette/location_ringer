@@ -16,6 +16,7 @@ import android.util.Log;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
+import com.TwentyCodes.android.location.PassiveLocationListener;
 
 /**
  * This receiver will system events
@@ -50,8 +51,10 @@ public class SystemReceiver extends BroadcastReceiver {
 		 * if the phone finishes booting, then start the service if the user enabled it
 		 */
 		if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
-			if(context.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_READABLE).getBoolean(SettingsActivity.START_ON_BOOT, false))
+			if(context.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_READABLE).getBoolean(SettingsActivity.START_ON_BOOT, false)){
 				context.startService(i);
+				PassiveLocationListener.requestPassiveLocationUpdates(context);
+			}
 		}
 		
 		/*

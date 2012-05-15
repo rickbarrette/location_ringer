@@ -35,6 +35,7 @@ import com.TwentyCodes.android.LocationRinger.receivers.LocationReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
 import com.TwentyCodes.android.SkyHook.Splash;
+import com.TwentyCodes.android.location.PassiveLocationListener;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSReturnCode;
@@ -209,6 +210,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	protected void onDestroy() {
 		restartService();
+		PassiveLocationListener.requestPassiveLocationUpdates(this);
 		super.onDestroy();
 	}
 
