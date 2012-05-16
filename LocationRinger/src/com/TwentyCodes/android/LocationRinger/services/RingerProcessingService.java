@@ -31,8 +31,9 @@ import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
-import com.TwentyCodes.android.LocationRinger.receivers.LocationReceiver;
+import com.TwentyCodes.android.LocationRinger.receivers.LocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
+import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
 import com.TwentyCodes.android.location.GeoUtils;
 import com.google.android.maps.GeoPoint;
@@ -147,7 +148,7 @@ public class RingerProcessingService extends Service {
 			if (values.get(RingerDatabase.KEY_UPDATE_INTERVAL) != null){
 				Intent i = new Intent(this, LocationService.class)
 				.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
-				.setAction(LocationReceiver.LR_ACTION_UPDATE);
+				.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 				PendingIntent pi = PendingIntent.getService(this, LocationService.REQUEST_CODE, i, 0);
 				
 				AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -294,8 +295,8 @@ public class RingerProcessingService extends Service {
 //			backup();
 //		}
 		
-		if(intent.getParcelableExtra(LocationReceiver.INTENT_EXTRA_LOCATION_PARCEL) != null){
-			this.mLocation = intent.getParcelableExtra(LocationReceiver.INTENT_EXTRA_LOCATION_PARCEL);
+		if(intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED) != null){
+			this.mLocation = intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED);
 			processRingers();
 		}else if(Debug.DEBUG)
 			Log.d(TAG, "Location was null");

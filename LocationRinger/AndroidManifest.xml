@@ -7,11 +7,6 @@
 
     <uses-sdk android:minSdkVersion="7" />
 
-    <uses-permission android:name="android.permission.INTERNET" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-feature
         android:name="android.hardware.location"
         android:required="true" />
@@ -19,26 +14,19 @@
         android:name="android.hardware.location.gps"
         android:required="false" />
 
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.WAKE_LOCK" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.BLUETOOTH" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
-    </uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
-    </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:icon="@drawable/icon"
@@ -59,8 +47,7 @@
 
         <activity
             android:name=".ui.RingerInformationActivity"
-            android:configChanges="keyboard|orientation" >
-        </activity>
+            android:configChanges="keyboard|orientation" />
 
         <receiver
             android:name=".receivers.SystemReceiver"
@@ -68,40 +55,33 @@
             android:exported="true"
             android:process=":SysyemEventReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" >
-                </action>
-                <action android:name="android.intent.action.BATTERY_LOW" >
-                </action>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" >
-                </action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.BATTERY_LOW" />
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".receivers.LocationReceiver"
+            android:name=".receivers.LocationChangedReceiver"
             android:enabled="true"
             android:exported="true"
             android:process=":LocationReceiver" >
             <intent-filter>
-                <action android:name="com.TwentyCodes.android.LocationRinger.action.LocationUpdate" >
-                </action>
+                <action android:name="TwentyCodes.intent.action.LocationUpdate" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".services.LocationService"
             android:enabled="true"
-            android:process=":LocationService" >
-        </service>
+            android:process=":LocationService" />
         <service
             android:name=".services.RingerProcessingService"
             android:enabled="true"
-            android:process=":RingerProcessingService" >
-        </service>
+            android:process=":RingerProcessingService" />
 
         <activity
             android:name=".ui.SettingsActivity"
-            android:enabled="true" >
-        </activity>
+            android:enabled="true" />
 
         <receiver
             android:name=".receivers.GetLocationWidget"
@@ -117,22 +97,19 @@
 
         <activity
             android:name="com.TwentyCodes.android.exception.ExceptionReportActivity"
-            android:configChanges="keyboard|orientation" >
-        </activity>
+            android:configChanges="keyboard|orientation" />
         <activity
             android:name="com.TwentyCodes.android.SkyHook.Splash"
             android:configChanges="keyboard|orientation"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait" />
 
-        <service android:name="com.TwentyCodes.android.exception.ReportPostingService" >
-        </service>
+        <service android:name="com.TwentyCodes.android.exception.ReportPostingService" />
 
         <receiver
             android:name=".receivers.PassiveLocationChangedReceiver"
             android:enabled="true"
-            android:exported="true" >
-        </receiver>
+            android:exported="true"
+            android:process=":PassiveLocationChangedReceiver" />
     </application>
 
 </manifest>

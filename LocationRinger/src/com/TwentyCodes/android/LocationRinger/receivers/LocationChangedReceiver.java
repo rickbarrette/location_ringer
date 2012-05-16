@@ -14,21 +14,22 @@ import android.util.Log;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.RingerProcessingService;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
+import com.TwentyCodes.android.debug.LocationLibraryConstants;
+import com.TwentyCodes.android.location.BaseLocationReceiver;
 
 /**
  * This class will receive broadcast from the location service. it will wake the ringer processing service.
  * @author ricky barrette
  */
-public class LocationReceiver extends com.TwentyCodes.android.location.LocationReceiver {
+public class LocationChangedReceiver extends BaseLocationReceiver {
 
-	public static final String LR_ACTION_UPDATE = "com.TwentyCodes.android.LocationRinger.action.LocationUpdate";	
-	private static final String TAG = "LocationReceiver";
+	protected static String TAG = "LocationReceiver";
 
 	@Override
 	public void onLocationUpdate(Location location) {
 		if(location != null)
 			if(location.getAccuracy()<= Integer.parseInt(mContext.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_PRIVATE).getString(SettingsActivity.IGNORE_LOCATION, "1000")))	
-				mContext.startService(new Intent(mContext, RingerProcessingService.class).putExtra(INTENT_EXTRA_LOCATION_PARCEL, location));
+				mContext.startService(new Intent(mContext, RingerProcessingService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED, location));
 			else
 				if(Debug.DEBUG)
 					Log.d(TAG, "location accuracy = "+ location.getAccuracy()+" ignoring");

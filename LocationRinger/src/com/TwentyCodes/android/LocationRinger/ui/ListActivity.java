@@ -31,10 +31,12 @@ import android.widget.Toast;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.DatabaseListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.receivers.LocationReceiver;
+import com.TwentyCodes.android.LocationRinger.receivers.LocationChangedReceiver;
+import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
 import com.TwentyCodes.android.SkyHook.Splash;
+import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.location.PassiveLocationListener;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.WPSContinuation;
@@ -210,7 +212,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	protected void onDestroy() {
 		restartService();
-		PassiveLocationListener.requestPassiveLocationUpdates(this);
+		PassiveLocationListener.requestPassiveLocationUpdates(this, new Intent(this, PassiveLocationChangedReceiver.class));
 		super.onDestroy();
 	}
 
@@ -334,7 +336,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			//start the new service
 			Intent i = new Intent(this, LocationService.class)
 			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
-			.setAction(LocationReceiver.LR_ACTION_UPDATE);
+			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 			this.startService(i);	
 		}
 			
