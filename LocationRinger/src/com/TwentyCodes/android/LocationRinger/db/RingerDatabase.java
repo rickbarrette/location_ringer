@@ -85,198 +85,188 @@ public class RingerDatabase {
 	public static final String KEY_RINGER_DESCRIPTION = "ringer_description";
 	
 	
-/**
- * A helper class to manage database creation and version management.
- * @author ricky barrette
- */
-private class OpenHelper extends SQLiteOpenHelper {
-
 	/**
-	 * Creates a new OpenHelper
-	 * @param context
+	 * A helper class to manage database creation and version management.
 	 * @author ricky barrette
 	 */
-	public OpenHelper(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-	}
+	private class OpenHelper extends SQLiteOpenHelper {
 
-	/**
-	 * Converts the database from version 2 to 3
-	 * @param db
-	 * @author ricky barrette
-	 */
-	private void convert2to3(SQLiteDatabase db){
-		//get all the ringer information from the old table
-		Cursor cursor = db.query("two", new String[] { KEY_RINGER_NAME, KEY_RINGTONE, 
-				KEY_NOTIFICATION_RINGTONE, KEY_RINGTONE_IS_SILENT, 
-				KEY_NOTIFICATION_IS_SILENT, KEY_IS_ENABLED, 
-				KEY_RADIUS, KEY_LOCATION_LAT, KEY_LOCATION_LON, 
-				KEY_RINGTONE_URI, KEY_NOTIFICATION_RINGTONE_URI,
-				KEY_RINGTONE_VOLUME, KEY_NOTIFICATION_RINGTONE_VOLUME,
-				KEY_WIFI, KEY_BT, KEY_MUSIC_VOLUME, KEY_ALARM_VOLUME
-				}, null, null, null, null, null);
-		
-		/*
-		 * iterate through the database moving data over to the version 3 tables
+		/**
+		 * Creates a new OpenHelper
+		 * @param context
+		 * @author ricky barrette
 		 */
-		int count = cursor.getColumnCount();
-		if (cursor.moveToFirst()) {
-			do {
-				ContentValues ringer = new ContentValues();
-				if(Debug.DEBUG)
-					Log.v(TAG, "Converting: " + cursor.getString(0));
-				for(int i = 0; i < count; i++){
-					if(Debug.DEBUG)
-						Log.v(TAG, i + " = "+ cursor.getColumnName(i) +" ~ " + cursor.getString(i));
-					switch(i){
-						case 0: 	//ringer name
-							ringer.put(cursor.getColumnName(i), cursor.getString(0));
-							break;
-						case 5:		//is enabled
-							ringer.put(KEY_IS_ENABLED, cursor.getString(i));
-							break;
-						case 6:		//radius
-							ringer.put(KEY_RADIUS, cursor.getString(i));
-							break;
-						case 7:		// lat
-							ringer.put(KEY_LOCATION_LAT, cursor.getString(i));
-							break;
-						case 8:		// lon
-							ringer.put(KEY_LOCATION_LON, cursor.getString(i));
-							break;
-						default:
-							ContentValues values = new ContentValues();
-							values.put(KEY_RINGER_NAME, cursor.getString(0));
-							values.put(KEY, cursor.getColumnName(i));
-							values.put(KEY_VALUE, cursor.getString(i));
-							db.insert(RINGER_INFO_TABLE, null, values);								
-					}
-				}
-				db.insert(RINGER_TABLE, null, ringer);
-			} while (cursor.moveToNext());
+		public OpenHelper(Context context) {
+			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
-		if (cursor != null && !cursor.isClosed()) {
-			cursor.close();
-		}	
-	}
-
-	/**
-	 * Creates the initial database structure 
-	 * @param db
-	 * @author ricky barrette
-	 */
-	private void createDatabase(SQLiteDatabase db){
-		db.execSQL("CREATE TABLE " + RINGER_TABLE + 
-				"(id INTEGER PRIMARY KEY, " +
-				KEY_RINGER_NAME+" TEXT, " +
-				KEY_IS_ENABLED+" TEXT)");
-		db.execSQL("CREATE TABLE " + RINGER_INFO_TABLE + 
-				"(id INTEGER PRIMARY KEY, " +
-				KEY_RINGER_NAME+" TEXT, " +
-				KEY+" TEXT, " +
-				KEY_VALUE+" TEXT)");
-	}
 	
-	/**
-	 * called when the database is created for the first time. this will create our Ringer database
-	 * (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onCreate(SQLiteDatabase db) {
-		if(Debug.DROP_TABLE_EVERY_TIME)
-			db.execSQL("DROP TABLE IF EXISTS " + RINGER_TABLE);
-		createDatabase(db);
-		//insert the default ringer into this table
-		db.execSQL("insert into " + RINGER_TABLE + "(" + KEY_RINGER_NAME + ") values ('"+RingerDatabase.this.mContext.getString(R.string.default_ringer)+"')"); 
-	}
-		
-	/**
-	 * called when the database needs to be updated
-	 * (non-Javadoc)
-	 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onUpgrade(final SQLiteDatabase db, final int oldVersion, int newVersion) {
-		Log.w(TAG, "Upgrading database from version "+oldVersion+" to "+newVersion);
-		
-		if(RingerDatabase.this.mListener != null)
-			RingerDatabase.this.mListener.onDatabaseUpgrade();
-		
-		RingerDatabase.this.isUpgrading = true;
-		
-		final Handler handler =  new Handler(){
-			@Override
-		    public void handleMessage(Message msg) {
-				if(RingerDatabase.this.mListener != null)
-					RingerDatabase.this.mListener.onDatabaseUpgradeComplete();
-		    }
-		};
-    	
-    	//upgrade thread
-		 new Thread( new Runnable(){
-			 @Override
-			 public void run(){
-				 Looper.prepare();
-				switch(oldVersion){
-					case 1:
-						db.execSQL("ALTER TABLE " + RINGER_TABLE + " ADD "+ KEY_MUSIC_VOLUME+" INTEGER");
-						db.execSQL("ALTER TABLE " + RINGER_TABLE + " ADD "+ KEY_ALARM_VOLUME+" INTEGER");
-					case 2:
-						//rename the old ringer table
-						db.execSQL("ALTER TABLE " + RINGER_TABLE + " RENAME TO two");
-						//create a new ringer table
-						createDatabase(db);
-						//convert database to the new version
-						convert2to3(db);
-						//remove old tables
-						db.execSQL("DROP TABLE IF EXISTS two");
-					case 3:
-						Cursor c = db.query(RINGER_TABLE, new String[] { "id", KEY_RINGER_NAME, KEY_LOCATION_LAT, KEY_LOCATION_LON, KEY_RADIUS }, null, null, null, null, null);;
-						c.moveToFirst();
-						if (c.moveToFirst()) {
-							do {
-								if(Debug.DEBUG)
-									Log.d(TAG, "Moving: "+c.getInt(0)+" "+c.getString(1)+" "+c.getInt(2)+", "+c.getInt(3)+" @ "+ c.getInt(4) +"m");
-									ContentValues ringer = new ContentValues();
-									ContentValues info = new ContentValues();
-									ringer.put(KEY_RINGER_NAME, c.getString(1));
-									info.put(KEY_LOCATION_LAT, c.getInt(2));
-									info.put(KEY_LOCATION_LON, c.getInt(3));
-									info.put(KEY_RADIUS, c.getInt(4));
-									updateRinger(c.getInt(0), ringer, info);
-							} while (c.moveToNext());
+		/**
+		 * Converts the database from version 2 to 3
+		 * @param db
+		 * @author ricky barrette
+		 */
+		private void convert2to3(SQLiteDatabase db){
+			//get all the ringer information from the old table
+			Cursor cursor = db.query("two", new String[] { KEY_RINGER_NAME, KEY_RINGTONE, 
+					KEY_NOTIFICATION_RINGTONE, KEY_RINGTONE_IS_SILENT, 
+					KEY_NOTIFICATION_IS_SILENT, KEY_IS_ENABLED, 
+					KEY_RADIUS, KEY_LOCATION_LAT, KEY_LOCATION_LON, 
+					KEY_RINGTONE_URI, KEY_NOTIFICATION_RINGTONE_URI,
+					KEY_RINGTONE_VOLUME, KEY_NOTIFICATION_RINGTONE_VOLUME,
+					KEY_WIFI, KEY_BT, KEY_MUSIC_VOLUME, KEY_ALARM_VOLUME
+					}, null, null, null, null, null);
+			
+			/*
+			 * iterate through the database moving data over to the version 3 tables
+			 */
+			int count = cursor.getColumnCount();
+			if (cursor.moveToFirst()) {
+				do {
+					ContentValues ringer = new ContentValues();
+					if(Debug.DEBUG)
+						Log.v(TAG, "Converting: " + cursor.getString(0));
+					for(int i = 0; i < count; i++){
+						if(Debug.DEBUG)
+							Log.v(TAG, i + " = "+ cursor.getColumnName(i) +" ~ " + cursor.getString(i));
+						switch(i){
+							case 0: 	//ringer name
+								ringer.put(cursor.getColumnName(i), cursor.getString(0));
+								break;
+							case 5:		//is enabled
+								ringer.put(KEY_IS_ENABLED, cursor.getString(i));
+								break;
+							case 6:		//radius
+								ringer.put(KEY_RADIUS, cursor.getString(i));
+								break;
+							case 7:		// lat
+								ringer.put(KEY_LOCATION_LAT, cursor.getString(i));
+								break;
+							case 8:		// lon
+								ringer.put(KEY_LOCATION_LON, cursor.getString(i));
+								break;
+							default:
+								ContentValues values = new ContentValues();
+								values.put(KEY_RINGER_NAME, cursor.getString(0));
+								values.put(KEY, cursor.getColumnName(i));
+								values.put(KEY_VALUE, cursor.getString(i));
+								db.insert(RINGER_INFO_TABLE, null, values);								
 						}
-						//drop old location trigger information
-						db.execSQL("CREATE TABLE ringers_new (" +
-								"id INTEGER PRIMARY KEY, " +
-								KEY_RINGER_NAME+" TEXT, " +
-								KEY_IS_ENABLED+" TEXT)");
-						db.execSQL("INSERT INTO ringers_new SELECT id, "+ KEY_RINGER_NAME +", "+ KEY_IS_ENABLED +" FROM "+RINGER_TABLE);
-						db.execSQL("DROP TABLE "+ RINGER_TABLE);
-						db.execSQL("ALTER TABLE ringers_new RENAME TO "+ RINGER_TABLE);
-						
-				}
-				handler.sendEmptyMessage(0);					
-				RingerDatabase.this.isUpgrading = false;
+					}
+					db.insert(RINGER_TABLE, null, ringer);
+				} while (cursor.moveToNext());
 			}
-		 }).start();
-	}
-}
-
-	/**
-	 * Parses a string boolean from the database
-	 * @param bool
-	 * @return true or false
-	 * @author ricky barrette
-	 */
-	public static boolean parseBoolean(String bool){
-		try {
-			return bool == null ? false : Integer.parseInt(bool) == 1 ? true : false;
-		} catch (NumberFormatException e) {
-			return false;
+			if (cursor != null && !cursor.isClosed()) {
+				cursor.close();
+			}	
+		}
+	
+		/**
+		 * Creates the initial database structure 
+		 * @param db
+		 * @author ricky barrette
+		 */
+		private void createDatabase(SQLiteDatabase db){
+			db.execSQL("CREATE TABLE " + RINGER_TABLE + 
+					"(id INTEGER PRIMARY KEY, " +
+					KEY_RINGER_NAME+" TEXT, " +
+					KEY_IS_ENABLED+" TEXT)");
+			db.execSQL("CREATE TABLE " + RINGER_INFO_TABLE + 
+					"(id INTEGER PRIMARY KEY, " +
+					KEY_RINGER_NAME+" TEXT, " +
+					KEY+" TEXT, " +
+					KEY_VALUE+" TEXT)");
+		}
+		
+		/**
+		 * called when the database is created for the first time. this will create our Ringer database
+		 * (non-Javadoc)
+		 * @see android.database.sqlite.SQLiteOpenHelper#onCreate(android.database.sqlite.SQLiteDatabase)
+		 * @author ricky barrette
+		 */
+		@Override
+		public void onCreate(SQLiteDatabase db) {
+			if(Debug.DROP_TABLE_EVERY_TIME)
+				db.execSQL("DROP TABLE IF EXISTS " + RINGER_TABLE);
+			createDatabase(db);
+			//insert the default ringer into this table
+			db.execSQL("insert into " + RINGER_TABLE + "(" + KEY_RINGER_NAME + ") values ('"+RingerDatabase.this.mContext.getString(R.string.default_ringer)+"')");
+			db.execSQL("insert into " + RINGER_INFO_TABLE + "(" + KEY_RINGER_NAME + ", " + KEY + ", " + KEY_VALUE + 
+					") values ('"+RingerDatabase.this.mContext.getString(R.string.default_ringer) 
+					+ "', '" + KEY_RINGER_DESCRIPTION 
+					+ "', '" + RingerDatabase.this.mContext.getString(R.string.about_default_ringer)+"')"); 
+		}
+			
+		/**
+		 * called when the database needs to be updated
+		 * (non-Javadoc)
+		 * @see android.database.sqlite.SQLiteOpenHelper#onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+		 * @author ricky barrette
+		 */
+		@Override
+		public void onUpgrade(final SQLiteDatabase db, final int oldVersion, int newVersion) {
+			Log.w(TAG, "Upgrading database from version "+oldVersion+" to "+newVersion);
+			
+			if(RingerDatabase.this.mListener != null)
+				RingerDatabase.this.mListener.onDatabaseUpgrade();
+			
+			RingerDatabase.this.isUpgrading = true;
+			
+			final Handler handler =  new Handler(){
+				@Override
+			    public void handleMessage(Message msg) {
+					if(RingerDatabase.this.mListener != null)
+						RingerDatabase.this.mListener.onDatabaseUpgradeComplete();
+			    }
+			};
+	    	
+	    	//upgrade thread
+			 new Thread( new Runnable(){
+				 @Override
+				 public void run(){
+					 Looper.prepare();
+					switch(oldVersion){
+						case 1:
+							db.execSQL("ALTER TABLE " + RINGER_TABLE + " ADD "+ KEY_MUSIC_VOLUME+" INTEGER");
+							db.execSQL("ALTER TABLE " + RINGER_TABLE + " ADD "+ KEY_ALARM_VOLUME+" INTEGER");
+						case 2:
+							//rename the old ringer table
+							db.execSQL("ALTER TABLE " + RINGER_TABLE + " RENAME TO two");
+							//create a new ringer table
+							createDatabase(db);
+							//convert database to the new version
+							convert2to3(db);
+							//remove old tables
+							db.execSQL("DROP TABLE IF EXISTS two");
+						case 3:
+							Cursor c = db.query(RINGER_TABLE, new String[] { "id", KEY_RINGER_NAME, KEY_LOCATION_LAT, KEY_LOCATION_LON, KEY_RADIUS }, null, null, null, null, null);;
+							c.moveToFirst();
+							if (c.moveToFirst()) {
+								do {
+									if(Debug.DEBUG)
+										Log.d(TAG, "Moving: "+c.getInt(0)+" "+c.getString(1)+" "+c.getInt(2)+", "+c.getInt(3)+" @ "+ c.getInt(4) +"m");
+										ContentValues ringer = new ContentValues();
+										ContentValues info = new ContentValues();
+										ringer.put(KEY_RINGER_NAME, c.getString(1));
+										info.put(KEY_LOCATION_LAT, c.getInt(2));
+										info.put(KEY_LOCATION_LON, c.getInt(3));
+										info.put(KEY_RADIUS, c.getInt(4));
+										updateRinger(c.getInt(0), ringer, info);
+								} while (c.moveToNext());
+							}
+							//drop old location trigger information
+							db.execSQL("CREATE TABLE ringers_new (" +
+									"id INTEGER PRIMARY KEY, " +
+									KEY_RINGER_NAME+" TEXT, " +
+									KEY_IS_ENABLED+" TEXT)");
+							db.execSQL("INSERT INTO ringers_new SELECT id, "+ KEY_RINGER_NAME +", "+ KEY_IS_ENABLED +" FROM "+RINGER_TABLE);
+							db.execSQL("DROP TABLE "+ RINGER_TABLE);
+							db.execSQL("ALTER TABLE ringers_new RENAME TO "+ RINGER_TABLE);
+							
+					}
+					handler.sendEmptyMessage(0);					
+					RingerDatabase.this.isUpgrading = false;
+				}
+			 }).start();
 		}
 	}
 	
@@ -294,6 +284,20 @@ private class OpenHelper extends SQLiteOpenHelper {
 		this.mListener = listener;		
 		this.mContext = context;
 		this.mDb = new OpenHelper(this.mContext).getWritableDatabase();
+	}
+
+	/**
+	 * Parses a string boolean from the database
+	 * @param bool
+	 * @return true or false
+	 * @author ricky barrette
+	 */
+	public static boolean parseBoolean(String bool){
+		try {
+			return bool == null ? false : Integer.parseInt(bool) == 1 ? true : false;
+		} catch (NumberFormatException e) {
+			return false;
+		}
 	}
 	
 	/**

@@ -75,31 +75,29 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		/*
 		 * set the title
 		 */
-		if(this.mRinger.containsKey(RingerDatabase.KEY_RINGER_NAME))
-			this.setTitle(this.getString(R.string.editing)+" "+this.mRinger.getAsString(RingerDatabase.KEY_RINGER_NAME));
-		else
-			this.setTitle(R.string.new_ringer);
+		this.setTitle(this.mRinger.containsKey(RingerDatabase.KEY_RINGER_NAME) ?this.getString(R.string.editing)+" "+this.mRinger.getAsString(RingerDatabase.KEY_RINGER_NAME)
+				: getString(R.string.new_ringer));
+		
+		boolean isDefault = getString(R.string.default_ringer).equals(this.mRinger.getAsString(RingerDatabase.KEY_RINGER_NAME));
 		
 		/*
 		 * Page titles
 		 */
-		String[] titles = new String[]{
-				this.getString(R.string.about), 
-				this.getString(R.string.location), 
-				this.getString(R.string.what)
-		};
+		String[] titles = this.getResources().getStringArray(isDefault ? R.array.ringer_info_titles_default : R.array.ringer_info_titles);
 		
 		ArrayList<Fragment> fragments = new ArrayList<Fragment>();
 		
 		/*
 		 * about page
 		 */
-		fragments.add(new AboutRingerFragment(this.mRinger, this.mInfo, this));
+		if(!isDefault)
+			fragments.add(new AboutRingerFragment(this.mRinger, this.mInfo, this));
 		
 		/*
 		 * Location page
 		 */
-		fragments.add(new LocationInfomationFragment(this.mInfo, this, this));
+		if(!isDefault)
+			fragments.add(new LocationInfomationFragment(this.mInfo, this, this));
 		
 		/*
 		 * What page
