@@ -53,12 +53,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	public static final String KEY_RINGER = "key_ringer";
 	public static final String KEY_INFO = "key_info";
 	public static final String KEY_IS_DEFAULT = "key_is_default";
-	private static final int NEW_RINGER = 0;
 	private static final int ACTIVITY_CREATE = 3;
 	private static final int ACTIVITY_EDIT = 4;
-	private static final int SETTINGS = 7;
-	private static final int BACKUP = 8;
-	private static final int RESTORE = 9;
 	private static final String KEY_ROWID = "key_row_id";
 	
 	@Override
@@ -176,11 +172,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
      */
     @Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-    	menu.add(1, NEW_RINGER, 0, getString(R.string.new_ringer)).setIcon(android.R.drawable.ic_menu_add);
-    	menu.add(1, BACKUP, 1, getString(R.string.backup)).setIcon(android.R.drawable.ic_menu_upload);
-    	menu.add(1, RESTORE, 2, getString(R.string.restore)).setIcon(android.R.drawable.ic_menu_revert);
-    	menu.add(1, SETTINGS, 5, getString(R.string.settings)).setIcon(android.R.drawable.ic_menu_preferences);
-    	
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.ringer_list_menu, menu);
     	return super.onCreateOptionsMenu(menu);
     	
     }
@@ -278,21 +271,16 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     @Override
 	public boolean onOptionsItemSelected (MenuItem item) {
     	switch (item.getItemId()){
-    		case NEW_RINGER:
-    			Intent i = new Intent(this, RingerInformationActivity.class);
-    			startActivityForResult(i, ACTIVITY_CREATE );
-    			return true;
-    			
-    		case SETTINGS:
+    		case R.id.settings:
     			startActivity(new Intent(this, SettingsActivity.class));
     			return true;
     			
-    		case BACKUP:
+    		case R.id.backup:
     			mDb.backup();
     			SettingsActivity.backup(this);
     			break;
     			
-    		case RESTORE:
+    		case R.id.restore:
     			mDb.restore();
     			SettingsActivity.restore(this);
     			break;
