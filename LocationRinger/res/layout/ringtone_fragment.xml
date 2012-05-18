@@ -13,29 +13,6 @@
         android:text="@string/ringtone_options"
         android:textColor="#FFFFFF" />
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <ToggleButton
-            android:id="@+id/ringtone_silent_toggle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:textOff="@string/silent_disabled"
-            android:textOn="@string/silent_enabled" />
-
-        <Button
-            android:id="@+id/ringtone_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/select_tone" />
-    </LinearLayout>
-
     <EditText
         android:id="@+id/ringtone"
         android:layout_width="match_parent"
