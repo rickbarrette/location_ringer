@@ -146,7 +146,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		if(indicator != null)
 			indicator.setViewPager(this.mPager);
 		
-		mPager.setOnPageChangeListener(this);
+		indicator.setOnPageChangeListener(this);
 		
 		/*
 		 * TODO
