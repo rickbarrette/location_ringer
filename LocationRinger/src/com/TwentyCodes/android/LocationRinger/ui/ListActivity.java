@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,7 +32,6 @@ import android.widget.Toast;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.DatabaseListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.receivers.LocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
@@ -54,7 +54,6 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	public static final String KEY_INFO = "key_info";
 	public static final String KEY_IS_DEFAULT = "key_is_default";
 	private static final int NEW_RINGER = 0;
-	private static final int DELETE_ID = 1;
 	private static final int ACTIVITY_CREATE = 3;
 	private static final int ACTIVITY_EDIT = 4;
 	private static final int SETTINGS = 7;
@@ -116,7 +115,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
      */
     public boolean onContextItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-        	case DELETE_ID:
+        	case R.id.delete:
         		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         		if(info.id == 0)
         			Toast.makeText(this, this.getString(R.string.cant_delete_default), Toast.LENGTH_SHORT).show();
@@ -165,7 +164,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
      */
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     	super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(0, DELETE_ID, 0, "Delete Ringer").setIcon(android.R.drawable.ic_menu_delete);
+    	MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.ringer_list_context_menu, menu);
     }
     
     /**
