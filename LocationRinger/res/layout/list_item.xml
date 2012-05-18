@@ -1,33 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="?android:attr/listPreferredItemHeight" >
 
     <CheckBox
         android:id="@+id/ringer_enabled_checkbox"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:focusable="false"
-        android:gravity="center_vertical" />
+        android:gravity="center" />
 
-    <TextView
-        android:id="@id/android:id/text1"
-        android:layout_width="match_parent"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:layout_toRightOf="@id/ringer_enabled_checkbox"
-        android:gravity="center_vertical"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <TextView
-        android:id="@id/android:id/text2"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/android:id/text1"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip" />
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/ringer_enabled_checkbox" >
+
+        <TextView
+            android:id="@id/android:id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/ringer_enabled_checkbox"
+            android:gravity="center_vertical"
+            android:paddingLeft="6dip"
+            android:paddingRight="6dip"
+            android:text="test"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@id/android:id/text2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/android:id/text1"
+            android:layout_below="@id/android:id/text1"
+            android:paddingLeft="6dip"
+            android:paddingRight="6dip"
+            android:text="test" />
+    </RelativeLayout>
 
 </RelativeLayout>
