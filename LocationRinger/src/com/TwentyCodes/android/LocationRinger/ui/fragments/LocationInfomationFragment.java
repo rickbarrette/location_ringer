@@ -95,7 +95,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		switch (v.getId()){
 			case R.id.mark_my_location:
 				if(this.mPoint != null){
-					this.mRadiusOverlay.setLocation(mPoint);
+					onLocationSelected(mPoint);
 					this.mMap.setMapCenter(mPoint);
 				}
 				break;
@@ -131,8 +131,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	@Override
 	public void onLocationChanged(GeoPoint point, int accuracy) {
 		this.mPoint = point;
-		
-		
 	}
 
 	/*
