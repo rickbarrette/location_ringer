@@ -105,6 +105,35 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	}
 	
 	/**
+	 * Notifys the listener that the ringtone has changedRingtoneManager.getActualDefaultRingtoneUri(this.getActivity(), mType)
+	 * @param tone
+	 * @author ricky barrette
+	 */
+	private void notifyRingtoneChanged(Uri tone) {
+		if(this.mListener != null){
+			ContentValues info = new ContentValues();			
+			info.put(this.mKeyRingtone, tone == null 
+					? getString(R.string.silent) : RingtoneManager.getRingtone(this.getActivity(), Uri.parse(tone.toString())).getTitle(this.getActivity()));
+			info.put(this.mKeyUri, tone != null ? tone.toString() : null);
+			info.put(mKeyEnabled, tone == null);
+			this.mListener.onInfoContentChanged(info);
+		}
+	}
+	
+	/**
+	 * Notifys the listener that the volume has changed
+	 * @param progress
+	 * @author ricky barrette
+	 */
+	private void notifyVolumeChanged(int progress) {
+		if(this.mListener != null){
+			ContentValues info = new ContentValues();
+			info.put(this.mKeyVolume, progress);
+			this.mListener.onInfoContentChanged(info);
+		}
+	}
+
+	/**
 	 * Called when the ringtone picker activity returns it's result
 	 */
 	@Override
@@ -121,13 +150,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 				this.mRingtone.setText(ringtone.getTitle(this.getActivity()));
 			}
 			
-			if(this.mListener != null){
-				ContentValues info = new ContentValues();
-				info.put(this.mKeyRingtone, this.mRingtone.getText().toString());
-				info.put(this.mKeyUri, tone != null ? tone.toString() : null);
-				info.put(mKeyEnabled, tone != null);
-				this.mListener.onInfoContentChanged(info);
-			}
+			notifyRingtoneChanged(tone);
 		}
 	}
 	
@@ -139,7 +162,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	public void onClick(View v) {
 		getRingtoneURI(this.mType, mRingtoneURI);
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view =  inflater.inflate(R.layout.ringtone_fragment, container, false);
@@ -170,6 +193,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 			this.mVolume.setEnabled(this.mInfo.getAsString(this.mKeyUri) != null);
 		} else
 			try {
+				notifyRingtoneChanged(RingtoneManager.getActualDefaultRingtoneUri(this.getActivity(), mType));
 				this.mRingtoneURI = RingtoneManager.getActualDefaultRingtoneUri(this.getActivity(), mType).toString();
 				this.mRingtone.setText(RingtoneManager.getRingtone(this.getActivity(), Uri.parse(mRingtoneURI)).getTitle(this.getActivity()));
 			} catch (NullPointerException e) {
@@ -182,8 +206,10 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 		 */
 		if(this.mInfo.containsKey(this.mKeyVolume))
 			mVolume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKeyVolume)));
-		else
+		else {
 			mVolume.setProgress(mAudioManager.getStreamVolume(mStream));
+			notifyVolumeChanged(mAudioManager.getStreamVolume(mStream));
+		}
 		
 		mVolume.setOnSeekBarChangeListener(this);
 		return view;
@@ -192,11 +218,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if(fromUser)
-			if(this.mListener != null){
-				ContentValues info = new ContentValues();
-				info.put(this.mKeyVolume, progress);
-				this.mListener.onInfoContentChanged(info);
-			}
+			notifyVolumeChanged(progress);
 	}
 
 	@Override
