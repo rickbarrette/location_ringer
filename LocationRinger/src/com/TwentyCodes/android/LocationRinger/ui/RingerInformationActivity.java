@@ -12,15 +12,18 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
 import com.TwentyCodes.android.LocationRinger.LocationRinger;
@@ -41,7 +44,7 @@ import com.jakewharton.android.viewpagerindicator.TitledFragmentAdapter;
  * This activity will handle displaying ringer options
  * @author ricky
  */
-public class RingerInformationActivity extends FragmentActivity implements OnContentChangedListener, EnableScrollingListener{
+public class RingerInformationActivity extends FragmentActivity implements OnContentChangedListener, EnableScrollingListener, OnPageChangeListener{
 
 	private static final int SAVE_ID = 0;
 	private static final String TAG = "RingerInformationActivity";
@@ -50,6 +53,16 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	private Intent mData;
 	private ViewPager mPager;
 
+	/**
+	 * Logs the content values
+	 * @param values
+	 * @author ricky barrette
+	 */
+	private void logContentValues(ContentValues values) {
+		for(Entry<String,Object> item : values.valueSet())
+			Log.d(TAG, item.getKey() +" = "+ item.getValue());
+	}
+	
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -133,12 +146,14 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		if(indicator != null)
 			indicator.setViewPager(this.mPager);
 		
+		mPager.setOnPageChangeListener(this);
+		
 		/*
 		 * TODO
 		 * button bar
 		 */
 	}
-	
+
 	/**
 	 * Creates the main menu that is displayed when the menu button is clicked
 	 * @author ricky barrette
@@ -146,6 +161,15 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, SAVE_ID, 0, getString(R.string.save_ringer)).setIcon(android.R.drawable.ic_menu_save);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public void onInfoContentChanged(ContentValues values) {
+		if(Debug.DEBUG){
+			Log.v(TAG,"onInfoContentChanged()");
+			logContentValues(values);
+		}
+		this.mInfo.putAll(values);
 	}
 
 	/* (non-Javadoc)
@@ -165,7 +189,40 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2) {
+		// TODO Auto-generated method stub
+	}
 	
+	/**
+	 * called when the pager's page is changed
+	 * we use this to dismiss the soft keyboard
+	 * (non-Javadoc)
+	 * @see android.support.v4.view.ViewPager.OnPageChangeListener#onPageScrollStateChanged(int)
+	 */
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(mPager.getWindowToken(), 0);
+	}
+
+	@Override
+	public void onPageSelected(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRingerContentChanged(ContentValues values) {
+		if(Debug.DEBUG){
+			Log.v(TAG,"onRingerContentChanged()");
+			logContentValues(values);
+		}
+		this.mRinger.putAll(values);		
+	}
+
 	/**
 	 * Prepares a bundle containing all the information that needs to be saved, and returns it to the starting activity
 	 * @author ricky barrette
@@ -184,35 +241,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 				 RingerInformationActivity.this.finish();
 			 }
 		 }).start();
-	}
-
-	@Override
-	public void onRingerContentChanged(ContentValues values) {
-		if(Debug.DEBUG){
-			Log.v(TAG,"onRingerContentChanged()");
-			logContentValues(values);
-		}
-		this.mRinger.putAll(values);		
-	}
-
-
-	@Override
-	public void onInfoContentChanged(ContentValues values) {
-		if(Debug.DEBUG){
-			Log.v(TAG,"onInfoContentChanged()");
-			logContentValues(values);
-		}
-		this.mInfo.putAll(values);
-	}
-	
-	/**
-	 * Logs the content values
-	 * @param values
-	 * @author ricky barrette
-	 */
-	private void logContentValues(ContentValues values) {
-		for(Entry<String,Object> item : values.valueSet())
-			Log.d(TAG, item.getKey() +" = "+ item.getValue());
 	}
 
 	@Override
