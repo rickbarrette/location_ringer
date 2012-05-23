@@ -11,19 +11,18 @@ import java.util.ArrayList;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.ui.fragments.FragmentListAdaptor.Holder;
 
 /**
  * This fragment will be used to display a list of fragments
@@ -33,7 +32,16 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * 
  * @author ricky
  */
-public class FeatureListFragment extends ListFragment {
+public class FeatureListFragment extends Fragment {
+
+
+	private static final String TAG = "FeatureListFragment";
+	private final ArrayList<Fragment> mFragments;
+
+	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments) {
+		super();
+		mFragments = fragments;
+	}
 
 	/**
 	 * (non-Javadoc)
@@ -42,51 +50,35 @@ public class FeatureListFragment extends ListFragment {
 	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflator, ViewGroup container,
-			Bundle bundle) {
+	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle bundle) {
 		// TODO Auto-generated method stub
-		return super.onCreateView(inflator, container, bundle);
-	}
-
-	private static final String TAG = "FeatureListFragment";
-	private static final int DELETE_ID = 0;
-	private ArrayList<Fragment> mFeatures;
-
-	// private OnContentChangedListener mListener;
-	// private ContentValues mInfo;
-	// private int mIndex;
-
-	public FeatureListFragment(ContentValues info,
-			OnContentChangedListener listener, ArrayList<Fragment> fragments) {
-		super();
-		this.mFeatures = fragments;
-		// this.mInfo = info;
-		// this.mListener = listener;
+		
+		return inflator.inflate(R.layout.fragment_list_contianer, null);
 	}
 
 	@Override
 	public void onResume() {
-		this.setListAdapter(new FragmentListAdaptor(this, mFeatures));
-		this.getListView().setOnCreateContextMenuListener(this);
 		if (Debug.DEBUG)
 			Log.v(TAG, "onResume()");
+		
+		loadFragments();
 		super.onResume();
 	}
 
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, DELETE_ID, 0, R.string.delete).setIcon(
-				android.R.drawable.ic_menu_delete);
-	}
-
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case DELETE_ID:
-			Toast.makeText(this.getActivity(), "deleted! (note really)",
-					Toast.LENGTH_LONG).show();
-			return true;
+	private void loadFragments() {
+		FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments){
+            transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
 		}
-		return super.onContextItemSelected(item);
+		transaction.commit();
+	}
+	
+	/**
+	 * Simple Holder class
+	 * @author ricky barrette
+	 */
+	class Holder{
+		public String tag;
+		public View view;
 	}
 }
