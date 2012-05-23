@@ -7,19 +7,17 @@
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
@@ -27,66 +25,122 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This fragment will be used to display a list of fragments
- * 
- * TODO + create button bar that had a plus button and a hint + add/remove
- * features
+ * TODO 
+ * + create button bar that had a plus button and a hint + add/remove features
  * 
  * @author ricky
  */
-public class FeatureListFragment extends ListFragment {
+public class FeatureListFragment extends Fragment {
+
+	private static final String TAG = "FeatureListFragment";
+	private final ArrayList<Fragment> mFragments;
+
+	/**
+	 * Creates a new FeatureListFragment
+	 * @param info
+	 * @param listener
+	 * @param fragments
+	 * @author ricky barrette
+	 */
+	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments) {
+		super();
+		mFragments = fragments;
+	}
+
+	/**
+	 * Adds the fragment to the list
+	 * @param fragment
+	 * @author ricky barrette
+	 */
+	public void add(final Fragment fragment){
+		this.mFragments.add(fragment);
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
+		transaction.commit();
+	}
+
+	/**
+	 * Loads all the fragments
+	 * @author ricky barrette
+	 */
+	private void loadFragments() {
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments)
+			transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
+		transaction.commit();
+	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 * @see android.support.v4.app.Fragment#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	public void onActivityResult(int arg0, int arg1, Intent arg2) {
+		removeFragments();
+		loadFragments();
+		super.onActivityResult(arg0, arg1, arg2);
+	}
+
+	/**
+	 * (non-Javadoc)
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
 	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflator, ViewGroup container,
-			Bundle bundle) {
-		// TODO Auto-generated method stub
-		return super.onCreateView(inflator, container, bundle);
+	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle bundle) {
+		return inflator.inflate(R.layout.fragment_list_contianer, null);
 	}
 
-	private static final String TAG = "FeatureListFragment";
-	private static final int DELETE_ID = 0;
-	private ArrayList<Fragment> mFeatures;
-
-	// private OnContentChangedListener mListener;
-	// private ContentValues mInfo;
-	// private int mIndex;
-
-	public FeatureListFragment(ContentValues info,
-			OnContentChangedListener listener, ArrayList<Fragment> fragments) {
-		super();
-		this.mFeatures = fragments;
-		// this.mInfo = info;
-		// this.mListener = listener;
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
+	@Override
+	public void onPause() {
+		try{
+			removeFragments();
+		} catch(IllegalStateException e){
+			e.printStackTrace();
+			//do nothing
+		}
+		Collections.reverse(this.mFragments);
+		super.onPause();
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onResume()
+	 */
 	@Override
 	public void onResume() {
-		this.setListAdapter(new FragmentListAdaptor(this, mFeatures));
-		this.getListView().setOnCreateContextMenuListener(this);
 		if (Debug.DEBUG)
 			Log.v(TAG, "onResume()");
+		loadFragments();
 		super.onResume();
 	}
-
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, DELETE_ID, 0, R.string.delete).setIcon(
-				android.R.drawable.ic_menu_delete);
+	
+	/**
+	 * Removes a fragment from the list
+	 * @param fragment
+	 * @author ricky barrette
+	 */
+	public void remove(final Fragment fragment){
+		this.mFragments.remove(fragment);
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		transaction.remove(fragment);
+		transaction.commit();
 	}
-
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case DELETE_ID:
-			Toast.makeText(this.getActivity(), "deleted! (note really)",
-					Toast.LENGTH_LONG).show();
-			return true;
+	
+	/**
+	 * Removes all fragments from the the view
+	 * @throws IllegalStateException
+	 * @author ricky barrette
+	 */
+	private void removeFragments() throws IllegalStateException {
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments){
+            transaction.remove(fragment);
 		}
-		return super.onContextItemSelected(item);
+		transaction.commit();
 	}
 }
