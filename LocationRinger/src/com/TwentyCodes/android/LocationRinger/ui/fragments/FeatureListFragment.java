@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -64,13 +65,20 @@ public class FeatureListFragment extends Fragment {
 	 */
 	private void loadFragments() {
 		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment fragment : this.mFragments){
-            if(!fragment.isAdded())
-				transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
-            else
-            	transaction.replace(R.id.fragment_list_contianer, fragment, fragment.getTag());
-		}
+		for(Fragment fragment : this.mFragments)
+			transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
 		transaction.commit();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onActivityResult(int, int, android.content.Intent)
+	 */
+	@Override
+	public void onActivityResult(int arg0, int arg1, Intent arg2) {
+		removeFragments();
+		loadFragments();
+		super.onActivityResult(arg0, arg1, arg2);
 	}
 
 	/**
@@ -90,20 +98,15 @@ public class FeatureListFragment extends Fragment {
 	@Override
 	public void onPause() {
 		try{
-			final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-			for(Fragment fragment : this.mFragments){
-	            transaction.remove(fragment);
-			}
-			transaction.commitAllowingStateLoss();
+			removeFragments();
 		} catch(IllegalStateException e){
 			e.printStackTrace();
 			//do nothing
 		}
-
 		Collections.reverse(this.mFragments);
 		super.onPause();
 	}
-	
+
 	/**
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onResume()
@@ -113,15 +116,6 @@ public class FeatureListFragment extends Fragment {
 		if (Debug.DEBUG)
 			Log.v(TAG, "onResume()");
 		loadFragments();
-		
-		final View v = this.getView();
-		if(v != null)
-			v.post(new Runnable(){
-				@Override
-				public void run(){
-					v.invalidate();
-				}
-			});
 		super.onResume();
 	}
 	
@@ -134,6 +128,19 @@ public class FeatureListFragment extends Fragment {
 		this.mFragments.remove(fragment);
 		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
 		transaction.remove(fragment);
+		transaction.commit();
+	}
+	
+	/**
+	 * Removes all fragments from the the view
+	 * @throws IllegalStateException
+	 * @author ricky barrette
+	 */
+	private void removeFragments() throws IllegalStateException {
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments){
+            transaction.remove(fragment);
+		}
 		transaction.commit();
 	}
 }
