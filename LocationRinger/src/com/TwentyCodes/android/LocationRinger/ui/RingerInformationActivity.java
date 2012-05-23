@@ -22,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
@@ -46,7 +47,6 @@ import com.jakewharton.android.viewpagerindicator.TitledFragmentAdapter;
  */
 public class RingerInformationActivity extends FragmentActivity implements OnContentChangedListener, EnableScrollingListener, OnPageChangeListener{
 
-	private static final int SAVE_ID = 0;
 	private static final String TAG = "RingerInformationActivity";
 	private ContentValues mRinger;
 	private ContentValues mInfo;
@@ -159,7 +159,8 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 * @author ricky barrette
 	 */
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, SAVE_ID, 0, getString(R.string.save_ringer)).setIcon(android.R.drawable.ic_menu_save);
+		MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.ringer_info_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -179,7 +180,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch(item.getItemId()){
-			case SAVE_ID:
+			case R.id.save:
 				save();
 				break;
 			case android.R.id.home:
