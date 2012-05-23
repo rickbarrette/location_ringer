@@ -1,46 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content">
-  
-   <ToggleButton 
-   android:layout_height="wrap_content" 
-   android:id="@+id/ringer_enabled" 
-   android:textOn="@string/enable"
-   android:textOff="@string/disable"
-   android:layout_width="match_parent"
-   />
-  
-   <TextView
-  android:text="@string/ringer_name" 
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="@android:drawable/title_bar"
-  android:textColor="#FFFFFF"
-  android:layout_marginTop="10dip"/>
-  
-   <view class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText" 
-   android:layout_width="match_parent" 
-   android:layout_height="wrap_content" 
-   android:id="@+id/ringer_name" 
-   android:capitalize="words"
-   />
-  
-   <TextView
-  android:text="@string/ringer_description" 
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:background="@android:drawable/title_bar"
-  android:textColor="#FFFFFF"
-  android:layout_marginTop="10dip"/>
-  
-  <view class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText" 
-  android:layout_width="match_parent" 
-  android:layout_height="wrap_content" 
-  android:id="@+id/ringer_description" 
-  android:inputType="textMultiLine" 
-  android:capitalize="sentences"/>
-    
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ToggleButton
+        android:id="@+id/ringer_enabled"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textOff="@string/disable"
+        android:textOn="@string/enable" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@android:drawable/title_bar"
+        android:text="@string/ringer_name"
+        android:textColor="#FFFFFF" />
+
+    <view
+        android:id="@+id/ringer_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
+        android:capitalize="words" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@android:drawable/title_bar"
+        android:text="@string/ringer_description"
+        android:textColor="#FFFFFF" />
+
+    <view
+        android:id="@+id/ringer_description"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
+        android:capitalize="sentences"
+        android:inputType="textMultiLine" />
+
 </LinearLayout>
