@@ -17,6 +17,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -109,6 +110,8 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 	public void onClick(final View v) {
 		switch(v.getId()){
 			case R.id.ok:
+				InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(this.mAddress.getWindowToken(), 0);
 				v.setEnabled(false);
 				mProgress.setVisibility(View.VISIBLE);
 				mProgress.setIndeterminate(true);
