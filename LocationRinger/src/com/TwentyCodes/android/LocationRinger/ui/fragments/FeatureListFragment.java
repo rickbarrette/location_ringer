@@ -46,6 +46,33 @@ public class FeatureListFragment extends Fragment {
 	}
 
 	/**
+	 * Adds the fragment to the list
+	 * @param fragment
+	 * @author ricky barrette
+	 */
+	public void add(final Fragment fragment){
+		this.mFragments.add(fragment);
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
+		transaction.commit();
+	}
+
+	/**
+	 * Loads all the fragments
+	 * @author ricky barrette
+	 */
+	private void loadFragments() {
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments){
+            if(!fragment.isAdded())
+				transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
+            else
+            	transaction.replace(R.id.fragment_list_contianer, fragment, fragment.getTag());
+		}
+		transaction.commit();
+	}
+
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
@@ -56,36 +83,35 @@ public class FeatureListFragment extends Fragment {
 		return inflator.inflate(R.layout.fragment_list_contianer, null);
 	}
 
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
+	@Override
+	public void onPause() {
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment fragment : this.mFragments){
+            transaction.remove(fragment);
+		}
+		transaction.commit();
+		super.onPause();
+	}
+	
 	@Override
 	public void onResume() {
 		if (Debug.DEBUG)
 			Log.v(TAG, "onResume()");
 		loadFragments();
+		
+		final View v = this.getView();
+		if(v != null)
+			v.post(new Runnable(){
+				@Override
+				public void run(){
+					v.invalidate();
+				}
+			});
 		super.onResume();
-	}
-
-	/**
-	 * Loads all the fragments
-	 * @author ricky barrette
-	 */
-	private void loadFragments() {
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment fragment : this.mFragments){
-            transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
-		}
-		transaction.commit();
-	}
-	
-	/**
-	 * Adds the fragment to the list
-	 * @param fragment
-	 * @author ricky barrette
-	 */
-	public void add(final Fragment fragment){
-		this.mFragments.add(fragment);
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		transaction.add(R.id.fragment_list_contianer, fragment, fragment.getTag());
-		transaction.commit();
 	}
 	
 	/**
