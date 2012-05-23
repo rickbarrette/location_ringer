@@ -7,6 +7,7 @@
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -74,7 +75,6 @@ public class FeatureListFragment extends Fragment {
 
 	/**
 	 * (non-Javadoc)
-	 * 
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
 	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -94,9 +94,14 @@ public class FeatureListFragment extends Fragment {
             transaction.remove(fragment);
 		}
 		transaction.commit();
+		Collections.reverse(this.mFragments);
 		super.onPause();
 	}
 	
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onResume()
+	 */
 	@Override
 	public void onResume() {
 		if (Debug.DEBUG)
