@@ -89,11 +89,17 @@ public class FeatureListFragment extends Fragment {
 	 */
 	@Override
 	public void onPause() {
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment fragment : this.mFragments){
-            transaction.remove(fragment);
+		try{
+			final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+			for(Fragment fragment : this.mFragments){
+	            transaction.remove(fragment);
+			}
+			transaction.commitAllowingStateLoss();
+		} catch(IllegalStateException e){
+			e.printStackTrace();
+			//do nothing
 		}
-		transaction.commit();
+
 		Collections.reverse(this.mFragments);
 		super.onPause();
 	}
