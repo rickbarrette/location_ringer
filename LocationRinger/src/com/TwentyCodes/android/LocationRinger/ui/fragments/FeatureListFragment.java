@@ -144,9 +144,9 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 	public void onClick(View v) {
 		new AlertDialog.Builder(this.getActivity())
 			.setTitle(R.string.add_feature)
-//			.setItems(R.array.features, this)
 			.setAdapter(
 					new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, this.getResources().getStringArray(R.array.features)){
+						
 						/**
 						 * we override this, because we want to filter which items are enabled
 						 * (non-Javadoc)
@@ -155,6 +155,18 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 						@Override
 						public boolean areAllItemsEnabled(){
 							return false;
+						}
+						
+						/**
+						 * here we want to grey out disabled items in the list
+						 * (non-Javadoc)
+						 * @see android.widget.ArrayAdapter#getView(int, android.view.View, android.view.ViewGroup)
+						 */
+						@Override
+						public View getView(int position, View convertView, ViewGroup parent){
+							final View v = super.getView(position, convertView, parent);
+							v.setEnabled(isEnabled(position));
+							return v;
 						}
 						
 						/**
@@ -167,7 +179,6 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 							return ! mAdded.contains(position);
 						}
 			}, this)
-			.create()
 			.show();
 	}
 
