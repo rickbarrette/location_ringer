@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <Button
+    <ImageButton
         android:id="@+id/add_ringer_button"
-        android:layout_width="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@android:drawable/ic_menu_add" />
+        android:src="@android:drawable/ic_menu_add" />
 
     <ListView
         android:id="@+id/ringer_list"
