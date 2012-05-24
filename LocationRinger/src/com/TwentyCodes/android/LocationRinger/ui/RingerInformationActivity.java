@@ -121,17 +121,17 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		 */
 		ArrayList<Fragment> what = new ArrayList<Fragment>();
 		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME))
 			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_RING));	
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME))
 			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_NOTIFICATION));
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME))
 			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_ALARM));
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME))
 			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_MUSIC));
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI))
 			what.add(new ToggleButtonFragment(this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this));
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_BT))
+		if(this.mInfo.containsKey(RingerDatabase.KEY_BT))
 			what.add(new ToggleButtonFragment(this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this));
 
 		fragments.add(new FeatureListFragment(this.mInfo, this, what));	

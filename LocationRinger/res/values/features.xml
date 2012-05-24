@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string-array name="features">
         <item>@string/ringtone</item>
         <item>@string/notification_ringtone</item>
@@ -7,7 +8,6 @@
         <item>@string/music_volume</item>
         <item>@string/bluetooth</item>
         <item>@string/wifi</item>
-        <item>@string/update_interval</item>
     </string-array>
-    
+
 </resources>
