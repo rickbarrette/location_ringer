@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
@@ -41,6 +42,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 	private final ArrayList<Fragment> mFragments;
 	private final ContentValues mInfo;
 	private final OnContentChangedListener mListener;
+	private final ArrayList<Integer> mAdded;
 
 	/**
 	 * Creates a new FeatureListFragment
@@ -49,11 +51,12 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 	 * @param fragments
 	 * @author ricky barrette
 	 */
-	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments) {
+	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments, ArrayList<Integer> added) {
 		super();
 		mFragments = fragments;
 		mInfo = info;
 		mListener = listener;
+		mAdded = added;
 	}
 
 	/**
@@ -91,6 +94,84 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 	}
 
 	/**
+	 * Called when an item is picked from the add featue list
+	 * (non-Javadoc)
+	 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+	 */
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		Fragment f = null;
+		switch(which){
+			case 0:
+				f= new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_RING);
+				mAdded.add(0);
+				break;
+			case 1:
+				f = new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_NOTIFICATION);
+				mAdded.add(1);
+				break;
+			case 2:
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_ALARM);
+				mAdded.add(2);
+				break;
+			case 3:
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_MUSIC);
+				mAdded.add(3);
+				break;
+			case 4:
+				f = new ToggleButtonFragment(this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener);
+				mAdded.add(4);
+				break;
+			case 5:
+				f = new ToggleButtonFragment(this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener);
+				mAdded.add(5);
+				break;
+//			case 6:
+//				f = 
+//				break;
+		}
+		
+		if(f != null)
+			add(f);
+	}
+
+	/**
+	 * Called when the add feature button is clicked
+	 * (non-Javadoc)
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
+	@Override
+	public void onClick(View v) {
+		new AlertDialog.Builder(this.getActivity())
+			.setTitle(R.string.add_a_feature)
+//			.setItems(R.array.features, this)
+			.setAdapter(
+					new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, this.getResources().getStringArray(R.array.features)){
+						/**
+						 * we override this, because we want to filter which items are enabled
+						 * (non-Javadoc)
+						 * @see android.widget.BaseAdapter#areAllItemsEnabled()
+						 */
+						@Override
+						public boolean areAllItemsEnabled(){
+							return false;
+						}
+						
+						/**
+						 * here we can notify the adaptor if an item should be enabled or not
+						 * (non-Javadoc)
+						 * @see android.widget.BaseAdapter#isEnabled(int)
+						 */
+						@Override
+						public boolean isEnabled(int position){
+							return ! mAdded.contains(position);
+						}
+			}, this)
+			.create()
+			.show();
+	}
+
+	/**
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
 	 *      android.view.ViewGroup, android.os.Bundle)
@@ -101,7 +182,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 		v.findViewById(R.id.add_feature_button).setOnClickListener(this);
 		return v;
 	}
-
+	
 	/**
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onPause()
@@ -117,7 +198,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 		Collections.reverse(this.mFragments);
 		super.onPause();
 	}
-
+	
 	/**
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onResume()
@@ -129,7 +210,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 		loadFragments();
 		super.onResume();
 	}
-	
+
 	/**
 	 * Removes a fragment from the list
 	 * @param fragment
@@ -141,7 +222,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 		transaction.remove(fragment);
 		transaction.commit();
 	}
-	
+
 	/**
 	 * Removes all fragments from the the view
 	 * @throws IllegalStateException
@@ -153,55 +234,5 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
             transaction.remove(fragment);
 		}
 		transaction.commit();
-	}
-
-	/**
-	 * Called when the add feature button is clicked
-	 * (non-Javadoc)
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	@Override
-	public void onClick(View v) {
-		new AlertDialog.Builder(this.getActivity())
-			.setTitle(R.string.add_a_feature)
-			.setItems(R.array.features, this)
-			.create()
-			.show();
-	}
-
-	/**
-	 * Called when an item is picked from the add featue list
-	 * (non-Javadoc)
-	 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
-	 */
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
-		Fragment f = null;
-		switch(which){
-			case 0:
-				f= new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_RING);
-				break;
-			case 1:
-				f = new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_NOTIFICATION);
-				break;
-			case 2:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_ALARM);
-				break;
-			case 3:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_MUSIC);
-				break;
-			case 4:
-				f = new ToggleButtonFragment(this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener);
-				break;
-			case 5:
-				f = new ToggleButtonFragment(this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener);
-				break;
-//			case 6:
-//				f = 
-//				break;
-		}
-		
-		if(f != null)
-			add(f);
 	}
 }
