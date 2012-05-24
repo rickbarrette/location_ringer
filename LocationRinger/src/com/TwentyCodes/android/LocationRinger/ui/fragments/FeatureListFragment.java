@@ -143,7 +143,7 @@ public class FeatureListFragment extends Fragment implements OnClickListener, an
 	@Override
 	public void onClick(View v) {
 		new AlertDialog.Builder(this.getActivity())
-			.setTitle(R.string.add_a_feature)
+			.setTitle(R.string.add_feature)
 //			.setItems(R.array.features, this)
 			.setAdapter(
 					new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, this.getResources().getStringArray(R.array.features)){
