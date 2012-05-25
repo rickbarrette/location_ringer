@@ -89,7 +89,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 * @author ricky barrette
 	 */
 	private void getRingtoneURI(int ringtoneCode, String uri){
-        Intent intent = new Intent( RingtoneManager.ACTION_RINGTONE_PICKER);
+        final Intent intent = new Intent( RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, ringtoneCode);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
@@ -127,7 +127,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 */
 	private void notifyVolumeChanged(int progress) {
 		if(this.mListener != null){
-			ContentValues info = new ContentValues();
+			final ContentValues info = new ContentValues();
 			info.put(this.mKeyVolume, progress);
 			this.mListener.onInfoContentChanged(info);
 		}
@@ -140,7 +140,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
-			Uri tone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+			final Uri tone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 			if(tone == null){
 				this.mRingtone.setText(R.string.silent);
 				mVolume.setEnabled(false);
@@ -165,8 +165,8 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view =  inflater.inflate(R.layout.ringtone_fragment, container, false);
-		AudioManager mAudioManager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
+		final View view =  inflater.inflate(R.layout.ringtone_fragment, container, false);
+		final AudioManager audioManager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
 		
 		if(Debug.DEBUG)
 			for(Entry<String,Object> item : this.mInfo.valueSet())
@@ -175,14 +175,14 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 		/*
 		 * initialize the views
 		 */
-		TextView label = (TextView) view.findViewById(R.id.label);
+		final TextView label = (TextView) view.findViewById(R.id.label);
 		label.setText(mLabel);
 		
 		this.mRingtone = (EditText) view.findViewById(R.id.ringtone);
 		mVolume = (SeekBar) view.findViewById(R.id.ringtone_volume);
 		
 		this.mRingtone.setOnClickListener(this);
-		mVolume.setMax(mAudioManager.getStreamMaxVolume(mStream));
+		mVolume.setMax(audioManager.getStreamMaxVolume(mStream));
 		
 		/*
 		 * ringtone & uri
@@ -199,6 +199,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 			} catch (NullPointerException e) {
 				e.printStackTrace();
 				mVolume.setEnabled(false);
+				mRingtone.setText(R.string.silent);
 			}
 			
 		/*
@@ -207,8 +208,8 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 		if(this.mInfo.containsKey(this.mKeyVolume))
 			mVolume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKeyVolume)));
 		else {
-			mVolume.setProgress(mAudioManager.getStreamVolume(mStream));
-			notifyVolumeChanged(mAudioManager.getStreamVolume(mStream));
+			mVolume.setProgress(audioManager.getStreamVolume(mStream));
+			notifyVolumeChanged(audioManager.getStreamVolume(mStream));
 		}
 		
 		mVolume.setOnSeekBarChangeListener(this);
