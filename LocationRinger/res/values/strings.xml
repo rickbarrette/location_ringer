@@ -88,5 +88,6 @@
     <string name="delete">Delete</string>
     <string name="ringer_name">Ringer Name</string>
     <string name="start_location_service">Start Location Service</string>
+    <string name="select_tone">Select Tone</string>
 
 </resources>
