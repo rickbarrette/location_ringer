@@ -144,6 +144,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 			if(tone == null){
 				this.mRingtone.setText(R.string.silent);
 				mVolume.setEnabled(false);
+				mVolume.setProgress(0);
 			} else {
 				mVolume.setEnabled(true);
 				Ringtone ringtone = RingtoneManager.getRingtone(this.getActivity(), Uri.parse(tone.toString()));
@@ -197,9 +198,9 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 				this.mRingtoneURI = RingtoneManager.getActualDefaultRingtoneUri(this.getActivity(), mType).toString();
 				this.mRingtone.setText(RingtoneManager.getRingtone(this.getActivity(), Uri.parse(mRingtoneURI)).getTitle(this.getActivity()));
 			} catch (NullPointerException e) {
-				e.printStackTrace();
 				mVolume.setEnabled(false);
 				mRingtone.setText(R.string.silent);
+				mVolume.setProgress(0);
 			}
 			
 		/*
