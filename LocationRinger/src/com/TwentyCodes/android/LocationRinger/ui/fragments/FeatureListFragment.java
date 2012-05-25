@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
@@ -125,6 +127,12 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 						public View getView(int position, View convertView, ViewGroup parent){
 							final View v = super.getView(position, convertView, parent);
 							v.setEnabled(isEnabled(position));
+							
+							if(Integer.valueOf(android.os.Build.VERSION.SDK_INT) < 11){
+								final TextView t = (TextView) v.findViewById(android.R.id.text1);
+								t.setTextColor(Color.BLACK);
+							}
+									
 							return v;
 						}
 						
