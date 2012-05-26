@@ -39,7 +39,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will be for ringtone settings
  * @author ricky
  */
-public class RingtoneFragment extends Fragment implements OnClickListener, OnSeekBarChangeListener {
+public class RingtoneFragment extends IdFragment implements OnClickListener, OnSeekBarChangeListener {
 	
 	private static final String TAG = "RingtoneFragment";
 	private final int mStream;
@@ -56,8 +56,8 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	private SeekBar mVolume;
 	private ImageView mIcon;
 	
-	public RingtoneFragment(ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream){
-		super();
+	public RingtoneFragment(ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
+		super(id);
 		this.mChangedListener = changedListener;
 		this.mStream = stream;
 		this.mInfo = info;

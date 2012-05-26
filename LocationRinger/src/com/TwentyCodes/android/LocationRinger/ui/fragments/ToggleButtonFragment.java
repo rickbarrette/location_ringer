@@ -28,7 +28,7 @@ import android.widget.ToggleButton;
  * A simple fragment that displays a toggle button and a title label
  * @author ricky
  */
-public class ToggleButtonFragment extends Fragment implements OnCheckedChangeListener, OnClickListener {
+public class ToggleButtonFragment extends IdFragment implements OnCheckedChangeListener, OnClickListener {
 
 	private final String mTitle;
 	private final String mKey;
@@ -41,8 +41,8 @@ public class ToggleButtonFragment extends Fragment implements OnCheckedChangeLis
 	 * Creates a new ToggleButtonFtagment
 	 * @author ricky barrette
 	 */
-	public ToggleButtonFragment(int icon, String title, String key, ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener) {
-		super();
+	public ToggleButtonFragment(int icon, String title, String key, ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int id) {
+		super(id);
 		this.mTitle = title;
 		this.mKey = key;
 		this.mInfo = info;

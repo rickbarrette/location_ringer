@@ -33,7 +33,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will represent the volume fragments
  * @author ricky
  */
-public class VolumeFragment extends Fragment implements OnSeekBarChangeListener, OnClickListener {
+public class VolumeFragment extends IdFragment implements OnSeekBarChangeListener, OnClickListener {
 
 	private static final String TAG = "VolumeFragment";
 	private final AudioManager mAudioManager;
@@ -53,8 +53,8 @@ public class VolumeFragment extends Fragment implements OnSeekBarChangeListener,
 	 * @param stream
 	 * @author ricky barrette
 	 */
-	public VolumeFragment(ContentValues info, Context context, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream){
-		super();
+	public VolumeFragment(ContentValues info, Context context, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
+		super(id);
 		this.mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		this.mStream = stream;
 		this.mChangedListener = changedListener;
