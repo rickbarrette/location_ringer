@@ -86,27 +86,27 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	public Fragment initFeatureFragment(int fragmentCode){
 		Fragment f = null;
 		switch(fragmentCode){
-			case 0:
+			case KEY_ADDED_RINGTONE:
 				f= new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_RING, KEY_ADDED_RINGTONE);
 				mAdded.add(KEY_ADDED_RINGTONE);
 				break;
-			case 1:
+			case KEY_ADDED_NOTIFICATIONTONE:
 				f = new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_NOTIFICATION, KEY_ADDED_NOTIFICATIONTONE);
 				mAdded.add(KEY_ADDED_NOTIFICATIONTONE);
 				break;
-			case 2:
+			case KEY_ADDED_ALARM_VOLUME:
 				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_ALARM, KEY_ADDED_ALARM_VOLUME);
 				mAdded.add(KEY_ADDED_ALARM_VOLUME);
 				break;
-			case 3:
+			case KEY_ADDED_MUSIC_VOLUME:
 				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_MUSIC, KEY_ADDED_MUSIC_VOLUME);
 				mAdded.add(KEY_ADDED_MUSIC_VOLUME);
 				break;
-			case 4:
+			case KEY_ADDED_BT:
 				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this, KEY_ADDED_BT);
 				mAdded.add(KEY_ADDED_BT);
 				break;
-			case 5:
+			case KEY_ADDED_WIFI:
 				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this, KEY_ADDED_WIFI);
 				mAdded.add(KEY_ADDED_WIFI);
 				break;
@@ -249,6 +249,9 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 			final int id =  ((IdFragment) f).getFragmentId();
 			mAdded.remove(new Integer(id));
 			
+			/*
+			 * we need to notify our parent activity that the feature have been removed.
+			 */
 			switch(id){
 				case KEY_ADDED_RINGTONE:
 					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_RINGTONE_URI, RingerDatabase.KEY_RINGTONE_IS_SILENT, RingerDatabase.KEY_RINGTONE_VOLUME);

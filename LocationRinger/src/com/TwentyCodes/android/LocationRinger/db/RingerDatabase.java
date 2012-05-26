@@ -600,7 +600,21 @@ public class RingerDatabase {
 		if(ringer == null || info == null)
 			throw new NullPointerException("ringer content was null");
 		
-		String ringer_name = getRingerName(id);
+		final String ringer_name = getRingerName(id);
+		
+		/*
+		 * here we retrive the old values.
+		 * we will compare the old value against the new values.
+		 * we will delete all values that are NOT included in the new values.
+		 */
+		final ContentValues old = getRingerInfo(ringer_name);
+		for(final Entry<String, Object> item : info.valueSet()){
+			if(old.containsKey(item.getKey()))
+				old.remove(item.getKey());
+		}
+		for(final Entry<String, Object> item : old.valueSet()){
+			RingerDatabase.this.mDb.delete(RINGER_INFO_TABLE, KEY +" = "+ DatabaseUtils.sqlEscapeString(item.getKey()) +" and "+ KEY_RINGER_NAME +" = "+DatabaseUtils.sqlEscapeString(ringer_name), null);
+		}
 		
 		if(!ringer_name.equals(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)))
 			ringer.put(RingerDatabase.KEY_RINGER_NAME, checkRingerName(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)));

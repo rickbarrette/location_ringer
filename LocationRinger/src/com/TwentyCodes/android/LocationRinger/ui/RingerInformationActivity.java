@@ -137,6 +137,11 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		return super.onCreateOptionsMenu(menu);
 	}
 	
+	/**
+	 * Called when the ringer info has changed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.OnContentChangedListener#onInfoContentChanged(android.content.ContentValues)
+	 */
 	@Override
 	public void onInfoContentChanged(ContentValues values) {
 		if(Debug.DEBUG){
@@ -186,6 +191,11 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	public void onPageSelected(int arg0) {
 	}
 
+	/**
+	 * Called when the ringer content has been changed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.OnContentChangedListener#onRingerContentChanged(android.content.ContentValues)
+	 */
 	@Override
 	public void onRingerContentChanged(ContentValues values) {
 		if(Debug.DEBUG){
@@ -215,11 +225,21 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		 }).start();
 	}
 	
+	/**
+	 * Called when the scrolling state of the view pager is changed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.EnableScrollingListener#setScrollEnabled(boolean)
+	 */
 	@Override
 	public void setScrollEnabled(boolean enabled) {
 		this.mPager.setScrollEnabled(enabled);
 	}
 
+	/**
+	 * Called when a feature is removed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.OnContentChangedListener#onInfoContentRemoved(java.lang.String[])
+	 */
 	@Override
 	public void onInfoContentRemoved(String... keys) {
 		for(String key : keys)
