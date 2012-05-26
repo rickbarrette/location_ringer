@@ -24,7 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
-        android:capitalize="words" />
+        android:capitalize="words"
+        android:imeOptions="actionNext"
+        android:singleLine="true" />
 
     <TextView
         android:layout_width="match_parent"
