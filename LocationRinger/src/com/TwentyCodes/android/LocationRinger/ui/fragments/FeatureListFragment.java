@@ -130,7 +130,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 							
 							if(Integer.valueOf(android.os.Build.VERSION.SDK_INT) < 11){
 								final TextView t = (TextView) v.findViewById(android.R.id.text1);
-								t.setTextColor(Color.BLACK);
+								t.setTextColor(isEnabled(position) ? Color.BLACK : Color.GRAY);
 							}
 									
 							return v;
