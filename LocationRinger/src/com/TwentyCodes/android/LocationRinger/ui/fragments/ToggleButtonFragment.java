@@ -6,14 +6,8 @@
  */
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
-import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
-import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
-import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-
 import android.content.ContentValues;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +17,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
+import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
+import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 
 /**
  * A simple fragment that displays a toggle button and a title label
@@ -43,6 +42,18 @@ public class ToggleButtonFragment extends IdFragment implements OnCheckedChangeL
 	 */
 	public ToggleButtonFragment(int icon, String title, String key, ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int id) {
 		super(id);
+		
+		if ( info == null )
+			throw new NullPointerException();
+		if (title == null )
+			throw new NullPointerException();
+		if ( key == null )
+			throw new NullPointerException();
+		if ( changedListener == null )
+			throw new NullPointerException();
+		if ( removedListener == null )
+			throw new NullPointerException();
+		
 		this.mTitle = title;
 		this.mKey = key;
 		this.mInfo = info;
@@ -51,6 +62,11 @@ public class ToggleButtonFragment extends IdFragment implements OnCheckedChangeL
 		this.mRemovedListener = removedListener;
 	}
 
+	/**
+	 * Called when the fragment's view needs to be created
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
 		final View view =  inflater.inflate(R.layout.toggle_button_fragment, container, false);
@@ -69,6 +85,11 @@ public class ToggleButtonFragment extends IdFragment implements OnCheckedChangeL
 		return view;
 	}
 
+	/**
+	 * Called when the toggle button is clicked
+	 * (non-Javadoc)
+	 * @see android.widget.CompoundButton.OnCheckedChangeListener#onCheckedChanged(android.widget.CompoundButton, boolean)
+	 */
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		if(this.mChangedListener != null){

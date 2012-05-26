@@ -14,7 +14,6 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -35,9 +34,6 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.FeatureListFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.LocationInfomationFragment;
-import com.TwentyCodes.android.LocationRinger.ui.fragments.RingtoneFragment;
-import com.TwentyCodes.android.LocationRinger.ui.fragments.ToggleButtonFragment;
-import com.TwentyCodes.android.LocationRinger.ui.fragments.VolumeFragment;
 import com.jakewharton.android.viewpagerindicator.TitlePageIndicator;
 import com.jakewharton.android.viewpagerindicator.TitledFragmentAdapter;
 
@@ -63,12 +59,16 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			Log.d(TAG, item.getKey() +" = "+ item.getValue());
 	}
 	
+	/**
+	 * Called when the activity is first created
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.ringer_information_activity);
 		
-
 		/*
 		 * Set up the action bar if required
 		 */
@@ -112,47 +112,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		if(!isDefault)
 			fragments.add(new LocationInfomationFragment(this.mInfo, this, this));
 		
-		/*
-		 * What page
-		 * ONLY Dynamically add the required fragments that have already been added.
-		 * 
-		 * TODO
-		 * update interval
-		 */
-		ArrayList<Integer> added = new ArrayList<Integer>();
-		ArrayList<Fragment> what = new ArrayList<Fragment>();
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
-//			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_RING));	
-//			added.add(0);
-//		}
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
-//			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_NOTIFICATION));
-//			added.add(1);
-//		}
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME)){
-//			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_ALARM));
-//			added.add(2);
-//		}
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME)){
-//			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_MUSIC));
-//			added.add(3);
-//		}
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_BT)){
-//			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this));
-//			added.add(4);
-//		}
-//		
-//		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI)){
-//			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this));
-//			added.add(5);
-//		}
-
-		fragments.add(new FeatureListFragment(this.mInfo, this, what, added));	
+		fragments.add(new FeatureListFragment(this.mInfo, this));	
 		
 		//Populate the pager
 		this.mPager = (ViewPager)findViewById(R.id.pager);
@@ -165,11 +125,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			indicator.setViewPager(this.mPager);
 		
 		indicator.setOnPageChangeListener(this);
-		
-		/*
-		 * TODO
-		 * button bar
-		 */
 	}
 
 	/**
@@ -229,8 +184,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 
 	@Override
 	public void onPageSelected(int arg0) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -261,7 +214,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			 }
 		 }).start();
 	}
-
+	
 	@Override
 	public void setScrollEnabled(boolean enabled) {
 		this.mPager.setScrollEnabled(enabled);

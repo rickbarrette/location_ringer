@@ -29,9 +29,6 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 
 /**
  * This fragment will be used to display a list of features
- * TODO 
- * + create button bar that had a plus button and a hint + add/remove features
- * 
  * @author ricky
  */
 public class FeatureListFragment extends BaseFragmentListFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, FeatureRemovedListener {
@@ -42,13 +39,12 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	private static final int KEY_ADDED_MUSIC_VOLUME = 3;
 	private static final int KEY_ADDED_BT = 4;
 	private static final int KEY_ADDED_WIFI = 5;
-	private static final String TAG = "FeatureListFragment";
 	private final ContentValues mInfo;
 	private final OnContentChangedListener mListener;
 	private final ArrayList<Integer> mAdded;
 
 	/**
-	 * Creates a new FeatureListFragment
+	 * Creates a new populated FeatureListFragment
 	 * @param info
 	 * @param listener
 	 * @param fragments
@@ -56,11 +52,37 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	 */
 	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments, ArrayList<Integer> added) {
 		super(R.layout.fragment_list_contianer, R.id.fragment_list_contianer);
+		
+		if ( info == null )
+			throw new NullPointerException();
+		if ( listener == null )
+			throw new NullPointerException();
+		if ( fragments == null )
+			throw new NullPointerException();
+		if ( added == null )
+			throw new NullPointerException();
+		
 		mInfo = info;
 		mListener = listener;
 		mAdded = added;
 	}
+	
+	/**
+	 * Creates a new empty feature list fragment
+	 * @param info
+	 * @param listener
+	 * @author ricky barrette
+	 */
+	public FeatureListFragment(ContentValues info, OnContentChangedListener listener){
+		this(info, listener, new ArrayList<Fragment>(), new ArrayList<Integer>());
+	}
 
+	/**
+	 * Initializes a feature fragment
+	 * @param fragmentCode
+	 * @return
+	 * @author ricky barrette
+	 */
 	public Fragment initFeatureFragment(int fragmentCode){
 		Fragment f = null;
 		switch(fragmentCode){
@@ -94,7 +116,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	}
 
 	/**
-	 * Initali 
+	 * Initializes feature fragments based upon current records 
 	 * @author ricky barrette
 	 */
 	private ArrayList<Fragment> initList() {
@@ -192,17 +214,18 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	}
 
 	/**
+	 * Called when the activity is first created
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
 	@Override
 	public void onCreate(Bundle arg0) {
 		addAllInit(initList());
-		// TODO Auto-generated method stub
 		super.onCreate(arg0);
 	}
 
 	/**
+	 * Called when the view needs to be created
 	 * (non-Javadoc)
 	 * @see com.TwentyCodes.android.LocationRinger.ui.fragments.BaseFragmentListFragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */

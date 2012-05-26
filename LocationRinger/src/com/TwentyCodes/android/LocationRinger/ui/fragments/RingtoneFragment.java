@@ -17,7 +17,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -58,6 +57,14 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 	
 	public RingtoneFragment(ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
 		super(id);
+		
+		if ( info == null )
+			throw new NullPointerException();
+		if ( changedListener == null )
+			throw new NullPointerException();
+		if ( removedListener == null )
+			throw new NullPointerException();
+		
 		this.mChangedListener = changedListener;
 		this.mStream = stream;
 		this.mInfo = info;

@@ -12,7 +12,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +54,16 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 	 */
 	public VolumeFragment(ContentValues info, Context context, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
 		super(id);
+		
+		if ( info == null )
+			throw new NullPointerException();
+		if ( context == null )
+			throw new NullPointerException();
+		if ( changedListener == null )
+			throw new NullPointerException();
+		if ( removedListener == null )
+			throw new NullPointerException();
+		
 		this.mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		this.mStream = stream;
 		this.mChangedListener = changedListener;
@@ -97,6 +106,11 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 		}
 	}
 
+	/**
+	 * Called when the fragment's view needs to be created
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
@@ -149,12 +163,10 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 	}
 
 	/**
