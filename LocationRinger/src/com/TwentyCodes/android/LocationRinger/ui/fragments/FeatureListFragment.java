@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
@@ -33,7 +34,7 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
  * 
  * @author ricky
  */
-public class FeatureListFragment extends BaseFragmentListFragment implements OnClickListener, android.content.DialogInterface.OnClickListener {
+public class FeatureListFragment extends BaseFragmentListFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, FeatureRemovedListener {
 
 	private static final String TAG = "FeatureListFragment";
 	private final ContentValues mInfo;
@@ -48,10 +49,50 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	 * @author ricky barrette
 	 */
 	public FeatureListFragment(ContentValues info, OnContentChangedListener listener, ArrayList<Fragment> fragments, ArrayList<Integer> added) {
-		super(fragments, R.layout.fragment_list_contianer, R.id.fragment_list_contianer);
+		super(R.layout.fragment_list_contianer, R.id.fragment_list_contianer);
 		mInfo = info;
 		mListener = listener;
 		mAdded = added;
+		addAllInit(initList());
+	}
+
+	/**
+	 * Initali 
+	 * @author ricky barrette
+	 */
+	private ArrayList<Fragment> initList() {
+		ArrayList<Fragment> what = new ArrayList<Fragment>();
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
+			what.add(new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_RING));	
+			mAdded.add(0);
+		}
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
+			what.add(new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_NOTIFICATION));
+			mAdded.add(1);
+		}
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME)){
+			what.add(new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_ALARM));
+			mAdded.add(2);
+		}
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME)){
+			what.add(new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_MUSIC));
+			mAdded.add(3);
+		}
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_BT)){
+			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this));
+			mAdded.add(4);
+		}
+		
+		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI)){
+			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this));
+			mAdded.add(5);
+		}
+		return what;
 	}
 
 	/**
@@ -64,27 +105,27 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		Fragment f = null;
 		switch(which){
 			case 0:
-				f= new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_RING);
+				f= new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_RING);
 				mAdded.add(0);
 				break;
 			case 1:
-				f = new RingtoneFragment(this.mInfo, this.mListener, AudioManager.STREAM_NOTIFICATION);
+				f = new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_NOTIFICATION);
 				mAdded.add(1);
 				break;
 			case 2:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_ALARM);
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_ALARM);
 				mAdded.add(2);
 				break;
 			case 3:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, AudioManager.STREAM_MUSIC);
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_MUSIC);
 				mAdded.add(3);
 				break;
 			case 4:
-				f = new ToggleButtonFragment(this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener);
+				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this);
 				mAdded.add(4);
 				break;
 			case 5:
-				f = new ToggleButtonFragment(this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener);
+				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this);
 				mAdded.add(5);
 				break;
 //			case 6:
@@ -158,5 +199,16 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		final View v =  super.onCreateView(inflator, container, bundle);
 		v.findViewById(R.id.add_feature_button).setOnClickListener(this);
 		return v;
+	}
+
+	/**
+	 * Called when a fragment needs to be removed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.FeatureRemovedListener#onFeatureRemoved(android.support.v4.app.Fragment)
+	 */
+	@Override
+	public void onFeatureRemoved(Fragment f) {
+		this.remove(f);
+		//TODO remove database entries
 	}
 }

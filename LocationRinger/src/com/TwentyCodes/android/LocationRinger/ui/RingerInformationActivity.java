@@ -119,38 +119,38 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		 * TODO
 		 * update interval
 		 */
-		ArrayList<Fragment> what = new ArrayList<Fragment>();
 		ArrayList<Integer> added = new ArrayList<Integer>();
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
-			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_RING));	
-			added.add(0);
-		}
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
-			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_NOTIFICATION));
-			added.add(1);
-		}
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME)){
-			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_ALARM));
-			added.add(2);
-		}
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME)){
-			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_MUSIC));
-			added.add(3);
-		}
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_BT)){
-			what.add(new ToggleButtonFragment(this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this));
-			added.add(4);
-		}
-		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI)){
-			what.add(new ToggleButtonFragment(this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this));
-			added.add(5);
-		}
+		ArrayList<Fragment> what = new ArrayList<Fragment>();
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
+//			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_RING));	
+//			added.add(0);
+//		}
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
+//			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_NOTIFICATION));
+//			added.add(1);
+//		}
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME)){
+//			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_ALARM));
+//			added.add(2);
+//		}
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME)){
+//			what.add(new VolumeFragment(this.mInfo, this, this, AudioManager.STREAM_MUSIC));
+//			added.add(3);
+//		}
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_BT)){
+//			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this));
+//			added.add(4);
+//		}
+//		
+//		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI)){
+//			what.add(new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this));
+//			added.add(5);
+//		}
 
 		fragments.add(new FeatureListFragment(this.mInfo, this, what, added));	
 		

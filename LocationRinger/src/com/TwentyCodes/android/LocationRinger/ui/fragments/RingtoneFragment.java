@@ -29,6 +29,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
@@ -43,22 +44,24 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	private static final String TAG = "RingtoneFragment";
 	private final int mStream;
 	private final int mType;
-	private final OnContentChangedListener mListener;
+	private final OnContentChangedListener mChangedListener;
 	private final String mKeyEnabled;
 	private final String mKeyUri;
 	private final String mKeyVolume;
 	private final ContentValues mInfo;
+	private final FeatureRemovedListener mRemovedListener;
 	private final int mLabel;
 	private EditText mRingtone;
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
 	private ImageView mIcon;
 	
-	public RingtoneFragment(ContentValues info, OnContentChangedListener listener, int stream){
+	public RingtoneFragment(ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream){
 		super();
-		this.mListener = listener;
+		this.mChangedListener = changedListener;
 		this.mStream = stream;
 		this.mInfo = info;
+		this.mRemovedListener = removedListener;
 		
 		switch(stream){
 			case AudioManager.STREAM_NOTIFICATION:
@@ -102,11 +105,11 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 * @author ricky barrette
 	 */
 	private void notifyRingtoneChanged(Uri tone) {
-		if(this.mListener != null){
+		if(this.mChangedListener != null){
 			ContentValues info = new ContentValues();			
 			info.put(this.mKeyUri, tone != null ? tone.toString() : null);
 			info.put(mKeyEnabled, tone == null);
-			this.mListener.onInfoContentChanged(info);
+			this.mChangedListener.onInfoContentChanged(info);
 		}
 	}
 	
@@ -117,10 +120,10 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 */
 	private void notifyVolumeChanged(int progress) {
 		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
-		if(this.mListener != null){
+		if(this.mChangedListener != null){
 			final ContentValues info = new ContentValues();
 			info.put(this.mKeyVolume, progress);
-			this.mListener.onInfoContentChanged(info);
+			this.mChangedListener.onInfoContentChanged(info);
 		}
 	}
 
@@ -153,7 +156,16 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 */
 	@Override
 	public void onClick(View v) {
-		getRingtoneURI(this.mType, mRingtoneURI);
+		switch(v.getId()){
+		case R.id.ringtone:
+			getRingtoneURI(this.mType, mRingtoneURI);
+			break;
+		case R.id.close:
+			if(this.mRemovedListener != null)
+				this.mRemovedListener.onFeatureRemoved(this);
+			break;
+			
+		}
 	}
 
 	@Override
@@ -179,6 +191,8 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 		
 		this.mRingtone.setOnClickListener(this);
 		mVolume.setMax(audioManager.getStreamMaxVolume(mStream));
+		
+		view.findViewById(R.id.close).setOnClickListener(this);
 		
 		/*
 		 * volume
