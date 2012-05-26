@@ -32,7 +32,7 @@ public abstract class BaseFragmentListFragment extends Fragment {
 	private final int mLayout;
 
 	/**
-	 * Creates a new BaseFragmentListFragment
+	 * Creates a new Populated BaseFragmentListFragment
 	 * @author ricky barrette
 	 */
 	public BaseFragmentListFragment(ArrayList<Fragment> fragments, int layout, int container) {
@@ -40,6 +40,18 @@ public abstract class BaseFragmentListFragment extends Fragment {
 		mFragments = fragments;
 		mLayout = layout;
 		mContainer = container;
+	}
+
+	/**
+	 * Creates a new Empty Base Fragment List
+	 * @param layout
+	 * @param container
+	 * @author ricky barrette
+	 */
+	public BaseFragmentListFragment(int layout, int container) {
+		mLayout = layout;
+		mContainer = container;
+		mFragments = new ArrayList<Fragment>();
 	}
 
 	/**
@@ -52,6 +64,31 @@ public abstract class BaseFragmentListFragment extends Fragment {
 		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
 		transaction.add(mContainer, fragment, fragment.getTag());
 		transaction.commit();
+	}
+	
+	/**
+	 * Adds a collection ofs fragments to the list
+	 * @param fragments
+	 * @author ricky barrette
+	 */
+	public void addAll(final ArrayList<Fragment> fragments){
+		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+		for(Fragment f : fragments){
+			this.mFragments.add(f);
+			transaction.add(mContainer, f, f.getTag());
+		}
+		transaction.commit();
+	}
+	
+	/**
+	 * Adds a collection ofs fragments to the list, but doesn't preform any transactions
+	 * @param fragment
+	 * @author ricky barrette
+	 */
+	protected void addAllInit(final ArrayList<Fragment> fragments){
+		for(Fragment f : fragments){
+			this.mFragments.add(f);
+		}
 	}
 	
 	/**

@@ -38,10 +38,10 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 public class RingerDatabase {
 
 	private static final String TAG = "RingerDatabase";
-	private Context mContext;
+	private final Context mContext;
 	private SQLiteDatabase mDb;
+	private final DatabaseListener mListener;
 	public boolean isUpgrading = false;
-	private DatabaseListener mListener;
 	
 	/*
 	 * database information values
@@ -109,7 +109,7 @@ public class RingerDatabase {
 		 */
 		private void convert2to3(SQLiteDatabase db){
 			//get all the ringer information from the old table
-			Cursor cursor = db.query("two", new String[] { KEY_RINGER_NAME, KEY_RINGTONE, 
+			final Cursor cursor = db.query("two", new String[] { KEY_RINGER_NAME, KEY_RINGTONE, 
 					KEY_NOTIFICATION_RINGTONE, KEY_RINGTONE_IS_SILENT, 
 					KEY_NOTIFICATION_IS_SILENT, KEY_IS_ENABLED, 
 					KEY_RADIUS, KEY_LOCATION_LAT, KEY_LOCATION_LON, 
@@ -124,7 +124,7 @@ public class RingerDatabase {
 			int count = cursor.getColumnCount();
 			if (cursor.moveToFirst()) {
 				do {
-					ContentValues ringer = new ContentValues();
+					final ContentValues ringer = new ContentValues();
 					if(Debug.DEBUG)
 						Log.v(TAG, "Converting: " + cursor.getString(0));
 					for(int i = 0; i < count; i++){
@@ -278,10 +278,15 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public RingerDatabase(Context context){
-		this.mContext = context;
-		this.mDb = new OpenHelper(this.mContext).getWritableDatabase();
+		this(context, null);
 	}
 	
+	/**
+	 * Creates a new RingerDatabase
+	 * @param context
+	 * @param listener
+	 * @author ricky barrette
+	 */
 	public RingerDatabase(Context context, DatabaseListener listener){
 		this.mListener = listener;		
 		this.mContext = context;
@@ -308,13 +313,14 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public boolean backup(){
-		File dbFile = new File(Environment.getDataDirectory() + "/data/"+mContext.getPackageName()+"/databases/"+DATABASE_NAME);
+		final File dbFile = new File(Environment.getDataDirectory() + "/data/"+mContext.getPackageName()+"/databases/"+DATABASE_NAME);
 
-		File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+this.mContext.getString(R.string.app_name));
+		final File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+this.mContext.getString(R.string.app_name));
 		if (!exportDir.exists()) {
 			exportDir.mkdirs();
 		}
-		File file = new File(exportDir, dbFile.getName());
+		
+		final File file = new File(exportDir, dbFile.getName());
 
 		try {
 			file.createNewFile();
@@ -331,9 +337,9 @@ public class RingerDatabase {
 	 * @param name
 	 * @return
 	 */
-	private String checkRingerName(String name){
+	private String checkRingerName(final String name){
 		
-		List<String> names = this.getAllRingerTitles();
+		final List<String> names = this.getAllRingerTitles();
 		String ringerName = name;
 		int count = 1;
 		
@@ -344,8 +350,6 @@ public class RingerDatabase {
 			 }
 		}
 		return ringerName;
-		
-//		return checkRingerName(name, 0);
 	}
 	
 	/**
@@ -355,9 +359,9 @@ public class RingerDatabase {
 	 * @throws IOException
 	 * @author ricky barrette
 	 */
-	private void copyFile(File src, File dst) throws IOException {
-        FileChannel inChannel = new FileInputStream(src).getChannel();
-        FileChannel outChannel = new FileOutputStream(dst).getChannel();
+	private void copyFile(final File src, final File dst) throws IOException {
+        final FileChannel inChannel = new FileInputStream(src).getChannel();
+        final FileChannel outChannel = new FileOutputStream(dst).getChannel();
         try {
            inChannel.transferTo(0, inChannel.size(), outChannel);
         } finally {
@@ -421,8 +425,8 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public List<String> getAllRingerTitles() {
-		List<String> list = new ArrayList<String>();
-		Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { KEY_RINGER_NAME }, null, null, null, null, null);
+		final List<String> list = new ArrayList<String>();
+		final Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { KEY_RINGER_NAME }, null, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				list.add(cursor.getString(0));
@@ -440,8 +444,8 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public List<String> getAllRingerDescriptions() {
-		List<String> list = new ArrayList<String>();
-		List<String> ringers = getAllRingerTitles();
+		final List<String> list = new ArrayList<String>();
+		final List<String> ringers = getAllRingerTitles();
 		for(String ringer: ringers){
 			list.add(getRingerInfo(ringer).getAsString(KEY_RINGER_DESCRIPTION));
 		}
@@ -464,9 +468,9 @@ public class RingerDatabase {
 	 * @return
 	 * @author ricky barrette
 	 */
-	public ContentValues getRingerInfo(String ringerName){
-		ContentValues values = new ContentValues();
-    	Cursor info = this.mDb.query(RINGER_INFO_TABLE, new String[]{ KEY, KEY_VALUE }, KEY_RINGER_NAME +" = "+ DatabaseUtils.sqlEscapeString(ringerName), null, null, null, null);
+	public ContentValues getRingerInfo(final String ringerName){
+		final ContentValues values = new ContentValues();
+    	final Cursor info = this.mDb.query(RINGER_INFO_TABLE, new String[]{ KEY, KEY_VALUE }, KEY_RINGER_NAME +" = "+ DatabaseUtils.sqlEscapeString(ringerName), null, null, null, null);
 		if (info.moveToFirst()) {
 			do {
 				values.put(info.getString(0), info.getString(1));
@@ -484,9 +488,9 @@ public class RingerDatabase {
 	 * @return ringer's name
 	 * @author ricky barrette
 	 */
-	public String getRingerName(long id) {
+	public String getRingerName(final long id) {
 		String name  = null;
-		Cursor cursor = this.mDb.query(RINGER_TABLE, new String[]{ KEY_RINGER_NAME }, "id = "+id, null, null, null, null);; 
+		final Cursor cursor = this.mDb.query(RINGER_TABLE, new String[]{ KEY_RINGER_NAME }, "id = "+id, null, null, null, null);; 
 		if (cursor.moveToFirst()) {
 			name = cursor.getString(0);
 		}
@@ -502,14 +506,14 @@ public class RingerDatabase {
 	 * @param ringerInfo values
 	 * @author ricky barrette
 	 */
-	public void insertRinger(ContentValues ringer, ContentValues ringerInfo){
+	public void insertRinger(final ContentValues ringer, final ContentValues ringerInfo){
 		ringer.put(RingerDatabase.KEY_RINGER_NAME, checkRingerName(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)));
 		mDb.insert(RINGER_TABLE, null, ringer);
-		String ringerName = ringer.getAsString(RingerDatabase.KEY_RINGER_NAME);
+		final String ringerName = ringer.getAsString(RingerDatabase.KEY_RINGER_NAME);
 		
 		//insert the information values
-		for(Entry<String, Object> item : ringerInfo.valueSet()){
-			ContentValues values = new ContentValues();
+		for(final Entry<String, Object> item : ringerInfo.valueSet()){
+			final ContentValues values = new ContentValues();
 			values.put(KEY_RINGER_NAME, ringerName);
 			values.put(KEY, item.getKey());
 			/*
@@ -540,8 +544,8 @@ public class RingerDatabase {
 	 * @return true if the ringer is enabled
 	 * @author ricky barrette
 	 */
-	public boolean isRingerEnabled(long id) {
-		Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { KEY_IS_ENABLED }, "id = "+id, null, null, null, null);
+	public boolean isRingerEnabled(final long id) {
+		final Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { KEY_IS_ENABLED }, "id = "+id, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			if(Debug.DEBUG)
 				Log.d(TAG, "isRingerEnabled("+id+") = "+ cursor.getString(0));
@@ -556,13 +560,14 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public void restore(){
-		File dbFile = new File(Environment.getDataDirectory() + "/data/"+mContext.getPackageName()+"/databases/"+DATABASE_NAME);
+		final File dbFile = new File(Environment.getDataDirectory() + "/data/"+mContext.getPackageName()+"/databases/"+DATABASE_NAME);
 
-		File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+this.mContext.getString(R.string.app_name));
+		final File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+this.mContext.getString(R.string.app_name));
 		if (!exportDir.exists()) {
 			exportDir.mkdirs();
 		}
-		File file = new File(exportDir, dbFile.getName());
+		
+		final File file = new File(exportDir, dbFile.getName());
 
 		try {
 			file.createNewFile();
@@ -580,10 +585,10 @@ public class RingerDatabase {
 				this.mListener.onRestoreComplete();
 	}
 
-	public int setRingerEnabled(long id, boolean enabled) {
+	public int setRingerEnabled(final long id, final boolean enabled) {
 		if(Debug.DEBUG)
 			Log.d(TAG, "setRingerEnabled("+id+") = "+ enabled);
-		ContentValues values = new ContentValues();
+		final ContentValues values = new ContentValues();
 		values.put(KEY_IS_ENABLED, enabled);
 		return mDb.update(RINGER_TABLE, values, "id" + "= "+ id, null);
 	}
@@ -595,19 +600,38 @@ public class RingerDatabase {
 	 * @param info values
 	 * @author ricky barrette
 	 */
-	public void updateRinger(long id, ContentValues ringer, ContentValues info) throws NullPointerException{
+	public void updateRinger(final long id, final ContentValues ringer, final ContentValues info) throws NullPointerException{
 		
 		if(ringer == null || info == null)
 			throw new NullPointerException("ringer content was null");
 		
-		String ringer_name = getRingerName(id);
+		final String ringer_name = getRingerName(id);
 		
+		/*
+		 * here we retrive the old values.
+		 * we will compare the old value against the new values.
+		 * we will delete all values that are NOT included in the new values.
+		 */
+		final ContentValues old = getRingerInfo(ringer_name);
+		for(final Entry<String, Object> item : info.valueSet()){
+			if(old.containsKey(item.getKey()))
+				old.remove(item.getKey());
+		}
+		for(final Entry<String, Object> item : old.valueSet()){
+			RingerDatabase.this.mDb.delete(RINGER_INFO_TABLE, KEY +" = "+ DatabaseUtils.sqlEscapeString(item.getKey()) +" and "+ KEY_RINGER_NAME +" = "+DatabaseUtils.sqlEscapeString(ringer_name), null);
+		}
+		
+		/*
+		 * here we want to update the ringer name if needed
+		 */
 		if(!ringer_name.equals(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)))
 			ringer.put(RingerDatabase.KEY_RINGER_NAME, checkRingerName(ringer.getAsString(RingerDatabase.KEY_RINGER_NAME)));
 		
-		//update the information values in the info table
-		for(Entry<String, Object> item : info.valueSet()){
-			ContentValues values = new ContentValues();
+		/*
+		 * here we wanr to update the information values in the info table
+		 */
+		for(final Entry<String, Object> item : info.valueSet()){
+			final ContentValues values = new ContentValues();
 			values.put(KEY_RINGER_NAME, ringer.getAsString(KEY_RINGER_NAME));
 			values.put(KEY, item.getKey());
 			try {
@@ -619,7 +643,11 @@ public class RingerDatabase {
 					values.put(KEY_VALUE, (Integer) item.getValue());
 				}
 			}
-			//try to update, if update fails insert
+			
+			/*
+			 * here we are going to try to update a row, 
+			 * if that fails we will insert a row insead
+			 */
 			if(!(mDb.update(RINGER_INFO_TABLE, values, KEY_RINGER_NAME + "="+ DatabaseUtils.sqlEscapeString(ringer_name) +" AND " + KEY +"='"+ item.getKey()+"'", null) > 0))
 				mDb.insert(RINGER_INFO_TABLE, null, values);
 		}
@@ -636,7 +664,7 @@ public class RingerDatabase {
 	private void updateRowIds(long id) {
 		long currentRow;
 		ContentValues values = new ContentValues();
-		Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { "id" },null, null, null, null, null);
+		final Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { "id" },null, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {
 				currentRow = cursor.getLong(0);
