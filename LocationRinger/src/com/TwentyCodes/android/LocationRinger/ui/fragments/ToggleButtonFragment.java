@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -47,8 +48,11 @@ public class ToggleButtonFragment extends Fragment implements OnCheckedChangeLis
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle icicle) {
 		View view =  inflater.inflate(R.layout.toggle_button_fragment, container, false);
-		TextView t = (TextView) view.findViewById(R.id.label);
+		TextView t = (TextView) view.findViewById(R.id.title);
 		t.setText(this.mTitle);
+		
+		final ImageView icon = (ImageView) view.findViewById(R.id.icon);
+		icon.setImageDrawable(this.getActivity().getResources().getDrawable(android.R.drawable.ic_lock_silent_mode_off));
 		
 		ToggleButton b = (ToggleButton) view.findViewById(R.id.toggle);
 		if(this.mInfo.containsKey(this.mKey))

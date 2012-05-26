@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	private EditText mRingtone;
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
+	private ImageView mIcon;
 	
 	public RingtoneFragment(ContentValues info, OnContentChangedListener listener, int stream){
 		super();
@@ -114,6 +116,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 * @author ricky barrette
 	 */
 	private void notifyVolumeChanged(int progress) {
+		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
 		if(this.mListener != null){
 			final ContentValues info = new ContentValues();
 			info.put(this.mKeyVolume, progress);
@@ -133,6 +136,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 				this.mRingtone.setText(R.string.silent);
 				mVolume.setEnabled(false);
 				mVolume.setProgress(0);
+				notifyVolumeChanged(0);
 			} else {
 				mVolume.setEnabled(true);
 				Ringtone ringtone = RingtoneManager.getRingtone(this.getActivity(), Uri.parse(tone.toString()));
@@ -164,14 +168,27 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 		/*
 		 * initialize the views
 		 */
-		final TextView label = (TextView) view.findViewById(R.id.label);
+		final TextView label = (TextView) view.findViewById(R.id.title);
 		label.setText(mLabel);
+		
+		mIcon = (ImageView) view.findViewById(R.id.icon);
+		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(android.R.drawable.ic_lock_silent_mode_off));
 		
 		this.mRingtone = (EditText) view.findViewById(R.id.ringtone);
 		mVolume = (SeekBar) view.findViewById(R.id.ringtone_volume);
 		
 		this.mRingtone.setOnClickListener(this);
 		mVolume.setMax(audioManager.getStreamMaxVolume(mStream));
+		
+		/*
+		 * volume
+		 */
+		if(this.mInfo.containsKey(this.mKeyVolume))
+			mVolume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKeyVolume)));
+		else {
+			mVolume.setProgress(audioManager.getStreamVolume(mStream));
+			notifyVolumeChanged(audioManager.getStreamVolume(mStream));
+		}
 		
 		/*
 		 * ringtone & uri
@@ -195,16 +212,8 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 			mRingtone.setText(R.string.silent);
 			mVolume.setProgress(0);
 		}
-			
-		/*
-		 * volume
-		 */
-		if(this.mInfo.containsKey(this.mKeyVolume))
-			mVolume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKeyVolume)));
-		else {
-			mVolume.setProgress(audioManager.getStreamVolume(mStream));
-			notifyVolumeChanged(audioManager.getStreamVolume(mStream));
-		}
+		
+		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(mVolume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
 		
 		mVolume.setOnSeekBarChangeListener(this);
 		return view;

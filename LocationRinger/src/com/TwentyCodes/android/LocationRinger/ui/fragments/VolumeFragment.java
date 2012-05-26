@@ -17,12 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
+import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
@@ -39,6 +40,7 @@ public class VolumeFragment extends Fragment implements OnSeekBarChangeListener 
 	private final String mKey;
 	private final ContentValues mInfo;
 	private final int mLabel;
+	private ImageView mIcon;
 	
 	/**
 	 * Creates a new Volume Fragment
@@ -98,27 +100,32 @@ public class VolumeFragment extends Fragment implements OnSeekBarChangeListener 
 			for(Entry<String,Object> item : this.mInfo.valueSet())
 				Log.d(TAG, item.getKey() +" = "+ item.getValue());
 		
-		View view = inflater.inflate(R.layout.volume_fragment, container, false);
-		TextView label = (TextView) view.findViewById(R.id.volume_label);
-		SeekBar volume = (SeekBar) view.findViewById(R.id.volume);
+		final View view = inflater.inflate(R.layout.volume_fragment, container, false);
+		final TextView label = (TextView) view.findViewById(R.id.title);
+		final SeekBar volume = (SeekBar) view.findViewById(R.id.volume);
 		volume.setMax(this.mAudioManager.getStreamMaxVolume(mStream));
 		volume.setProgress(this.mAudioManager.getStreamVolume(mStream));
 		volume.setOnSeekBarChangeListener(this);
 		
 		label.setText(mLabel);
 		
+		mIcon = (ImageView) view.findViewById(R.id.icon);
+		
 		if(this.mInfo.containsKey(this.mKey))
 			volume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKey)));
 		else
 			notifyListener(this.mAudioManager.getStreamVolume(mStream));
-			
+		
+		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(volume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
 		return view;
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		if(fromUser)
+		if(fromUser){
 			notifyListener(progress);
+			mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
+		}
 	}
 
 	/**
