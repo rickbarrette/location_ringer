@@ -122,12 +122,12 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		ArrayList<Fragment> what = new ArrayList<Fragment>();
 		ArrayList<Integer> added = new ArrayList<Integer>();
 		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
+		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
 			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_RING));	
 			added.add(0);
 		}
 		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
+		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
 			what.add(new RingtoneFragment(this.mInfo, this, AudioManager.STREAM_NOTIFICATION));
 			added.add(1);
 		}
