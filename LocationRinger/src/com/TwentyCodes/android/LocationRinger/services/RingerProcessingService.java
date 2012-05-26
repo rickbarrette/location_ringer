@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
-import com.TwentyCodes.android.LocationRinger.receivers.LocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
