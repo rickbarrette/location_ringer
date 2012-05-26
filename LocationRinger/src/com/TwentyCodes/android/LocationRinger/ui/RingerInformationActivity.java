@@ -220,4 +220,11 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		this.mPager.setScrollEnabled(enabled);
 	}
 
+	@Override
+	public void onInfoContentRemoved(String... keys) {
+		for(String key : keys)
+			if(this.mInfo.containsKey(key))
+				this.mInfo.remove(key);
+	}
+
 }

@@ -245,7 +245,30 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	public void onFeatureRemoved(Fragment f) {
 		this.remove(f);
 		
-		if(f instanceof IdFragment)
-			mAdded.remove(new Integer(((IdFragment) f).getFragmentId()));
+		if(f instanceof IdFragment){
+			final int id =  ((IdFragment) f).getFragmentId();
+			mAdded.remove(new Integer(id));
+			
+			switch(id){
+				case KEY_ADDED_RINGTONE:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_RINGTONE_URI, RingerDatabase.KEY_RINGTONE_IS_SILENT, RingerDatabase.KEY_RINGTONE_VOLUME);
+					break;
+				case KEY_ADDED_NOTIFICATIONTONE:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingerDatabase.KEY_RINGTONE_IS_SILENT, RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME);
+					break;
+				case KEY_ADDED_ALARM_VOLUME:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_ALARM_VOLUME);
+					break;
+				case KEY_ADDED_MUSIC_VOLUME:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_MUSIC_VOLUME);
+					break;
+				case KEY_ADDED_BT:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_BT);
+					break;
+				case KEY_ADDED_WIFI:
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_WIFI);
+					break;
+			}
+		}
 	}
 }

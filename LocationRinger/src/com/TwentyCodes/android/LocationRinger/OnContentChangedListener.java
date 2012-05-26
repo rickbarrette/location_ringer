@@ -19,4 +19,5 @@ public interface OnContentChangedListener {
 	
 	void onInfoContentChanged(ContentValues info);
 	
+	void onInfoContentRemoved(String... keys);	
 }
