@@ -61,6 +61,38 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		mAdded = added;
 	}
 
+	public Fragment initFeatureFragment(int fragmentCode){
+		Fragment f = null;
+		switch(fragmentCode){
+			case 0:
+				f= new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_RING, KEY_ADDED_RINGTONE);
+				mAdded.add(KEY_ADDED_RINGTONE);
+				break;
+			case 1:
+				f = new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_NOTIFICATION, KEY_ADDED_NOTIFICATIONTONE);
+				mAdded.add(KEY_ADDED_NOTIFICATIONTONE);
+				break;
+			case 2:
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_ALARM, KEY_ADDED_ALARM_VOLUME);
+				mAdded.add(KEY_ADDED_ALARM_VOLUME);
+				break;
+			case 3:
+				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_MUSIC, KEY_ADDED_MUSIC_VOLUME);
+				mAdded.add(KEY_ADDED_MUSIC_VOLUME);
+				break;
+			case 4:
+				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this, KEY_ADDED_BT);
+				mAdded.add(KEY_ADDED_BT);
+				break;
+			case 5:
+				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this, KEY_ADDED_WIFI);
+				mAdded.add(KEY_ADDED_WIFI);
+				break;
+				
+		}
+		return f;
+	}
+
 	/**
 	 * Initali 
 	 * @author ricky barrette
@@ -93,7 +125,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		}
 		return what;
 	}
-
+	
 	/**
 	 * Called when an item is picked from the add featue list
 	 * (non-Javadoc)
@@ -104,38 +136,6 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		final Fragment f = initFeatureFragment(which);
 		if(f != null)
 			add(f);
-	}
-	
-	public Fragment initFeatureFragment(int fragmentCode){
-		Fragment f = null;
-		switch(fragmentCode){
-			case 0:
-				f= new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_RING, KEY_ADDED_RINGTONE);
-				mAdded.add(KEY_ADDED_RINGTONE);
-				break;
-			case 1:
-				f = new RingtoneFragment(this.mInfo, this.mListener, this, AudioManager.STREAM_NOTIFICATION, KEY_ADDED_NOTIFICATIONTONE);
-				mAdded.add(KEY_ADDED_NOTIFICATIONTONE);
-				break;
-			case 2:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_ALARM, KEY_ADDED_ALARM_VOLUME);
-				mAdded.add(KEY_ADDED_ALARM_VOLUME);
-				break;
-			case 3:
-				f = new VolumeFragment(this.mInfo, this.getActivity(), this.mListener, this, AudioManager.STREAM_MUSIC, KEY_ADDED_MUSIC_VOLUME);
-				mAdded.add(KEY_ADDED_MUSIC_VOLUME);
-				break;
-			case 4:
-				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this, KEY_ADDED_BT);
-				mAdded.add(KEY_ADDED_BT);
-				break;
-			case 5:
-				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this, KEY_ADDED_WIFI);
-				mAdded.add(KEY_ADDED_WIFI);
-				break;
-				
-		}
-		return f;
 	}
 
 	/**
@@ -193,11 +193,21 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 
 	/**
 	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(Bundle arg0) {
+		addAllInit(initList());
+		// TODO Auto-generated method stub
+		super.onCreate(arg0);
+	}
+
+	/**
+	 * (non-Javadoc)
 	 * @see com.TwentyCodes.android.LocationRinger.ui.fragments.BaseFragmentListFragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle bundle) {
-		addAllInit(initList());
 		final View v =  super.onCreateView(inflator, container, bundle);
 		v.findViewById(R.id.add_feature_button).setOnClickListener(this);
 		return v;
