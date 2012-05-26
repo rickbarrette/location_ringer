@@ -59,7 +59,6 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		mInfo = info;
 		mListener = listener;
 		mAdded = added;
-		addAllInit(initList());
 	}
 
 	/**
@@ -70,27 +69,27 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		ArrayList<Fragment> what = new ArrayList<Fragment>();
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
-			initFeatureFragment(KEY_ADDED_RINGTONE);
+			what.add(initFeatureFragment(KEY_ADDED_RINGTONE));
 		}
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
-			initFeatureFragment(KEY_ADDED_NOTIFICATIONTONE);
+			what.add(initFeatureFragment(KEY_ADDED_NOTIFICATIONTONE));
 		}
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_ALARM_VOLUME)){
-			initFeatureFragment(KEY_ADDED_ALARM_VOLUME);
+			what.add(initFeatureFragment(KEY_ADDED_ALARM_VOLUME));
 		}
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_MUSIC_VOLUME)){
-			initFeatureFragment(KEY_ADDED_MUSIC_VOLUME);
+			what.add(initFeatureFragment(KEY_ADDED_MUSIC_VOLUME));
 		}
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_BT)){
-			initFeatureFragment(KEY_ADDED_BT);
+			what.add(initFeatureFragment(KEY_ADDED_BT));
 		}
 		
 		if(this.mInfo.containsKey(RingerDatabase.KEY_WIFI)){
-			initFeatureFragment(KEY_ADDED_WIFI);
+			what.add(initFeatureFragment(KEY_ADDED_WIFI));
 		}
 		return what;
 	}
@@ -198,6 +197,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle bundle) {
+		addAllInit(initList());
 		final View v =  super.onCreateView(inflator, container, bundle);
 		v.findViewById(R.id.add_feature_button).setOnClickListener(this);
 		return v;
