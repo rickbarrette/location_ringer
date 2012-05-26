@@ -84,19 +84,13 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 * @param uri of current tone
 	 * @author ricky barrette
 	 */
-	private void getRingtoneURI(int ringtoneCode, String uri){
+	private void getRingtoneURI(final int ringtoneCode, final Uri uri){
         final Intent intent = new Intent( RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, ringtoneCode);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, R.string.select_tone);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
-        if( uri == null)
-			try {
-				uri = RingtoneManager.getActualDefaultRingtoneUri(this.getActivity(), ringtoneCode).toString();
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-			}
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri == null ? null : Uri.parse(uri));
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
         startActivityForResult( intent, ringtoneCode);  
 	}
 	
@@ -155,7 +149,7 @@ public class RingtoneFragment extends Fragment implements OnClickListener, OnSee
 	 */
 	@Override
 	public void onClick(View v) {
-		getRingtoneURI(this.mType, mRingtoneURI.toString());
+		getRingtoneURI(this.mType, mRingtoneURI);
 	}
 
 	@Override
