@@ -80,20 +80,35 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent intent){
+	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if(resultCode == RESULT_OK){
-			switch(requestCode) {
-				case ACTIVITY_CREATE:
-					ContentValues ringer = (ContentValues) intent.getParcelableExtra(KEY_RINGER);
-					mDb.insertRinger(ringer, (ContentValues) intent.getParcelableExtra(KEY_INFO));
-				    populate();
-				    break;
-				case ACTIVITY_EDIT:
-					mDb.updateRinger(intent.getLongExtra(KEY_ROWID, 1), (ContentValues) intent.getParcelableExtra(KEY_RINGER), (ContentValues) intent.getParcelableExtra(KEY_INFO));
-				    populate();
-				    break;
-			}
+
+		if (resultCode == RESULT_OK){
+			
+			final ProgressDialog progress = ProgressDialog.show(this, "", this.getText(R.string.saving), true, true);
+		
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					switch (requestCode) {
+					case ACTIVITY_CREATE:
+						ContentValues ringer = (ContentValues) intent.getParcelableExtra(KEY_RINGER);
+						mDb.insertRinger(ringer, (ContentValues) intent.getParcelableExtra(KEY_INFO));
+						break;
+					case ACTIVITY_EDIT:
+						mDb.updateRinger(intent.getLongExtra(KEY_ROWID, 1), (ContentValues) intent.getParcelableExtra(KEY_RINGER), (ContentValues) intent.getParcelableExtra(KEY_INFO));
+						break;
+					}
+					
+					ListActivity.this.mListView.post(new Runnable(){
+						@Override
+						public void run(){
+							progress.dismiss();
+							populate();
+						}
+					});
+				}
+			}).start();
 		}
 	}
 
