@@ -58,14 +58,18 @@ public class RingerDatabase {
 	/*
 	 * Database keys 
 	 */
-	public final static String KEY_RADIUS = "radius";
+	@Deprecated
 	public final static String KEY_LOCATION_LAT = "location_lat";
+	@Deprecated
 	public final static String KEY_LOCATION_LON = "location_lon";
-	public final static String KEY_RINGER_NAME = "ringer_name";
 	@Deprecated
 	public final static String KEY_RINGTONE = "home_ringtone";
 	@Deprecated
 	public final static String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
+
+	public final static String KEY_RADIUS = "radius";
+	public final static String KEY_RINGER_NAME = "ringer_name";
+	public final static String KEY_LOCATION = "location";
 	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
 	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
 	public final static String KEY_IS_ENABLED = "is_enabled";

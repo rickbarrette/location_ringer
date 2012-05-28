@@ -151,8 +151,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 			
 			if(this.mListener != null){
 				ContentValues info = new ContentValues();
-				info.put(RingerDatabase.KEY_LOCATION_LAT, point.getLatitudeE6());
-				info.put(RingerDatabase.KEY_LOCATION_LON, point.getLongitudeE6());
+				info.put(RingerDatabase.KEY_LOCATION, point.toString());
 				this.mListener.onInfoContentChanged(info);
 			}
 		} else if(Debug.DEBUG)
@@ -198,8 +197,9 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		this.mMap.addOverlay(mRadiusOverlay);
 		this.mRadius.setEnabled(false);
 			
-		if (this.mInfo.get(RingerDatabase.KEY_LOCATION_LAT) != null && this.mInfo.get(RingerDatabase.KEY_LOCATION_LON) != null){
-			this.mRadiusOverlay.setLocation(new GeoPoint(this.mInfo.getAsInteger(RingerDatabase.KEY_LOCATION_LAT), this.mInfo.getAsInteger(RingerDatabase.KEY_LOCATION_LON)));
+		if (this.mInfo.get(RingerDatabase.KEY_LOCATION) != null){
+			final String[] point = this.mInfo.getAsString(RingerDatabase.KEY_LOCATION).split(",");
+			this.mRadiusOverlay.setLocation(new GeoPoint(Integer.parseInt(point[0]), Integer.parseInt(point[1])));
 		}
 			
 		if (this.mInfo.get(RingerDatabase.KEY_RADIUS) != null){

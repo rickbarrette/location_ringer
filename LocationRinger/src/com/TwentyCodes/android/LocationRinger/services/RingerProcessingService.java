@@ -330,14 +330,16 @@ public class RingerProcessingService extends Service {
 				
 				if(RingerDatabase.parseBoolean(c.getString(1))){
 					ContentValues info = this.mDb.getRingerInfo(c.getString(0));
-					if(info.containsKey(RingerDatabase.KEY_LOCATION_LAT) && info.containsKey(RingerDatabase.KEY_LOCATION_LON) && info.containsKey(RingerDatabase.KEY_RADIUS))
-						if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(info.getAsInteger(RingerDatabase.KEY_LOCATION_LAT), info.getAsInteger(RingerDatabase.KEY_LOCATION_LON)), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){
+					if(info.containsKey(RingerDatabase.KEY_LOCATION) && info.containsKey(RingerDatabase.KEY_RADIUS)){
+						final String[] pointInfo = info.getAsString(RingerDatabase.KEY_LOCATION).split(",");
+						if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){
 							c.close();
 							getRinger(ringer, index);
 							isDeafult = false;
 							//break loop, we will only apply the first applicable ringer
 							break;
 						}
+					}
 				}
 				index++;
 			} while (c.moveToNext());
