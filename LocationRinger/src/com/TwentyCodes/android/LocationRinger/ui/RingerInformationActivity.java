@@ -48,6 +48,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	private ContentValues mInfo;
 	private Intent mData;
 	private ViewPager mPager;
+	private LocationInfomationFragment mLocationInfomationFragment;
 
 	/**
 	 * Logs the content values
@@ -58,7 +59,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		for(Entry<String,Object> item : values.valueSet())
 			Log.d(TAG, item.getKey() +" = "+ item.getValue());
 	}
-	
 	/**
 	 * Called when the activity is first created
 	 * (non-Javadoc)
@@ -109,8 +109,10 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		/*
 		 * Location page
 		 */
-		if(!isDefault)
-			fragments.add(new LocationInfomationFragment(this.mInfo, this, this));
+		if(!isDefault){
+			this.mLocationInfomationFragment = new LocationInfomationFragment(this.mInfo, this, this);
+			fragments.add(this.mLocationInfomationFragment);
+		}
 		
 		fragments.add(new FeatureListFragment(this.mInfo, this));	
 		
@@ -126,7 +128,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		
 		indicator.setOnPageChangeListener(this);
 	}
-
+	
 	/**
 	 * Creates the main menu that is displayed when the menu button is clicked
 	 * @author ricky barrette
@@ -136,7 +138,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
         inflater.inflate(R.menu.ringer_info_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	/**
 	 * Called when the ringer info has changed
 	 * (non-Javadoc)
@@ -149,6 +151,18 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			logContentValues(values);
 		}
 		this.mInfo.putAll(values);
+	}
+	
+	/**
+	 * Called when a feature is removed
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.OnContentChangedListener#onInfoContentRemoved(java.lang.String[])
+	 */
+	@Override
+	public void onInfoContentRemoved(String... keys) {
+		for(String key : keys)
+			if(this.mInfo.containsKey(key))
+				this.mInfo.remove(key);
 	}
 
 	/* (non-Javadoc)
@@ -206,6 +220,17 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	}
 
 	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onSearchRequested()
+	 */
+	@Override
+	public boolean onSearchRequested() {
+		if(this.mLocationInfomationFragment != null && this.mPager.getCurrentItem() == 1)
+			return this.mLocationInfomationFragment.onSearchRequested();
+		return super.onSearchRequested();
+	}
+	
+	/**
 	 * Prepares a bundle containing all the information that needs to be saved, and returns it to the starting activity
 	 * @author ricky barrette
 	 */
@@ -224,7 +249,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			 }
 		 }).start();
 	}
-	
+
 	/**
 	 * Called when the scrolling state of the view pager is changed
 	 * (non-Javadoc)
@@ -233,18 +258,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	@Override
 	public void setScrollEnabled(boolean enabled) {
 		this.mPager.setScrollEnabled(enabled);
-	}
-
-	/**
-	 * Called when a feature is removed
-	 * (non-Javadoc)
-	 * @see com.TwentyCodes.android.LocationRinger.OnContentChangedListener#onInfoContentRemoved(java.lang.String[])
-	 */
-	@Override
-	public void onInfoContentRemoved(String... keys) {
-		for(String key : keys)
-			if(this.mInfo.containsKey(key))
-				this.mInfo.remove(key);
 	}
 
 }

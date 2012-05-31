@@ -24,6 +24,7 @@ import android.widget.ToggleButton;
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.SearchRequestedListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.SearchDialog;
@@ -37,7 +38,7 @@ import com.google.android.maps.GeoPoint;
  * This fragment will be used to display and allow the user to edit the ringers location trigger
  * @author ricky
  */
-public class LocationInfomationFragment extends Fragment implements GeoPointLocationListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, OnLocationSelectedListener {
+public class LocationInfomationFragment extends Fragment implements GeoPointLocationListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, OnLocationSelectedListener, SearchRequestedListener {
 
 	private ContentValues mInfo;
 	private OnContentChangedListener mListener;
@@ -114,69 +115,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 
 	
 
-	/* (non-Javadoc)
-	 * @see com.google.android.maps.MapActivity#onDestroy()
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onStop() {
-		this.mSkyHook.removeUpdates();
-		super.onDestroy();
-	}
-
-	/**
-	 * Called when skyhook has a location to report
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onLocationChanged(GeoPoint point, int accuracy) {
-		this.mPoint = point;
-	}
-
-	/*
-	 */
-	@Override
-	public void onLocationSelected(GeoPoint point) {
-		if(point != null){
-			if(Debug.DEBUG)
-				Log.d(TAG, "onLocationSelected() "+ point.toString());
-
-			if(this.mRadiusOverlay != null)
-				this.mRadiusOverlay.setLocation(point);
-			
-			if(this.mMap != null){
-				this.mMap.setMapCenter(point);
-				this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
-			}
-			
-			if(this.mListener != null){
-				ContentValues info = new ContentValues();
-				info.put(RingerDatabase.KEY_LOCATION, point.toString());
-				this.mListener.onInfoContentChanged(info);
-			}
-		} else if(Debug.DEBUG)
-			Log.d(TAG, "onLocationSelected() Location was null");
-	}
-
-	/**
-	 * Called when a seekbar is has its progress changed
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		switch (seekBar.getId()){
-			case R.id.radius:
-				this.mRadiusOverlay.setRadius(progress);
-				this.mMap.invalidate();
-				if(this.mListener != null){
-					ContentValues info = new ContentValues();
-					info.put(RingerDatabase.KEY_RADIUS, progress);
-					this.mListener.onInfoContentChanged(info);
-				}
-				break;
-		}
-	}
-
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.map_info_fragment, container, false);
@@ -222,39 +160,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	}
 
 	/**
-	 * (non-Javadoc)
-	 * @see android.support.v4.app.Fragment#onPause()
-	 */
-	@Override
-	public void onPause() {
-		mSkyHook.removeUpdates();
-		super.onPause();
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * @see android.support.v4.app.Fragment#onResume()
-	 */
-	@Override
-	public void onResume() {
-		if(mMapEditToggle.isChecked())
-			mSkyHook.getUpdates();
-		super.onResume();
-	}
-
-	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
 	 * Called when the location is a first fix
 	 * (non-Javadoc)
 	 * @see com.TwentyCodes.android.location.GeoPointLocationListener#onFirstFix(boolean)
@@ -280,6 +185,112 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 					}
 				}
 		}
+	}
+
+	/**
+	 * Called when skyhook has a location to report
+	 * @author ricky barrette
+	 */
+	@Override
+	public void onLocationChanged(GeoPoint point, int accuracy) {
+		this.mPoint = point;
+	}
+
+	/*
+	 */
+	@Override
+	public void onLocationSelected(GeoPoint point) {
+		if(point != null){
+			if(Debug.DEBUG)
+				Log.d(TAG, "onLocationSelected() "+ point.toString());
+
+			if(this.mRadiusOverlay != null)
+				this.mRadiusOverlay.setLocation(point);
+			
+			if(this.mMap != null){
+				this.mMap.setMapCenter(point);
+				this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
+			}
+			
+			if(this.mListener != null){
+				ContentValues info = new ContentValues();
+				info.put(RingerDatabase.KEY_LOCATION, point.toString());
+				this.mListener.onInfoContentChanged(info);
+			}
+		} else if(Debug.DEBUG)
+			Log.d(TAG, "onLocationSelected() Location was null");
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
+	@Override
+	public void onPause() {
+		mSkyHook.removeUpdates();
+		super.onPause();
+	}
+
+	/**
+	 * Called when a seekbar is has its progress changed
+	 * @author ricky barrette
+	 */
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+		switch (seekBar.getId()){
+			case R.id.radius:
+				this.mRadiusOverlay.setRadius(progress);
+				this.mMap.invalidate();
+				if(this.mListener != null){
+					ContentValues info = new ContentValues();
+					info.put(RingerDatabase.KEY_RADIUS, progress);
+					this.mListener.onInfoContentChanged(info);
+				}
+				break;
+		}
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see android.support.v4.app.Fragment#onResume()
+	 */
+	@Override
+	public void onResume() {
+		if(mMapEditToggle.isChecked())
+			mSkyHook.getUpdates();
+		super.onResume();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.LocationRinger.SearchRequestedListener#onSearchRequested()
+	 */
+	@Override
+	public boolean onSearchRequested() {
+		new SearchDialog(this.getActivity(), this).show();
+		return true;
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.google.android.maps.MapActivity#onDestroy()
+	 * @author ricky barrette
+	 */
+	@Override
+	public void onStop() {
+		this.mSkyHook.removeUpdates();
+		super.onDestroy();
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
