@@ -40,9 +40,10 @@ import com.google.android.maps.GeoPoint;
  */
 public class LocationInfomationFragment extends Fragment implements GeoPointLocationListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, OnLocationSelectedListener, SearchRequestedListener {
 
-	private ContentValues mInfo;
-	private OnContentChangedListener mListener;
 	private static final String TAG = "RingerInformationHowActivity";
+	private final ContentValues mInfo;
+	private final OnContentChangedListener mListener;
+	private final EnableScrollingListener mEnableScrollingListener;
 	private SeekBar mRadius;
 	private MapFragment mMap;
 	private ToggleButton mMapEditToggle;
@@ -50,14 +51,13 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	private GeoPoint mPoint;
 	private SkyHook mSkyHook;
 	private View view;
-	private EnableScrollingListener mEnableScrollingListener;
 	
 	/**
 	 * Creates a new MapFragment
 	 * @author ricky barrette
 	 * @param ringerInformationActivity 
 	 */
-	public LocationInfomationFragment(ContentValues info, OnContentChangedListener listener, EnableScrollingListener enabledListener) {
+	public LocationInfomationFragment(final ContentValues info, final OnContentChangedListener listener, final EnableScrollingListener enabledListener) {
 		this.mInfo = info;
 		this.mListener = listener;
 		this.mEnableScrollingListener = enabledListener;
@@ -68,7 +68,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 			view.findViewById(R.id.buttons).setVisibility(isChecked ? View.VISIBLE : View.GONE);
 			
 			if(mEnableScrollingListener != null)
@@ -92,13 +92,11 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onClick(View v) {
+	public void onClick(final View v) {
 		switch (v.getId()){
 			case R.id.mark_my_location:
-				if(this.mPoint != null){
+				if(this.mPoint != null)
 					onLocationSelected(mPoint);
-					this.mMap.setMapCenter(mPoint);
-				}
 				break;
 			case R.id.my_location:
 				if(this.mPoint != null)
@@ -116,7 +114,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.map_info_fragment, container, false);
 		
 		this.mSkyHook = new SkyHook(this.getActivity());
@@ -165,7 +163,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @see com.TwentyCodes.android.location.GeoPointLocationListener#onFirstFix(boolean)
 	 */
 	@Override
-	public void onFirstFix(boolean isFirstFix) {
+	public void onFirstFix(final  boolean isFirstFix) {
 		if (isFirstFix)
 			mMap.enableGPSProgess();
 		else
@@ -192,14 +190,17 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onLocationChanged(GeoPoint point, int accuracy) {
+	public void onLocationChanged(final GeoPoint point, final int accuracy) {
 		this.mPoint = point;
 	}
 
-	/*
+	/**
+	 * Called when a location has been selected
+	 * (non-Javadoc)
+	 * @see com.TwentyCodes.android.location.OnLocationSelectedListener#onLocationSelected(com.google.android.maps.GeoPoint)
 	 */
 	@Override
-	public void onLocationSelected(GeoPoint point) {
+	public void onLocationSelected(final GeoPoint point) {
 		if(point != null){
 			if(Debug.DEBUG)
 				Log.d(TAG, "onLocationSelected() "+ point.toString());
@@ -207,13 +208,11 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 			if(this.mRadiusOverlay != null)
 				this.mRadiusOverlay.setLocation(point);
 			
-			if(this.mMap != null){
+			if(this.mMap != null)
 				this.mMap.setMapCenter(point);
-//				this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
-			}
 			
 			if(this.mListener != null){
-				ContentValues info = new ContentValues();
+				final ContentValues info = new ContentValues();
 				info.put(RingerDatabase.KEY_LOCATION, point.toString());
 				this.mListener.onInfoContentChanged(info);
 			}
@@ -236,13 +235,13 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+	public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 		switch (seekBar.getId()){
 			case R.id.radius:
 				this.mRadiusOverlay.setRadius(progress);
 				this.mMap.invalidate();
 				if(this.mListener != null){
-					ContentValues info = new ContentValues();
+					final ContentValues info = new ContentValues();
 					info.put(RingerDatabase.KEY_RADIUS, progress);
 					this.mListener.onInfoContentChanged(info);
 				}
@@ -272,9 +271,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	}
 
 	@Override
-	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
+	public void onStartTrackingTouch(final SeekBar seekBar) {
 	}
 
 	/* (non-Javadoc)
@@ -288,9 +285,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	}
 
 	@Override
-	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
-		
+	public void onStopTrackingTouch(final SeekBar seekBar) {
 	}
-
 }
