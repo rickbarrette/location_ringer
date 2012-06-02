@@ -9,6 +9,7 @@ package com.TwentyCodes.android.LocationRinger.ui;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -64,6 +65,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 * (non-Javadoc)
 	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
 	 */
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);

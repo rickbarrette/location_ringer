@@ -39,31 +39,31 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 	private ListeningEditText mRingerName;
 	private ListeningEditText mRingerDescription;
 	private ToggleButton mRingerEnabled;
-	private OnContentChangedListener mListener;
-	private ContentValues mInfo;
-	private ContentValues mRinger;
+	private final OnContentChangedListener mListener;
+	private final ContentValues mInfo;
+	private final ContentValues mRinger;
 	
-	public AboutRingerFragment(ContentValues ringer, ContentValues info, OnContentChangedListener listener){
+	public AboutRingerFragment(final ContentValues ringer, final ContentValues info, final OnContentChangedListener listener){
 		this.mInfo = info;
 		this.mRinger = ringer;
 		this.mListener = listener;
 	}
 	
 	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+	public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
 		if(this.mListener != null){
-			ContentValues info = new ContentValues();
+			final ContentValues info = new ContentValues();
 			info.put(RingerDatabase.KEY_IS_ENABLED, isChecked);
 			this.mListener.onRingerContentChanged(info);
 		}
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		
 		this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
-		View view = inflater.inflate(R.layout.ringer_about_fragment, container, false);
+		final View view = inflater.inflate(R.layout.ringer_about_fragment, container, false);
 		
 		if(Debug.DEBUG){
 			for(Entry<String,Object> item : this.mInfo.valueSet())
@@ -110,6 +110,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 	public static class ListeningEditText extends EditText{
 		private String mKey;
 		private OnContentChangedListener mListener;
+		private final ContentValues mTemp;
 
 		/**
 		 * Creates a new ListeningEditText
@@ -118,6 +119,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 		 */
 		public ListeningEditText(Context context) {
 			super(context);
+			this.mTemp = new ContentValues();
 		}
 
 		/**
@@ -128,6 +130,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 		 */
 		public ListeningEditText(Context context, AttributeSet attrs) {
 			super(context, attrs);
+			this.mTemp = new ContentValues();
 		}
 
 		/**
@@ -139,6 +142,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 		 */
 		public ListeningEditText(Context context, AttributeSet attrs, int defStyle) {
 			super(context, attrs, defStyle);
+			this.mTemp = new ContentValues();
 		}
 		
 		/**
@@ -149,12 +153,11 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 		public void onDraw(Canvas canvas){
 			super.onDraw(canvas);
 			if(mListener != null){
-				ContentValues info = new ContentValues();
-				info.put(this.mKey, this.getText().toString());
+				mTemp.put(this.mKey, this.getText().toString());
 				if(this.mKey.equals(RingerDatabase.KEY_RINGER_NAME))
-					this.mListener.onRingerContentChanged(info);
+					this.mListener.onRingerContentChanged(mTemp);
 				else
-					this.mListener.onInfoContentChanged(info);
+					this.mListener.onInfoContentChanged(mTemp);
 			}
 		}
 		

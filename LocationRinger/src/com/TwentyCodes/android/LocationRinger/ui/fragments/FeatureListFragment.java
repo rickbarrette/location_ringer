@@ -247,7 +247,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 		
 		if(f instanceof BaseFeatureFragment){
 			final int id =  ((BaseFeatureFragment) f).getFragmentId();
-			mAdded.remove(new Integer(id));
+			mAdded.remove(Integer.valueOf(id));
 			
 			/*
 			 * we need to notify our parent activity that the feature have been removed.

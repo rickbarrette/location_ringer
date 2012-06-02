@@ -31,6 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:contentDescription="@string/mark_my_location"
         android:src="@android:drawable/ic_menu_myplaces" />
 
     <ImageButton
@@ -39,6 +40,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:contentDescription="@string/my_location"
         android:src="@android:drawable/ic_menu_mylocation" />
 
     <ImageButton
@@ -47,6 +49,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:contentDescription="@string/map_mode"
         android:src="@android:drawable/ic_menu_mapmode" />
 
     <ImageButton
@@ -55,6 +58,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:contentDescription="@string/search"
         android:src="@android:drawable/ic_menu_search" />
 
 </LinearLayout>

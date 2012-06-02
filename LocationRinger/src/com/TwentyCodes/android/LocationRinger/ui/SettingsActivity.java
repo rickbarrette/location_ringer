@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -149,6 +150,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		return intent;
 	}
 	
+	@SuppressWarnings("deprecation")
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(final Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);

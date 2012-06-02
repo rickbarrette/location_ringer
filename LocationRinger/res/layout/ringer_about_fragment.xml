@@ -24,8 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
-        android:capitalize="words"
         android:imeOptions="actionNext"
+        android:inputType="textCapWords"
         android:singleLine="true" />
 
     <TextView
@@ -41,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
-        android:capitalize="sentences"
-        android:inputType="textMultiLine" />
+        android:inputType="textCapSentences" />
 
 </LinearLayout>

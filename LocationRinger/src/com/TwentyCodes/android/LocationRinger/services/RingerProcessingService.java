@@ -318,7 +318,7 @@ public class RingerProcessingService extends Service {
 		final GeoPoint point = new GeoPoint((int) (mLocation.getLatitude() * 1E6), (int) (mLocation.getLongitude()*1E6));
 		if(Debug.DEBUG){
 			Log.d(TAG, "Processing ringers");
-			Log.d(TAG, "Current location "+(int) (mLocation.getLatitude() * 1E6)+", "+(int) (mLocation.getLongitude() * 1E6)+" @ "+  new Float(mLocation.getAccuracy()) / 1000+"km");
+			Log.d(TAG, "Current location "+(int) (mLocation.getLatitude() * 1E6)+", "+(int) (mLocation.getLongitude() * 1E6)+" @ "+  Float.valueOf(mLocation.getAccuracy()) / 1000+"km");
 		}
 		
 		final Cursor c = mDb.getAllRingers();
@@ -332,7 +332,7 @@ public class RingerProcessingService extends Service {
 					final ContentValues info = this.mDb.getRingerInfo(c.getString(0));
 					if(info.containsKey(RingerDatabase.KEY_LOCATION) && info.containsKey(RingerDatabase.KEY_RADIUS)){
 						final String[] pointInfo = info.getAsString(RingerDatabase.KEY_LOCATION).split(",");
-						if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){
+						if(GeoUtils.isIntersecting(point, Float.valueOf(mLocation.getAccuracy()) / 1000, new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){
 							c.close();
 							getRinger(ringer, index);
 							isDeafult = false;

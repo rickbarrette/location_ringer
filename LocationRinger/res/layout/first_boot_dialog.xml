@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-  
-	<ScrollView 
-	android:layout_width="wrap_content"
-	android:layout_height="wrap_content"
-	android:id="@+id/msg_scrollview"
-	android:layout_marginLeft="15dip"
-	android:layout_marginRight="15dip"
-	>
-  	<RelativeLayout 
-  	android:layout_width="wrap_content"
-	android:layout_height="wrap_content">	      
-	  <TextView
-	  android:id="@+id/msg"
-	  android:layout_width="wrap_content"
-	  android:layout_height="wrap_content"
-	  android:text="@string/hello"
-	  />
-	  	 <Button 
-	  android:layout_width="match_parent"
-	  android:layout_height="wrap_content" 
-	  android:text="@android:string/ok"
-	  android:id="@+id/ok_button"
-	  android:layout_below="@id/msg"/>  
-  	</RelativeLayout>
-	</ScrollView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:ignore="UselessParent" >
+
+    <ScrollView
+        android:id="@+id/msg_scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="15dip" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/hello" />
+
+            <Button
+                android:id="@+id/ok_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/msg"
+                android:text="@android:string/ok" />
+        </RelativeLayout>
+    </ScrollView>
+
 </RelativeLayout>
