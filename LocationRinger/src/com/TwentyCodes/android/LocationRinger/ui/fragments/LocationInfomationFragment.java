@@ -209,7 +209,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 			
 			if(this.mMap != null){
 				this.mMap.setMapCenter(point);
-				this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
+//				this.mMap.setZoom((this.mMap.getMap().getMaxZoomLevel() - 5));
 			}
 			
 			if(this.mListener != null){
