@@ -27,6 +27,7 @@ import android.view.MenuItem;
 
 import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This is the settings activity for location ringer
@@ -54,14 +55,14 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 * @return true if successful
 	 * @author ricky barrette
 	 */
-	public static boolean backup(Context context){
-		File dbFile = new File(Environment.getDataDirectory() + "/data/"+context.getPackageName()+"/shared_prefs/"+SETTINGS+".xml");
+	public static boolean backup(final Context context){
+		final File dbFile = new File(Environment.getDataDirectory() + "/data/"+context.getPackageName()+"/shared_prefs/"+SETTINGS+".xml");
 
-		File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+context.getString(R.string.app_name));
+		final File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+context.getString(R.string.app_name));
 		if (!exportDir.exists()) {
 			exportDir.mkdirs();
 		}
-		File file = new File(exportDir, dbFile.getName());
+		final File file = new File(exportDir, dbFile.getName());
 
 		try {
 			file.createNewFile();
@@ -80,9 +81,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 * @throws IOException
 	 * @author ricky barrette
 	 */
-	private static void copyFile(File src, File dst) throws IOException {
-        FileChannel inChannel = new FileInputStream(src).getChannel();
-        FileChannel outChannel = new FileOutputStream(dst).getChannel();
+	private static void copyFile(final File src, final File dst) throws IOException {
+        final FileChannel inChannel = new FileInputStream(src).getChannel();
+        final FileChannel outChannel = new FileOutputStream(dst).getChannel();
         try {
            inChannel.transferTo(0, inChannel.size(), outChannel);
         } finally {
@@ -98,14 +99,14 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 * @return true if successful
 	 * @author ricky barrette
 	 */
-	public static void restore(Context context){
-		File dbFile = new File(Environment.getDataDirectory() + "/data/"+context.getPackageName()+"/shared_prefs/"+SETTINGS+".xml");
+	public static void restore(final Context context){
+		final File dbFile = new File(Environment.getDataDirectory() + "/data/"+context.getPackageName()+"/shared_prefs/"+SETTINGS+".xml");
 
-		File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+context.getString(R.string.app_name));
+		final File exportDir = new File(Environment.getExternalStorageDirectory(), "/"+context.getString(R.string.app_name));
 		if (!exportDir.exists()) {
 			exportDir.mkdirs();
 		}
-		File file = new File(exportDir, dbFile.getName());
+		final File file = new File(exportDir, dbFile.getName());
 
 		try {
 			file.createNewFile();
@@ -114,8 +115,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			e.printStackTrace();
 		}
 
-		context.getSharedPreferences(SETTINGS, Context.MODE_WORLD_WRITEABLE).edit().remove(IS_FIRST_RINGER_PROCESSING).remove(IS_DEFAULT).remove(IS_SERVICE_STARTED).commit();
-		
+		context.getSharedPreferences(SETTINGS, Debug.SHARED_PREFS_MODE).edit().remove(IS_FIRST_RINGER_PROCESSING).remove(IS_DEFAULT).remove(IS_SERVICE_STARTED).commit();
 	}
 	
 	/**
@@ -128,7 +128,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		/*
 		 * get the build information, and build the string
 		 */
-		PackageManager pm = this.getPackageManager();
+		final PackageManager pm = this.getPackageManager();
 		PackageInfo pi;
 		try {
 			pi = pm.getPackageInfo(this.getPackageName(), 0);
@@ -139,9 +139,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			pi.versionCode = 1;
 		}
 		
-		Intent intent = new Intent(Intent.ACTION_SEND);
-		String theSubject = this.getString(R.string.app_name);
-		String theBody = "\n\n\n"+ Build.FINGERPRINT +"\n"+ this.getString(R.string.app_name)+" "+pi.versionName+" bulid "+pi.versionCode;
+		final Intent intent = new Intent(Intent.ACTION_SEND);
+		final String theSubject = this.getString(R.string.app_name);
+		final String theBody = "\n\n\n"+ Build.FINGERPRINT +"\n"+ this.getString(R.string.app_name)+" "+pi.versionName+" bulid "+pi.versionCode;
 		intent.putExtra(Intent.EXTRA_EMAIL,new String[] {this.getString(R.string.email)});
 		intent.putExtra(Intent.EXTRA_TEXT, theBody);
 		intent.putExtra(Intent.EXTRA_SUBJECT, theSubject);
@@ -150,8 +150,9 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	}
 	
 	@Override
-	public void onCreate(Bundle savedInstanceState){
+	public void onCreate(final Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		this.getPreferenceManager().setSharedPreferencesMode(Debug.SHARED_PREFS_MODE);
 		this.getPreferenceManager().setSharedPreferencesName(SETTINGS);
 		addPreferencesFromResource(R.xml.setings);
 		this.findPreference(EMAIL).setOnPreferenceClickListener(this);
@@ -159,7 +160,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 		/*
 		 * Set up the action bar if required
 		 */
-		if(Integer.valueOf(android.os.Build.VERSION.SDK_INT) > 11)
+		if(Debug.SUPPORTS_HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 	

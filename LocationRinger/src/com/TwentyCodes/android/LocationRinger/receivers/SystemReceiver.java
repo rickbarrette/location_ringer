@@ -39,10 +39,10 @@ public class SystemReceiver extends BroadcastReceiver {
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(final Context context, final Intent intent) {
 		if(Debug.DEBUG)
 			Log.d(TAG, "onReceive() ~"+intent.getAction());
-		SharedPreferences systemEventHistory = context.getSharedPreferences(TAG, 2);
+		final SharedPreferences systemEventHistory = context.getSharedPreferences(TAG, Debug.SHARED_PREFS_MODE);
 		Intent i = new Intent(context, LocationService.class)
 //			.putExtra(LocationService.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, (long) (60000 * Integer.parseInt(context.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.UPDATE_INTVERVAL , "10"))))
 			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(context.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
@@ -52,7 +52,7 @@ public class SystemReceiver extends BroadcastReceiver {
 		 * if the phone finishes booting, then start the service if the user enabled it
 		 */
 		if(intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)){
-			if(context.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_READABLE).getBoolean(SettingsActivity.START_ON_BOOT, false)){
+			if(context.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getBoolean(SettingsActivity.START_ON_BOOT, false)){
 				context.startService(i);
 				PassiveLocationListener.requestPassiveLocationUpdates(context, new Intent(context, PassiveLocationChangedReceiver.class));
 			}

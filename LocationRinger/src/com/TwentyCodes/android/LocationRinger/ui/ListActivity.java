@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.DatabaseListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
+import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
@@ -127,7 +128,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     public boolean onContextItemSelected(MenuItem item) {
         switch(item.getItemId()) {
         	case R.id.delete:
-        		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+        		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         		if(info.id == 0)
         			Toast.makeText(this, this.getString(R.string.cant_delete_default), Toast.LENGTH_SHORT).show();
         		else
@@ -187,7 +188,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
      */
     @Override
 	public boolean onCreateOptionsMenu (Menu menu) {
-    	MenuInflater inflater = getMenuInflater();
+    	final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.ringer_list_menu, menu);
     	return super.onCreateOptionsMenu(menu);
     	
@@ -242,13 +243,13 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			 public void run(){
 				 Looper.prepare();
 				 
-		    	Intent i = new Intent(ListActivity.this, RingerInformationActivity.class)
+		    	final Intent i = new Intent(ListActivity.this, RingerInformationActivity.class)
 		    	.putExtra(KEY_ROWID, id+1);
 		    	
 		    	/*
 		    	 * get the ringer
 		    	 */
-		    	Cursor ringer = mDb.getRingerFromId(id+1);
+		    	final Cursor ringer = mDb.getRingerFromId(id+1);
 		    	if (ringer.moveToFirst()){
 		    		ContentValues r = new ContentValues();
 		    		r.put(RingerDatabase.KEY_RINGER_NAME, ringer.getString(0));
@@ -333,15 +334,15 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
      * @author ricky barrette
      */
     private void restartService() {
-		if(! this.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_WRITEABLE).getBoolean(SettingsActivity.IS_SERVICE_STARTED, false)){
+    	final SharedPreferences sharedPrefs = this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		if(! sharedPrefs.getBoolean(SettingsActivity.IS_SERVICE_STARTED, false)){
 			// cancel the previous service
 			LocationService.stopService(this).run();
 			//start the new service
 			Intent i = new Intent(this, LocationService.class)
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
+			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(sharedPrefs.getString(SettingsActivity.ACCURACY , "50")))
 			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 			this.startService(i);	
-		}
-			
+		}	
 	}
 }

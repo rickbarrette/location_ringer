@@ -58,17 +58,17 @@ public class RingerProcessingService extends Service {
 	 * @param id
 	 * @author ricky barrette
 	 */
-	private void applyRinger(ContentValues values) {
+	private void applyRinger(final ContentValues values) {
 		if(Debug.DEBUG)
 			Log.d(TAG, "applyRigner()");
 		
-		String name = values.getAsString(RingerDatabase.KEY_RINGER_NAME);
+		final String name = values.getAsString(RingerDatabase.KEY_RINGER_NAME);
 		
 		/*
 		 * Make it toasty if the user wants to be notified.
 		 * This will display a toast msg "Applying <ringer name>"
 		 */
-		if(this.getSharedPreferences(SettingsActivity.SETTINGS, 2).getBoolean(SettingsActivity.TOASTY, false))
+		if(this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getBoolean(SettingsActivity.TOASTY, false))
 			Toast.makeText(this.getApplicationContext(), "Applying  "+ name, Toast.LENGTH_SHORT).show();
 		
 		/*
@@ -150,7 +150,7 @@ public class RingerProcessingService extends Service {
 				.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 				PendingIntent pi = PendingIntent.getService(this, LocationService.REQUEST_CODE, i, 0);
 				
-				AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+				final AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 				
 				/*
 				 * cancel the existing schedule
@@ -243,8 +243,8 @@ public class RingerProcessingService extends Service {
 			Log.d(TAG, "onCreate()");
 		super.onCreate();
 		this.mDb = new RingerDatabase(this);
-		this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_WRITEABLE);
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+		this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		this.mWakeLock = (WakeLock) pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 		this.mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		this.mWifiManager = (WifiManager) this.getSystemService(WIFI_SERVICE);
@@ -313,15 +313,15 @@ public class RingerProcessingService extends Service {
 		/*
 		 * get the default ringer information
 		 */
-		ContentValues ringer = getRinger(1);
+		final ContentValues ringer = getRinger(1);
 		
-		GeoPoint point = new GeoPoint((int) (mLocation.getLatitude() * 1E6), (int) (mLocation.getLongitude()*1E6));
+		final GeoPoint point = new GeoPoint((int) (mLocation.getLatitude() * 1E6), (int) (mLocation.getLongitude()*1E6));
 		if(Debug.DEBUG){
 			Log.d(TAG, "Processing ringers");
 			Log.d(TAG, "Current location "+(int) (mLocation.getLatitude() * 1E6)+", "+(int) (mLocation.getLongitude() * 1E6)+" @ "+  new Float(mLocation.getAccuracy()) / 1000+"km");
 		}
 		
-		Cursor c = mDb.getAllRingers();
+		final Cursor c = mDb.getAllRingers();
 		c.moveToFirst();
 		if (c.moveToFirst()) {
 			do {
@@ -329,7 +329,7 @@ public class RingerProcessingService extends Service {
 					Log.d(TAG, "Checking ringer "+c.getString(0));
 				
 				if(RingerDatabase.parseBoolean(c.getString(1))){
-					ContentValues info = this.mDb.getRingerInfo(c.getString(0));
+					final ContentValues info = this.mDb.getRingerInfo(c.getString(0));
 					if(info.containsKey(RingerDatabase.KEY_LOCATION) && info.containsKey(RingerDatabase.KEY_RADIUS)){
 						final String[] pointInfo = info.getAsString(RingerDatabase.KEY_LOCATION).split(",");
 						if(GeoUtils.isIntersecting(point, new Float(mLocation.getAccuracy()) / 1000, new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])), new Float(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)){

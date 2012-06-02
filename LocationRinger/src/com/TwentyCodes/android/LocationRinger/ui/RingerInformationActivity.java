@@ -72,7 +72,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		/*
 		 * Set up the action bar if required
 		 */
-		if(Integer.valueOf(android.os.Build.VERSION.SDK_INT) > 11)
+		if(Debug.SUPPORTS_HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		this.mData = new Intent().putExtras(RingerInformationActivity.this.getIntent());
