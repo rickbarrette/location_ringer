@@ -15,9 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -32,7 +30,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will represent the volume fragments
  * @author ricky
  */
-public class VolumeFragment extends IdFragment implements OnSeekBarChangeListener, OnClickListener {
+public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChangeListener {
 
 	private static final String TAG = "VolumeFragment";
 	private final AudioManager mAudioManager;
@@ -41,8 +39,6 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 	private final String mKey;
 	private final ContentValues mInfo;
 	private final int mLabel;
-	private final FeatureRemovedListener mRemovedListener;
-	private ImageView mIcon;
 	
 	/**
 	 * Creates a new Volume Fragment
@@ -53,7 +49,7 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 	 * @author ricky barrette
 	 */
 	public VolumeFragment(ContentValues info, Context context, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
-		super(id);
+		super(id, R.layout.volume_fragment, removedListener);
 		
 		if ( info == null )
 			throw new NullPointerException();
@@ -61,14 +57,11 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 			throw new NullPointerException();
 		if ( changedListener == null )
 			throw new NullPointerException();
-		if ( removedListener == null )
-			throw new NullPointerException();
 		
 		this.mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 		this.mStream = stream;
 		this.mChangedListener = changedListener;
 		this.mInfo = info;
-		this.mRemovedListener = removedListener;
 		
 		switch(this.mStream){
 			case AudioManager.STREAM_ALARM:
@@ -118,7 +111,7 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 			for(Entry<String,Object> item : this.mInfo.valueSet())
 				Log.d(TAG, item.getKey() +" = "+ item.getValue());
 		
-		final View view = inflater.inflate(R.layout.volume_fragment, container, false);
+		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final TextView label = (TextView) view.findViewById(R.id.title);
 		final SeekBar volume = (SeekBar) view.findViewById(R.id.volume);
 		volume.setMax(this.mAudioManager.getStreamMaxVolume(mStream));
@@ -127,16 +120,12 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 		
 		label.setText(mLabel);
 		
-		mIcon = (ImageView) view.findViewById(R.id.icon);
-		
-		view.findViewById(R.id.close).setOnClickListener(this);
-		
 		if(this.mInfo.containsKey(this.mKey))
 			volume.setProgress(Integer.parseInt(this.mInfo.getAsString(this.mKey)));
 		else
 			notifyListener(this.mAudioManager.getStreamVolume(mStream));
 		
-		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(volume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
+		setIcon(volume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
 		return view;
 	}
 
@@ -144,7 +133,7 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if(fromUser){
 			notifyListener(progress);
-			mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
+			setIcon(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
 		}
 	}
 
@@ -167,16 +156,5 @@ public class VolumeFragment extends IdFragment implements OnSeekBarChangeListene
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-	}
-
-	/**
-	 * Called when the user clicks on the remove button
-	 * (non-Javadoc)
-	 * @see android.view.View.OnClickListener#onClick(android.view.View)
-	 */
-	@Override
-	public void onClick(View v) {
-		if(this.mRemovedListener != null)
-			this.mRemovedListener.onFeatureRemoved(this);
 	}
 }

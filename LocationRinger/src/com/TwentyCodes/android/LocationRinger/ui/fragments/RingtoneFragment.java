@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -38,7 +37,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will be for ringtone settings
  * @author ricky
  */
-public class RingtoneFragment extends IdFragment implements OnClickListener, OnSeekBarChangeListener {
+public class RingtoneFragment extends BaseFeatureFragment implements OnClickListener, OnSeekBarChangeListener {
 	
 	private static final String TAG = "RingtoneFragment";
 	private final int mStream;
@@ -48,27 +47,22 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 	private final String mKeyUri;
 	private final String mKeyVolume;
 	private final ContentValues mInfo;
-	private final FeatureRemovedListener mRemovedListener;
 	private final int mLabel;
 	private EditText mRingtone;
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
-	private ImageView mIcon;
 	
 	public RingtoneFragment(ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int stream, int id){
-		super(id);
+		super(id, R.layout.ringtone_fragment, removedListener);
 		
 		if ( info == null )
 			throw new NullPointerException();
 		if ( changedListener == null )
 			throw new NullPointerException();
-		if ( removedListener == null )
-			throw new NullPointerException();
 		
 		this.mChangedListener = changedListener;
 		this.mStream = stream;
 		this.mInfo = info;
-		this.mRemovedListener = removedListener;
 		
 		switch(stream){
 			case AudioManager.STREAM_NOTIFICATION:
@@ -126,7 +120,7 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 	 * @author ricky barrette
 	 */
 	private void notifyVolumeChanged(int progress) {
-		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
+		setIcon(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
 		if(this.mChangedListener != null){
 			final ContentValues info = new ContentValues();
 			info.put(this.mKeyVolume, progress);
@@ -167,17 +161,15 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 		case R.id.ringtone:
 			getRingtoneURI(this.mType, mRingtoneURI);
 			break;
-		case R.id.close:
-			if(this.mRemovedListener != null)
-				this.mRemovedListener.onFeatureRemoved(this);
+		default:
+			super.onClick(v);
 			break;
-			
 		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		final View view =  inflater.inflate(R.layout.ringtone_fragment, container, false);
+		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final AudioManager audioManager = (AudioManager) this.getActivity().getSystemService(Context.AUDIO_SERVICE);
 		
 		if(Debug.DEBUG)
@@ -190,8 +182,7 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 		final TextView label = (TextView) view.findViewById(R.id.title);
 		label.setText(mLabel);
 		
-		mIcon = (ImageView) view.findViewById(R.id.icon);
-		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(android.R.drawable.ic_lock_silent_mode_off));
+		setIcon(android.R.drawable.ic_lock_silent_mode_off);
 		
 		this.mRingtone = (EditText) view.findViewById(R.id.ringtone);
 		mVolume = (SeekBar) view.findViewById(R.id.ringtone_volume);
@@ -234,7 +225,7 @@ public class RingtoneFragment extends IdFragment implements OnClickListener, OnS
 			mVolume.setProgress(0);
 		}
 		
-		mIcon.setImageDrawable(this.getActivity().getResources().getDrawable(mVolume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off));
+		setIcon(mVolume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
 		
 		mVolume.setOnSeekBarChangeListener(this);
 		return view;
