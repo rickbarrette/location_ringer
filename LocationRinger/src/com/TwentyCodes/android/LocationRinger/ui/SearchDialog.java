@@ -16,6 +16,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -24,6 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
@@ -35,7 +38,7 @@ import com.google.android.maps.GeoPoint;
  * This dialog will be used to get users input for the address that they want to search for. A GeoPoint location will be returned via LocationSelectedListener
  * @author ricky barrette
  */
-public class SearchDialog extends Dialog implements android.view.View.OnClickListener, OnItemClickListener{
+public class SearchDialog extends Dialog implements android.view.View.OnClickListener, OnItemClickListener, OnEditorActionListener{
 
 	protected static final String TAG = "SearchDialog";
 	private ListView mAddressList;
@@ -59,6 +62,7 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 		mAddressList = (ListView) findViewById(R.id.address_list);
 		mAddressList.setOnItemClickListener(this);
 		mAddress = (EditText) findViewById(R.id.address);
+		mAddress.setOnEditorActionListener(this);
 		mProgress = (ProgressBar) findViewById(R.id.search_progress);
 		mHandler = new Handler();
 		mContext = context;
@@ -106,69 +110,94 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 		return null;
 	}
 	
+	/**
+	 * Called when the search button is clicked
+	 * (non-Javadoc)
+	 * @see android.view.View.OnClickListener#onClick(android.view.View)
+	 */
 	@Override
 	public void onClick(final View v) {
 		switch(v.getId()){
 			case R.id.ok:
-				InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(this.mAddress.getWindowToken(), 0);
-				v.setEnabled(false);
-				mProgress.setVisibility(View.VISIBLE);
-				mProgress.setIndeterminate(true);
-				new Thread( new Runnable(){
-					@Override
-					public void run(){
-						if(Debug.DEBUG)
-							Log.d(TAG,"strarting search and parsing") ;
-						try {
-							mResults = ReverseGeocoder.addressSearch(mAddress.getText().toString());
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-						if(mResults != null){
-							if(Debug.DEBUG)
-								Log.d(TAG,"finished searching and parsing");
-							//update UI
-							mHandler.post(new Runnable(){
-								@Override
-								public void run(){
-									if(Debug.DEBUG)
-										Log.d(TAG,"populating list");
-									mAddressList.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, getAddress()));
-									v.setEnabled(true);
-									mProgress.setVisibility(View.INVISIBLE);
-									mProgress.setIndeterminate(false);
-									if(Debug.DEBUG)
-										Log.d(TAG,"finished");
-								}
-							});
-						} else {
-							//update the UI
-							mHandler.post(new Runnable(){
-								@Override
-								public void run(){
-									v.setEnabled(true);
-									mProgress.setVisibility(View.INVISIBLE);
-									mProgress.setIndeterminate(false);
-									if(Debug.DEBUG)
-										Log.d(TAG,"failed");
-								}
-							});
-						}
-					}
-				}).start();
+				search();
 				break;
 		}
 	}
-
 	
+	/**
+	 * Called when the seach button on the soft keyboard is pressed
+	 * (non-Javadoc)
+	 * @see android.widget.TextView.OnEditorActionListener#onEditorAction(android.widget.TextView, int, android.view.KeyEvent)
+	 */
+	@Override
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+		search();
+		return false;
+	}
+
+	/**
+	 * Called when an Item from the list is selected
+	 * (non-Javadoc)
+	 * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
+	 */
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		if(Debug.DEBUG)
 			Log.d(TAG,"slected "+ (int) id);
 		mListener.onLocationSelected(getCoords((int) id));
 		this.dismiss();
+	}
+
+	private void search() {
+		final InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(this.mAddress.getWindowToken(), 0);
+		final View v = this.findViewById(R.id.ok);
+		v.setEnabled(false);
+		mProgress.setVisibility(View.VISIBLE);
+		mProgress.setIndeterminate(true);
+		new Thread( new Runnable(){
+			@Override
+			public void run(){
+				if(Debug.DEBUG)
+					Log.d(TAG,"strarting search and parsing") ;
+				try {
+					mResults = ReverseGeocoder.addressSearch(mAddress.getText().toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				if(mResults != null){
+					if(Debug.DEBUG)
+						Log.d(TAG,"finished searching and parsing");
+					//update UI
+					mHandler.post(new Runnable(){
+						@Override
+						public void run(){
+							if(Debug.DEBUG)
+								Log.d(TAG,"populating list");
+							mAddressList.setAdapter(new ArrayAdapter<String>(mContext, android.R.layout.simple_list_item_1, getAddress()));
+							v.setEnabled(true);
+							mProgress.setVisibility(View.INVISIBLE);
+							mProgress.setIndeterminate(false);
+							if(Debug.DEBUG)
+								Log.d(TAG,"finished");
+						}
+					});
+				} else {
+					//update the UI
+					mHandler.post(new Runnable(){
+						@Override
+						public void run(){
+							v.setEnabled(true);
+							mProgress.setVisibility(View.INVISIBLE);
+							mProgress.setIndeterminate(false);
+							if(Debug.DEBUG)
+								Log.d(TAG,"failed");
+						}
+					});
+				}
+			}
+		}).start();
 	}
 }

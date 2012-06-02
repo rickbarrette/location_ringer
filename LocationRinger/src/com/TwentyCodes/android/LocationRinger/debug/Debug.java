@@ -10,15 +10,14 @@ import android.content.Context;
 
 /**
  * A convince class containing debugging variables
- * @author ricky barrette
- */
+ * @author ricky barrette */
 public class Debug {
 	
 	public static final boolean SUPPORTS_FROYO;
 
 	public static final boolean SUPPORTS_GINGERBREAD;
 
-	public  static final boolean SUPPORTS_HONEYCOMB;
+	public static final boolean SUPPORTS_HONEYCOMB;
 	
 	public static final int SHARED_PREFS_MODE;
 
@@ -51,6 +50,4 @@ public class Debug {
 	 * Max radius that can be set by a ringer
 	 */
 	public static final int MAX_RADIUS_IN_METERS = 600;
-	
-	
 }
