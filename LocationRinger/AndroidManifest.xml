@@ -94,6 +94,15 @@
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.TwentyCodes.android.exception.ExceptionReportActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" >
+        </activity>
+
+        <service
+            android:name="com.TwentyCodes.android.exception.ReportPostingService"
+            android:process=":ReportPostingService" >
+        </service>
     </application>
 
 </manifest>
