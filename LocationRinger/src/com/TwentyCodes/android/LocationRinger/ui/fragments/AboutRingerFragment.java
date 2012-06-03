@@ -44,6 +44,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 	private final ContentValues mRinger;
 	
 	public AboutRingerFragment(final ContentValues ringer, final ContentValues info, final OnContentChangedListener listener){
+		super();
 		this.mInfo = info;
 		this.mRinger = ringer;
 		this.mListener = listener;

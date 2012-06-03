@@ -7,6 +7,7 @@
 package com.TwentyCodes.android.LocationRinger.ui;
 
 import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -71,7 +72,7 @@ public class FirstBootDialog extends Dialog implements android.view.View.OnClick
 	 */
 	@Override
 	public void onClick(View arg0) {
-		this.getContext().getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_WRITEABLE).edit().putBoolean(SettingsActivity.IS_FIRST_BOOT, false).commit();
+		this.getContext().getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).edit().putBoolean(SettingsActivity.IS_FIRST_BOOT, false).commit();
 		this.dismiss();
 	}
 

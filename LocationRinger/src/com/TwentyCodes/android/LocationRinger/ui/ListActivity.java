@@ -7,14 +7,16 @@
 
 package com.TwentyCodes.android.LocationRinger.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -36,19 +38,20 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
-import com.TwentyCodes.android.SkyHook.Splash;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.location.PassiveLocationListener;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.WPSContinuation;
 import com.skyhookwireless.wps.WPSReturnCode;
 
+@SuppressLint("Registered")
 public class ListActivity extends Activity implements OnItemClickListener, OnClickListener, DatabaseListener, RegistrationCallback {
 	
     private RingerDatabase mDb;
 	private ListView mListView;
 	private SharedPreferences mSettings;
 	private ProgressDialog mProgress;
+	private Dialog mSplashDialog;
 	
 	public static final String NO_SPLASH = "no splash";
 	public static final String KEY_RINGER = "key_ringer";
@@ -153,7 +156,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         this.mListView.setEmptyView(findViewById(android.R.id.empty));
         findViewById(R.id.add_ringer_button).setOnClickListener(this);
         populate();
-        this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_WRITEABLE);
+        this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
         
         if(this.mSettings.getBoolean(SettingsActivity.IS_FIRST_BOOT, true))
         	new FirstBootDialog(this).show();
@@ -163,10 +166,10 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         }
         
         if(!this.getIntent().hasExtra(NO_SPLASH))
-        	this.startActivity(new Intent(this, Splash.class));
+        	showSplashScreen();
     }
-    
-    /**
+
+	/**
      * called when the activity is first created, creates a context menu
      * @param menu
      * @param v
@@ -193,8 +196,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     	return super.onCreateOptionsMenu(menu);
     	
     }
-    
-    /**
+	
+	/**
      * Called when a database is being upgraded
      * @author ricky barrette
      */
@@ -202,7 +205,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	public void onDatabaseUpgrade() {
 		this.mProgress = ProgressDialog.show(this, "", this.getText(R.string.upgrading), true, true);
 	}
-
+    
     /**
      * called when a database upgrade is finished
      * @author ricky barrette
@@ -213,8 +216,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		if(this.mProgress != null)
 			this.mProgress.dismiss();
 	}
-
-	/* (non-Javadoc)
+    
+    /* (non-Javadoc)
 	 * @see android.app.Activity#onDestroy()
 	 * @author ricky barrette
 	 */
@@ -224,8 +227,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		PassiveLocationListener.requestPassiveLocationUpdates(this, new Intent(this, PassiveLocationChangedReceiver.class));
 		super.onDestroy();
 	}
-
-	/**
+    
+    /**
      * called when an item in the list view has been clicked, 
      * this will open the note edit dialog for the selected note
      * (non-Javadoc)
@@ -278,7 +281,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		 }).start();
 	}
 
-	/**
+    /**
      * called when an option is selected form the menu
      * (non-Javadoc)
      * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
@@ -304,7 +307,17 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     	return super.onOptionsItemSelected(item);
     }
 
-    /**
+	/**
+	 * (non-Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		removeSplashScreen();
+		super.onPause();
+	}
+
+	/**
      * Called when the database is restored
      */
 	@Override
@@ -320,13 +333,23 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		populate();		
 	}
 
-	/**
+    /**
 	 * populates the list view from the data base
 	 * @author ricky barrette
 	 */
 	private void populate() {
 		findViewById(R.id.add_ringer_button_hint).setVisibility(this.mDb.getAllRingerTitles().size() > 1 ? View.GONE : View.VISIBLE);
 		mListView.setAdapter(new RingerListAdapter(this, mDb));
+	}
+
+	/**
+	 * Removes the Dialog that displays the splash screen
+	 */
+	protected void removeSplashScreen() {
+	    if (mSplashDialog != null) {
+	        mSplashDialog.dismiss();
+	        mSplashDialog = null;
+	    }
 	}
 
 	/**
@@ -344,5 +367,34 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 			this.startService(i);	
 		}	
+	}
+
+	/**
+	 * Shows the splash screen over the full Activity
+	 */
+	protected void showSplashScreen() {
+//		mMap.setGPSDialogEnabled(false);
+	    mSplashDialog = new Dialog(this, android.R.style.Theme_Translucent);
+	    mSplashDialog.setContentView(R.layout.powered_by_skyhook);
+	    mSplashDialog.setCancelable(false);
+	    mSplashDialog.show();
+	 
+	    // Set Runnable to remove splash screen just in case
+	    final Handler handler = new Handler();
+	    handler.postDelayed(new Runnable() {
+	      @Override
+	      public void run() {
+	        removeSplashScreen();
+	        
+	        /*
+	         * uncomment the following to display the eula
+	         */
+//	      //loads first boot dialog if this is the first boot
+//			if (! mSettings.getBoolean(Settings.ACCEPTED, false) || Debug.FORCE_FIRSTBOOT_DIALOG)
+//				eulaAlert();
+//			else
+//				update();
+	      }
+	    }, 2000);
 	}
 }

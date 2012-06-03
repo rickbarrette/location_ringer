@@ -40,8 +40,28 @@ public class RingerDatabase {
 	private static final String TAG = "RingerDatabase";
 	private final Context mContext;
 	private SQLiteDatabase mDb;
-	private final DatabaseListener mListener;
+	private static DatabaseListener mListener;
 	public boolean isUpgrading = false;
+	private final static Handler mHandler;
+	protected static final int DELETIONCOMPLETE = 0;
+	protected static final int DATABASEUPGRADECOMPLETE = 1;
+
+	static{
+		mHandler = new Handler(){
+			@Override
+		    public void handleMessage(Message msg) {
+				if(mListener != null)
+					switch(msg.what){
+						case DELETIONCOMPLETE:
+							mListener.onRingerDeletionComplete();
+							break;
+						case DATABASEUPGRADECOMPLETE:
+							mListener.onDatabaseUpgradeComplete();
+						break;
+					}
+		    }
+		};
+	}
 	
 	/*
 	 * database information values
@@ -212,19 +232,11 @@ public class RingerDatabase {
 		public void onUpgrade(final SQLiteDatabase db, final int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version "+oldVersion+" to "+newVersion);
 			
-			if(RingerDatabase.this.mListener != null)
-				RingerDatabase.this.mListener.onDatabaseUpgrade();
+			if(mListener != null)
+				mListener.onDatabaseUpgrade();
 			
 			RingerDatabase.this.isUpgrading = true;
 			
-			final Handler handler =  new Handler(){
-				@Override
-			    public void handleMessage(Message msg) {
-					if(RingerDatabase.this.mListener != null)
-						RingerDatabase.this.mListener.onDatabaseUpgradeComplete();
-			    }
-			};
-	    	
 	    	//upgrade thread
 			 new Thread( new Runnable(){
 				 @Override
@@ -269,7 +281,7 @@ public class RingerDatabase {
 							db.execSQL("ALTER TABLE ringers_new RENAME TO "+ RINGER_TABLE);
 							
 					}
-					handler.sendEmptyMessage(0);					
+					mHandler.sendEmptyMessage(DATABASEUPGRADECOMPLETE);					
 					RingerDatabase.this.isUpgrading = false;
 				}
 			 }).start();
@@ -292,7 +304,7 @@ public class RingerDatabase {
 	 * @author ricky barrette
 	 */
 	public RingerDatabase(Context context, DatabaseListener listener){
-		this.mListener = listener;		
+		mListener = listener;		
 		this.mContext = context;
 		this.mDb = new OpenHelper(this.mContext).getWritableDatabase();
 	}
@@ -384,15 +396,7 @@ public class RingerDatabase {
 	public void deleteRinger(final long id) {
 		
 		final ProgressDialog progress = ProgressDialog.show(RingerDatabase.this.mContext, "", RingerDatabase.this.mContext.getText(R.string.deleteing), true, true);
-		
-		final Handler handler =  new Handler(){
-			@Override
-		    public void handleMessage(Message msg) {
-				if(RingerDatabase.this.mListener != null)
-					RingerDatabase.this.mListener.onRingerDeletionComplete();
-		    }
-		};
-    	
+		  	
     	//ringer deleting thread
 		 new Thread( new Runnable(){
 			 @Override
@@ -409,7 +413,7 @@ public class RingerDatabase {
 				 */
 				RingerDatabase.this.mDb.delete(RINGER_TABLE, "id = "+ id, null);
 				updateRowIds(id +1);
-				handler.sendEmptyMessage(0);
+				mHandler.sendEmptyMessage(DELETIONCOMPLETE);
 				progress.dismiss();
 			 }
 		 }).start();
@@ -585,8 +589,8 @@ public class RingerDatabase {
 		this.mDb.close();
 		this.mDb = new OpenHelper(this.mContext).getWritableDatabase();
 		if(this.mDb.isOpen() && ! this.isUpgrading)
-			if(this.mListener != null)
-				this.mListener.onRestoreComplete();
+			if(mListener != null)
+				mListener.onRestoreComplete();
 	}
 
 	public int setRingerEnabled(final long id, final boolean enabled) {
@@ -667,7 +671,7 @@ public class RingerDatabase {
 	 */
 	private void updateRowIds(long id) {
 		long currentRow;
-		ContentValues values = new ContentValues();
+		final ContentValues values = new ContentValues();
 		final Cursor cursor = this.mDb.query(RINGER_TABLE, new String[] { "id" },null, null, null, null, null);
 		if (cursor.moveToFirst()) {
 			do {

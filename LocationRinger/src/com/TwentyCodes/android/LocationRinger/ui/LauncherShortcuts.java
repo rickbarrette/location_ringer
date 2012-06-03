@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 
@@ -78,7 +79,7 @@ public class LauncherShortcuts extends Activity {
          * start the location service in single shot mode
          */
         Intent service = new Intent(this, LocationService.class)
-		.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_READABLE).getString(SettingsActivity.ACCURACY , "50")))
+		.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getString(SettingsActivity.ACCURACY , "50")))
         .setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
         this.startService(service);
         

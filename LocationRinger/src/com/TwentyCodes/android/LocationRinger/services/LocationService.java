@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 
 import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.R;
+import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.SkyHook.SkyHookService;
 import com.TwentyCodes.android.exception.ExceptionHandler;
@@ -57,7 +58,7 @@ public class LocationService extends SkyHookService {
 	@Override
 	public void onCreate() {
 		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-		this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Context.MODE_WORLD_WRITEABLE);
+		this.mSettings = this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
 		this.mSettings.edit().putBoolean(SettingsActivity.IS_SERVICE_STARTED, true).commit();
 		startOnGoingNotification();
 		super.onCreate();
