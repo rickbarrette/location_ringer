@@ -86,13 +86,15 @@ public class RingerDatabase {
 	public final static String KEY_RINGTONE = "home_ringtone";
 	@Deprecated
 	public final static String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
-
+	@Deprecated
+	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
+	@Deprecated
+	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
+	
+	public final static String KEY_IS_ENABLED = "is_enabled";
 	public final static String KEY_RADIUS = "radius";
 	public final static String KEY_RINGER_NAME = "ringer_name";
 	public final static String KEY_LOCATION = "location";
-	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
-	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
-	public final static String KEY_IS_ENABLED = "is_enabled";
 	public final static String KEY_RINGTONE_URI = "ringtone_uri";
 	public final static String KEY_NOTIFICATION_RINGTONE_URI = "away_notification_uri";
 	public final static String KEY_RINGTONE_VOLUME = "ringtone_volume";

@@ -124,11 +124,11 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	private ArrayList<Fragment> initList() {
 		ArrayList<Fragment> what = new ArrayList<Fragment>();
 		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
+		if(this.mInfo.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME)){
 			what.add(initFeatureFragment(KEY_ADDED_RINGTONE));
 		}
 		
-		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT) || this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
+		if(this.mInfo.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME)){
 			what.add(initFeatureFragment(KEY_ADDED_NOTIFICATIONTONE));
 		}
 		
@@ -256,10 +256,10 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 			 */
 			switch(id){
 				case KEY_ADDED_RINGTONE:
-					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_RINGTONE_URI, RingerDatabase.KEY_RINGTONE_IS_SILENT, RingerDatabase.KEY_RINGTONE_VOLUME);
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_RINGTONE_URI, RingerDatabase.KEY_RINGTONE_VOLUME);
 					break;
 				case KEY_ADDED_NOTIFICATIONTONE:
-					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingerDatabase.KEY_NOTIFICATION_IS_SILENT, RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME);
+					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME);
 					break;
 				case KEY_ADDED_ALARM_VOLUME:
 					this.mListener.onInfoContentRemoved(RingerDatabase.KEY_ALARM_VOLUME);

@@ -72,34 +72,20 @@ public class RingerProcessingService extends Service {
 			Toast.makeText(this.getApplicationContext(), "Applying  "+ name, Toast.LENGTH_SHORT).show();
 		
 		/*
-		 * We need to null check all the value except ring/notification tone uri's and boolean values.
-		 */
-		
-		/*
 		 * ringtone & volume
-		 * if the ringtone is set to silent we want to set the volume to 0
 		 */
-		if(values.containsKey(RingerDatabase.KEY_RINGTONE_IS_SILENT)){
-			Log.d(TAG, "Ringtone: "+ applyRingtone(RingtoneManager.TYPE_RINGTONE, RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_RINGTONE_IS_SILENT)), values.getAsString(RingerDatabase.KEY_RINGTONE_URI)));		
-			if(RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_RINGTONE_IS_SILENT)))
-				setStreamVolume(0, AudioManager.STREAM_RING);
-			else
-				if(values.get(RingerDatabase.KEY_RINGTONE_VOLUME) != null)
-					setStreamVolume(values.getAsInteger(RingerDatabase.KEY_RINGTONE_VOLUME), AudioManager.STREAM_RING);
-		}
+		if(values.containsKey(RingerDatabase.KEY_RINGTONE_URI))
+			Log.d(TAG, "Ringtone: "+ applyRingtone(RingtoneManager.TYPE_RINGTONE, values.getAsString(RingerDatabase.KEY_RINGTONE_URI)));		
+		if(values.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME))
+			setStreamVolume(values.getAsInteger(RingerDatabase.KEY_RINGTONE_VOLUME), AudioManager.STREAM_RING);
 	
 		/*
 		 * notification ringtone & volume
-		 * if the notification ringtone is silent, we want to set the volume to 0
 		 */
-		if(values.containsKey(RingerDatabase.KEY_NOTIFICATION_IS_SILENT)){
-			Log.d(TAG, "Notification Ringtone: "+ applyRingtone(RingtoneManager.TYPE_NOTIFICATION, RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_NOTIFICATION_IS_SILENT)), values.getAsString(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI)));
-			if(RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_NOTIFICATION_IS_SILENT)))
-				setStreamVolume(0, AudioManager.STREAM_NOTIFICATION);
-			else
-				if(values.get(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME) != null)
-					setStreamVolume(values.getAsInteger(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME), AudioManager.STREAM_NOTIFICATION);
-		}
+		if(values.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI))
+			Log.d(TAG, "Notification Ringtone: "+ applyRingtone(RingtoneManager.TYPE_NOTIFICATION, values.getAsString(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI)));
+		if(values.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME))
+			setStreamVolume(values.getAsInteger(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME), AudioManager.STREAM_NOTIFICATION);
 		
 		if(Debug.DEBUG){
 			Log.d(TAG, "Music "+ (mAudioManager.isMusicActive() ? "is playing " : "is not playing"));
@@ -118,13 +104,10 @@ public class RingerProcessingService extends Service {
 		
 		/*
 		 * alarm volume
-		 * we will set the alarm volume only if music is not playing, and there is no wired head set
 		 */
 		if(values.containsKey(RingerDatabase.KEY_ALARM_VOLUME))
 			if(values.get(RingerDatabase.KEY_ALARM_VOLUME) != null)
-				if(! mAudioManager.isMusicActive())
-					if(! mAudioManager.isWiredHeadsetOn())
-						setStreamVolume(values.getAsInteger(RingerDatabase.KEY_ALARM_VOLUME), AudioManager.STREAM_ALARM);
+				setStreamVolume(values.getAsInteger(RingerDatabase.KEY_ALARM_VOLUME), AudioManager.STREAM_ALARM);
 		
 		/*
 		 * wifi & bluetooth 
@@ -172,55 +155,35 @@ public class RingerProcessingService extends Service {
 	 * @return string uri of applied ringtone, null if silent was applied
 	 * @author ricky barrette
 	 */
-	private String applyRingtone(int type, boolean isSilent, String uri) {
-		String ringtoneURI = null;
-		if(isSilent){
-			if(Debug.DEBUG)
-				Log.d(TAG, "Ringtone was set to silent ");
-		} else
-			ringtoneURI = uri;
-		RingtoneManager.setActualDefaultRingtoneUri(this, type, ringtoneURI == null ? null : Uri.parse(ringtoneURI));
+	private String applyRingtone(int type, String uri) {
+		RingtoneManager.setActualDefaultRingtoneUri(this, type, uri == null ? null : Uri.parse(uri));
 		return uri;
 	}
 
-//	/**
-//	 * Backs up the current settings into the database to be re applied as default
-//	 * @author ricky barrette
-//	 */
-//	private void backup() {
-//		
-//		if(Debug.DEBUG)
-//			Log.d(TAG, "backup()");
-//		
-//		ContentValues ringer = new ContentValues();
-//		ContentValues info = new ContentValues();
-//		 
-//		 /*
-//		  * package the ringer table information
-//		  */
-//		 ringer.put(RingerDatabase.KEY_RINGER_NAME, DEFAULT_RINGER);
-//		 
-//		 /*
-//		  * package the ringer_info table information
-//		  */
-//		 info.put(RingerDatabase.KEY_RINGTONE_IS_SILENT, mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT ? true : false);
-//		 info.put(RingerDatabase.KEY_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE).toString());
-//		 info.put(RingerDatabase.KEY_NOTIFICATION_IS_SILENT, mAudioManager.getRingerMode() == AudioManager.RINGER_MODE_SILENT ? true : false);
-//		 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString());
-//		 info.put(RingerDatabase.KEY_RINGTONE_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_RING));
-//		 info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION));
-//		 info.put(RingerDatabase.KEY_MUSIC_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
-//		 info.put(RingerDatabase.KEY_ALARM_VOLUME, mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM));
-//		 info.put(RingerDatabase.KEY_UPDATE_INTERVAL, this.mSettings.getString(SettingsActivity.SETTINGS, "10"));
-//		 
-//		 if(this.mBluetoothAdapter != null)
-//			 info.put(RingerDatabase.KEY_BT, this.mBluetoothAdapter.isEnabled());
-//		 
-//		 if(this.mWifiManager != null)
-//			 info.put(RingerDatabase.KEY_WIFI, this.mWifiManager.isWifiEnabled());
-//		 
-//		 this.mDb.updateRinger(1, ringer, info);
-//	}
+	/**
+	 * appends the new ringer's information in content values
+	 * @param id
+	 * @return
+	 */
+	private ContentValues getRinger(ContentValues values, long id) {
+		String name = this.mDb.getRingerName(id);
+		values.put(RingerDatabase.KEY_RINGER_NAME, name);
+		
+		/*
+    	 * get the ringer's info, and parse it into content values
+    	 */   	
+    	values.putAll(this.mDb.getRingerInfo(name));
+		return values;
+	}
+
+	/**
+	 * returns all the ringers information as content values
+	 * @param id
+	 * @return
+	 */
+	private ContentValues getRinger(long id) {
+		return getRinger(new ContentValues(), id);
+	}
 
 	/* (non-Javadoc)
 	 * @see android.app.Service#onBind(android.content.Intent)
@@ -283,17 +246,6 @@ public class RingerProcessingService extends Service {
 			e.printStackTrace();
 		}
 		
-//		//if this is the first time the service ever starts, then back up the current settings to create a back up
-//		if(this.mSettings.getBoolean(SettingsActivity.IS_FIRST_RINGER_PROCESSING, true)){
-//			backup();
-//			this.mSettings.edit().putBoolean(SettingsActivity.IS_FIRST_RINGER_PROCESSING, false).commit();
-//		}
-//		
-//		//if the default ringer is the currently applied ringer back up the current settings
-//		if(this.mSettings.getBoolean(SettingsActivity.IS_DEFAULT, false)){
-//			backup();
-//		}
-		
 		if(intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED) != null){
 			this.mLocation = intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED);
 			processRingers();
@@ -301,7 +253,7 @@ public class RingerProcessingService extends Service {
 			Log.d(TAG, "Location was null");
 		return super.onStartCommand(intent, flags, startId);
 	}
-
+	
 	/**
 	 * Processes the ringer database for applicable ringers
 	 * @author ricky barrette
@@ -360,31 +312,6 @@ public class RingerProcessingService extends Service {
 		this.mSettings.edit().putBoolean(SettingsActivity.IS_DEFAULT, isDeafult).commit();
 			
 		this.stopSelf(mStartId);
-	}
-
-	/**
-	 * appends the new ringer's information in content values
-	 * @param id
-	 * @return
-	 */
-	private ContentValues getRinger(ContentValues values, long id) {
-		String name = this.mDb.getRingerName(id);
-		values.put(RingerDatabase.KEY_RINGER_NAME, name);
-		
-		/*
-    	 * get the ringer's info, and parse it into content values
-    	 */   	
-    	values.putAll(this.mDb.getRingerInfo(name));
-		return values;
-	}
-	
-	/**
-	 * returns all the ringers information as content values
-	 * @param id
-	 * @return
-	 */
-	private ContentValues getRinger(long id) {
-		return getRinger(new ContentValues(), id);
 	}
 
 	/**

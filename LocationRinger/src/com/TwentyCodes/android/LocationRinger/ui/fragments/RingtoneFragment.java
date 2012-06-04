@@ -45,7 +45,6 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	private final int mStream;
 	private final int mType;
 	private final OnContentChangedListener mChangedListener;
-	private final String mKeyEnabled;
 	private final String mKeyUri;
 	private final String mKeyVolume;
 	private final ContentValues mInfo;
@@ -68,7 +67,6 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		
 		switch(stream){
 			case AudioManager.STREAM_NOTIFICATION:
-				mKeyEnabled = RingerDatabase.KEY_NOTIFICATION_IS_SILENT;
 				mKeyUri = RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI;
 				mKeyVolume = RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME;
 				mLabel = R.string.notification_ringtone;
@@ -77,7 +75,6 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 				
 			case AudioManager.STREAM_RING:
 			default:
-				mKeyEnabled = RingerDatabase.KEY_RINGTONE_IS_SILENT;
 				mKeyUri = RingerDatabase.KEY_RINGTONE_URI;
 				mKeyVolume = RingerDatabase.KEY_RINGTONE_VOLUME;
 				mLabel = R.string.ringtone;
@@ -111,7 +108,6 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		if(this.mChangedListener != null){
 			ContentValues info = new ContentValues();			
 			info.put(this.mKeyUri, tone != null ? tone.toString() : null);
-			info.put(mKeyEnabled, tone == null);
 			this.mChangedListener.onInfoContentChanged(info);
 		}
 	}
