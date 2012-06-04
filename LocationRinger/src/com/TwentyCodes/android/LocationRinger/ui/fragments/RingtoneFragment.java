@@ -8,6 +8,7 @@ package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
 import java.util.Map.Entry;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,6 +38,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will be for ringtone settings
  * @author ricky
  */
+@SuppressLint("ValidFragment")
 public class RingtoneFragment extends BaseFeatureFragment implements OnClickListener, OnSeekBarChangeListener {
 	
 	private static final String TAG = "RingtoneFragment";
@@ -133,7 +135,6 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	 */
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
 			final Uri tone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 			if(tone == null){
@@ -149,6 +150,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 			
 			notifyRingtoneChanged(tone);
 		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	/**

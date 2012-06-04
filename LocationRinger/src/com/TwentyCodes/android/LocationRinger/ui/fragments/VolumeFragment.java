@@ -8,6 +8,7 @@ package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
 import java.util.Map.Entry;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.media.AudioManager;
@@ -30,6 +31,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
  * This fragment will represent the volume fragments
  * @author ricky
  */
+@SuppressLint("ValidFragment")
 public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChangeListener {
 
 	private static final String TAG = "VolumeFragment";

@@ -8,6 +8,7 @@ package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -31,6 +32,7 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
  * This fragment will be used to display a list of features
  * @author ricky
  */
+@SuppressLint("ValidFragment")
 public class FeatureListFragment extends BaseFragmentListFragment implements OnClickListener, android.content.DialogInterface.OnClickListener, FeatureRemovedListener {
 	
 	private static final int KEY_ADDED_RINGTONE = 0;

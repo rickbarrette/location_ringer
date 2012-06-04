@@ -6,6 +6,7 @@
  */
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
  * A simple fragment that displays a toggle button and a title label
  * @author ricky
  */
+@SuppressLint("ValidFragment")
 public class ToggleButtonFragment extends BaseFeatureFragment implements OnCheckedChangeListener {
 
 	private final String mTitle;

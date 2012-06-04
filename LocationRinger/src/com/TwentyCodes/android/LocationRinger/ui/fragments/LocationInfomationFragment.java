@@ -6,6 +6,7 @@
  */
 package com.TwentyCodes.android.LocationRinger.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ import com.google.android.maps.GeoPoint;
  * This fragment will be used to display and allow the user to edit the ringers location trigger
  * @author ricky
  */
+@SuppressLint("ValidFragment")
 public class LocationInfomationFragment extends Fragment implements GeoPointLocationListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, OnLocationSelectedListener, SearchRequestedListener {
 
 	private static final String TAG = "RingerInformationHowActivity";

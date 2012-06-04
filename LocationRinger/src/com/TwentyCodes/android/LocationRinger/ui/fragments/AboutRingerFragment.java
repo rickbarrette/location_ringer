@@ -13,6 +13,7 @@ import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,6 +34,7 @@ import android.widget.ToggleButton;
  * This fragment will used to allow the user to enter/edit ringer information
  * @author ricky
  */
+@SuppressLint({ "ValidFragment", "ValidFragment" })
 public class AboutRingerFragment extends Fragment implements OnCheckedChangeListener {
 
 	private static final String TAG = "AboutRingerFragment";

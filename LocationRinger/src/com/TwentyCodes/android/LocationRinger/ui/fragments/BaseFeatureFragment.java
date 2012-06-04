@@ -9,6 +9,7 @@ package com.TwentyCodes.android.LocationRinger.ui.fragments;
 import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.ImageView;
  * This is a simple extention of a fragment that will allow for storage of an id
  * @author ricky barrette
  */
+@SuppressLint("ValidFragment")
 public class BaseFeatureFragment extends Fragment implements OnClickListener{
 
 	private final int mId;
