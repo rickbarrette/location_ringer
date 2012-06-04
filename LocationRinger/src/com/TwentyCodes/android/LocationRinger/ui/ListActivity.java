@@ -106,16 +106,18 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 						break;
 					}
 					
-					if(ListActivity.this.getIntent().getAction().equals(ACTION_NEW_RINGER))
-						finish();
-					else
-						ListActivity.this.mListView.post(new Runnable(){
-							@Override
-							public void run(){
-								progress.dismiss();
-								populate();
-							}
-						});
+					final String action = ListActivity.this.getIntent().getAction();
+			        if(action != null)
+						if(action.equals(ACTION_NEW_RINGER))
+							finish();
+						else
+							ListActivity.this.mListView.post(new Runnable(){
+								@Override
+								public void run(){
+									progress.dismiss();
+									populate();
+								}
+							});
 				}
 			}).start();
 		}
@@ -185,8 +187,9 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         if(!this.getIntent().hasExtra(NO_SPLASH))
         	showSplashScreen();
         
-        if(action.equals(ACTION_NEW_RINGER))
-        	startActivityForResult(new Intent(this, RingerInformationActivity.class), ACTIVITY_CREATE);	
+        if(action != null)
+	        if(action.equals(ACTION_NEW_RINGER))
+	        	startActivityForResult(new Intent(this, RingerInformationActivity.class), ACTIVITY_CREATE);	
     }
     
     /**
