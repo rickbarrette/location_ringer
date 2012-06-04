@@ -35,6 +35,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.FeatureListFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.LocationInfomationFragment;
+import com.TwentyCodes.android.exception.ExceptionHandler;
 import com.jakewharton.android.viewpagerindicator.TitlePageIndicator;
 import com.jakewharton.android.viewpagerindicator.TitledFragmentAdapter;
 
@@ -69,6 +70,10 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
+		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
+		
+		final Intent intent = getIntent();
+
 		setContentView(R.layout.ringer_information_activity);
 		
 		/*
@@ -77,7 +82,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		if(Debug.SUPPORTS_HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		this.mData = new Intent().putExtras(RingerInformationActivity.this.getIntent());
+		this.mData = new Intent().putExtras(intent);
 		
 		this.mRinger = this.mData.getParcelableExtra(ListActivity.KEY_RINGER);
 		this.mInfo = this.mData.getParcelableExtra(ListActivity.KEY_INFO);

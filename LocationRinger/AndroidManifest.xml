@@ -30,6 +30,8 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
         <activity
@@ -88,7 +90,7 @@
             android:process=":PassiveLocationChangedReceiver" />
 
         <activity
-            android:name=".ui.LauncherShortcuts"
+            android:name=".ui.CheckLocationShortcut"
             android:theme="@android:style/Theme.Translucent" >
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />

@@ -1,5 +1,5 @@
 /**
- * LauncherShortcuts.java
+ * CheckLocationShortcut.java
  * @date May 22, 2012
  * @author ricky barrette
  * @author Twenty Codes, LLC
@@ -21,7 +21,6 @@
 package com.TwentyCodes.android.LocationRinger.ui;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -56,7 +55,7 @@ import com.TwentyCodes.android.debug.LocationLibraryConstants;
  * In a real application, you would probably use the shortcut intent to display specific content
  * or start a particular operation.
  */
-public class LauncherShortcuts extends Activity {
+public class CheckLocationShortcut extends Activity {
 
     @Override
     public void onCreate(Bundle icicle) {

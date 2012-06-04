@@ -18,6 +18,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -60,6 +61,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	private static final int ACTIVITY_CREATE = 3;
 	private static final int ACTIVITY_EDIT = 4;
 	private static final String KEY_ROWID = "key_row_id";
+	public static final String ACTION_NEW_RINGER = "action_new_ringer";
 	
 	@Override
 	public void done() {
@@ -119,7 +121,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onClick(View v) {
 		Intent i = new Intent(this, RingerInformationActivity.class);
-		startActivityForResult(i, ACTIVITY_CREATE );		
+		startActivityForResult(i, ACTIVITY_CREATE);		
 	}
 
 	/**
@@ -147,6 +149,18 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        final Intent intent = getIntent();
+		final String action = intent.getAction();
+		
+		// If the intent is a request to create a shortcut, we'll do that and exit
+		
+		if (Intent.ACTION_CREATE_SHORTCUT.equals(action)) {
+			setupShortcut();
+			finish();
+			return;
+		}
+        
         setContentView(R.layout.ringer_list);
         this.setTitle(R.string.app_name);
         this.mDb = new RingerDatabase(this, this);
@@ -167,9 +181,12 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         
         if(!this.getIntent().hasExtra(NO_SPLASH))
         	showSplashScreen();
+        
+        if(action.equals(ACTION_NEW_RINGER))
+        	startActivityForResult(new Intent(this, RingerInformationActivity.class), ACTIVITY_CREATE);	
     }
-
-	/**
+    
+    /**
      * called when the activity is first created, creates a context menu
      * @param menu
      * @param v
@@ -182,8 +199,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     	MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.ringer_list_context_menu, menu);
     }
-    
-    /**
+
+	/**
      * called when the activity is first created, creates options menu
      * (non-Javadoc)
      * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
@@ -196,8 +213,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     	return super.onCreateOptionsMenu(menu);
     	
     }
-	
-	/**
+    
+    /**
      * Called when a database is being upgraded
      * @author ricky barrette
      */
@@ -205,8 +222,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	public void onDatabaseUpgrade() {
 		this.mProgress = ProgressDialog.show(this, "", this.getText(R.string.upgrading), true, true);
 	}
-    
-    /**
+	
+	/**
      * called when a database upgrade is finished
      * @author ricky barrette
      */
@@ -280,7 +297,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			 }
 		 }).start();
 	}
-
+    
     /**
      * called when an option is selected form the menu
      * (non-Javadoc)
@@ -307,7 +324,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
     	return super.onOptionsItemSelected(item);
     }
 
-	/**
+    /**
 	 * (non-Javadoc)
 	 * @see android.app.Activity#onPause()
 	 */
@@ -333,7 +350,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		populate();		
 	}
 
-    /**
+	/**
 	 * populates the list view from the data base
 	 * @author ricky barrette
 	 */
@@ -342,7 +359,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		mListView.setAdapter(new RingerListAdapter(this, mDb));
 	}
 
-	/**
+    /**
 	 * Removes the Dialog that displays the splash screen
 	 */
 	protected void removeSplashScreen() {
@@ -367,6 +384,23 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 			this.startService(i);	
 		}	
+	}
+
+	/**
+	 * Creates a shortcut for the launcher 
+	 * @author ricky barrette
+	 */
+	private void setupShortcut() {
+        Intent shortcutIntent = new Intent(this, this.getClass());
+        shortcutIntent.setAction(ACTION_NEW_RINGER);
+
+        //set up the container intent and return to the launcher
+        Intent intent = new Intent();
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.new_ringer));
+        Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this,  R.drawable.icon);
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
+        setResult(RESULT_OK, intent);
 	}
 
 	/**
