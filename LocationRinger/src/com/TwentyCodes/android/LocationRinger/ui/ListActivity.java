@@ -106,13 +106,16 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 						break;
 					}
 					
-					ListActivity.this.mListView.post(new Runnable(){
-						@Override
-						public void run(){
-							progress.dismiss();
-							populate();
-						}
-					});
+					if(ListActivity.this.getIntent().getAction().equals(ACTION_NEW_RINGER))
+						finish();
+					else
+						ListActivity.this.mListView.post(new Runnable(){
+							@Override
+							public void run(){
+								progress.dismiss();
+								populate();
+							}
+						});
 				}
 			}).start();
 		}
