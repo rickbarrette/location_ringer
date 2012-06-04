@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.receivers.GetLocationWidget;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
@@ -63,6 +64,10 @@ public class RingerProcessingService extends Service {
 			Log.d(TAG, "applyRigner()");
 		
 		final String name = values.getAsString(RingerDatabase.KEY_RINGER_NAME);
+		
+		this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).edit().putString(SettingsActivity.CURRENT, name).commit();
+		
+		this.sendBroadcast(new Intent(this, GetLocationWidget.class).setAction(GetLocationWidget.ACTION_UPDATE));
 		
 		/*
 		 * Make it toasty if the user wants to be notified.

@@ -9,6 +9,7 @@ package com.TwentyCodes.android.LocationRinger.receivers;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -26,7 +27,9 @@ import com.TwentyCodes.android.debug.LocationLibraryConstants;
  */
 public class GetLocationWidget extends AppWidgetProvider {
 
-public final String TAG = "GetLocationWidget";
+	public final String TAG = "GetLocationWidget";
+
+	public static final String ACTION_UPDATE = "action_update";
 	
 	/**
 	 * Called in response to the ACTION_APPWIDGET_UPDATE broadcast when this AppWidget provider is being asked to provide RemoteViews for a set of AppWidgets. 
@@ -57,6 +60,8 @@ public final String TAG = "GetLocationWidget";
             // Get the layout for the App Widget and attach an on-click listener to the button
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.get_location_widget);
             views.setOnClickPendingIntent(R.id.widget_get_location_button, pendingIntent);
+            
+            views.setTextViewText(R.id.widget_label, context.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getString(SettingsActivity.CURRENT, context.getString(R.string.default_ringer)));
 
             // Tell the AppWidgetManager to perform an update on the current App Widget
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -79,14 +84,19 @@ public final String TAG = "GetLocationWidget";
 			Log.v(TAG, "onReceive");
 		// v1.5 fix that doesn't call onDelete Action
 		final String action = intent.getAction();
+		
+		if(action.equals(ACTION_UPDATE)){
+			AppWidgetManager mgr=AppWidgetManager.getInstance(context);
+			onUpdate(context, mgr, mgr.getAppWidgetIds(new ComponentName(context, GetLocationWidget.class)));
+		}
+		
 		if (AppWidgetManager.ACTION_APPWIDGET_DELETED.equals(action)) {
 			final int appWidgetId = intent.getExtras().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
 			if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
 				this.onDeleted(context, new int[] { appWidgetId });
 			}
-		} else {
-			super.onReceive(context, intent);
-		}
+		} 
+		super.onReceive(context, intent);
 	}
 	
 	/**

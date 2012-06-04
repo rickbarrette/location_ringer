@@ -74,4 +74,7 @@ Copyright (C) 2011 Jake Wharton Licensed under the Apache License, Version 2.0 (
 <item name="textSize">@dimen/default_title_indicator_text_size</item>
 <item name="titlePadding">@dimen/default_title_indicator_title_padding</item>
 </style>
+<style name="styleName" parent="android:Widget.DeviceDefault.TextView">
+    <item name="android:gravity">center</item>
+</style>
 </resources>

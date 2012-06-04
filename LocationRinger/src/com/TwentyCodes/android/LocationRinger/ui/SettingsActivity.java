@@ -50,6 +50,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	public static final String IS_DEFAULT = "is_default";
 	public static final String RESTORE = "restore";
 	public static final String BACKUP = "backup";
+	public static final String CURRENT = "current";
 	
 	/**
 	 * Backs up the database

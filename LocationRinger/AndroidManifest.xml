@@ -77,6 +77,7 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="action_update" />
             </intent-filter>
 
             <meta-data
