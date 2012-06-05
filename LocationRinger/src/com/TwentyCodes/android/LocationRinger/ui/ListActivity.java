@@ -120,6 +120,11 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 							});
 				}
 			}).start();
+		} else {
+			final String action = ListActivity.this.getIntent().getAction();
+	        if(action != null)
+				if(action.equals(ACTION_NEW_RINGER))
+					finish();
 		}
 	}
 
