@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
-import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
@@ -183,7 +182,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 				save();
 				break;
 			case android.R.id.home:
-	            final Intent intent = new Intent(this, LocationRinger.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
+	            final Intent intent = new Intent(this, this.getClass()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
 	            startActivity(intent);
 	            return true;
 		}

@@ -13,9 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.ui.ListActivity;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.SkyHook.SkyHookService;
 import com.TwentyCodes.android.exception.ExceptionHandler;
@@ -71,7 +71,7 @@ public class LocationService extends SkyHookService {
 	private void startOnGoingNotification() {
 		this.mNotificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notifyDetails = new Notification(R.drawable.icon, this.getString(R.string.app_name), System.currentTimeMillis());
-		PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, LocationRinger.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, ListActivity.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 		notifyDetails.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.gathering), intent);
 		notifyDetails.flags |= Notification.FLAG_ONGOING_EVENT;
 		this.mNotificationManager.notify(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID, notifyDetails);

@@ -26,7 +26,6 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
-import com.TwentyCodes.android.LocationRinger.LocationRinger;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
@@ -177,7 +176,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	public boolean onOptionsItemSelected(final MenuItem item) {
 		switch(item.getItemId()){
 			case android.R.id.home:
-	            final Intent intent = new Intent(this, LocationRinger.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
+	            final Intent intent = new Intent(this, ListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
 	            startActivity(intent);
 	            return true;
 		}
