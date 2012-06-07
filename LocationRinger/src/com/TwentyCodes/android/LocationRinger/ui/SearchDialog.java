@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -63,6 +64,7 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 		mAddressList.setOnItemClickListener(this);
 		mAddress = (EditText) findViewById(R.id.address);
 		mAddress.setOnEditorActionListener(this);
+		this.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mProgress = (ProgressBar) findViewById(R.id.search_progress);
 		mHandler = new Handler();
 		mContext = context;
