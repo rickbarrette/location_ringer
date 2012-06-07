@@ -274,8 +274,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			 public void run(){
 				 Looper.prepare();
 				 
-		    	final Intent i = new Intent(ListActivity.this, RingerInformationActivity.class)
-		    	.putExtra(KEY_ROWID, id+1);
+		    	final Intent i = new Intent(ListActivity.this, RingerInformationActivity.class).putExtra(KEY_ROWID, id+1);
 		    	
 		    	/*
 		    	 * get the ringer

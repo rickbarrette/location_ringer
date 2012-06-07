@@ -17,11 +17,22 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CONTROL_LOCATION_UPDATES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_UPDATES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/Theme.Custom" >
+        <uses-library android:name="com.google.android.maps" />
+
         <activity
             android:name="LocationRinger"
             android:configChanges="keyboard|keyboardHidden|orientation"
@@ -36,7 +47,8 @@
         </activity>
         <activity
             android:name=".ui.RingerInformationActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation" />
+            android:configChanges="keyboard|keyboardHidden|orientation"
+            android:launchMode="singleInstance" />
 
         <receiver
             android:name=".receivers.SystemReceiver"
@@ -99,7 +111,8 @@
         </activity>
         <activity
             android:name="com.TwentyCodes.android.exception.ExceptionReportActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize" >
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize"
+            android:launchMode="singleInstance" >
         </activity>
 
         <service
