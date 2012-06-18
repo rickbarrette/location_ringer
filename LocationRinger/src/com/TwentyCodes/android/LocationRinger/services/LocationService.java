@@ -36,7 +36,7 @@ public class LocationService extends SkyHookService {
 	 */
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		this.mPeriod = (long) (60000 * Integer.parseInt(this.mSettings.getString(SettingsActivity.UPDATE_INTVERVAL , "10")));
+		this.mPeriod = Debug.UPDATE_INTERVAL;
 		return super.onStartCommand(intent, flags, startId);
 	}
 

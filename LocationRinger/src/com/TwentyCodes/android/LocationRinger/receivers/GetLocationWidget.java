@@ -51,7 +51,7 @@ public class GetLocationWidget extends AppWidgetProvider {
             int appWidgetId = appWidgetIds[i];
             
             Intent intent = new Intent(context, LocationService.class)
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(context.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getString(SettingsActivity.ACCURACY , "50")))
+			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
             .setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
                         
             //create a pending intent to start the post activity

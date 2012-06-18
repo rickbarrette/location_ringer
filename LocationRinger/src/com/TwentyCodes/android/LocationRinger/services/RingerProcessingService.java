@@ -27,7 +27,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
@@ -68,13 +67,6 @@ public class RingerProcessingService extends Service {
 		this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).edit().putString(SettingsActivity.CURRENT, name).commit();
 		
 		this.sendBroadcast(new Intent(this, GetLocationWidget.class).setAction(GetLocationWidget.ACTION_UPDATE));
-		
-		/*
-		 * Make it toasty if the user wants to be notified.
-		 * This will display a toast msg "Applying <ringer name>"
-		 */
-		if(this.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getBoolean(SettingsActivity.TOASTY, false))
-			Toast.makeText(this.getApplicationContext(), "Applying  "+ name, Toast.LENGTH_SHORT).show();
 		
 		/*
 		 * ringtone & volume
@@ -134,7 +126,7 @@ public class RingerProcessingService extends Service {
 		if(values.containsKey(RingerDatabase.KEY_UPDATE_INTERVAL))
 			if (values.get(RingerDatabase.KEY_UPDATE_INTERVAL) != null){
 				Intent i = new Intent(this, LocationService.class)
-				.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(this.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
+				.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
 				.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 				PendingIntent pi = PendingIntent.getService(this, LocationService.REQUEST_CODE, i, 0);
 				

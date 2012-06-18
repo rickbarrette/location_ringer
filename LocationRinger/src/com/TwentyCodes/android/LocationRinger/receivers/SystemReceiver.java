@@ -45,7 +45,7 @@ public class SystemReceiver extends BroadcastReceiver {
 		final SharedPreferences systemEventHistory = context.getSharedPreferences(TAG, Debug.SHARED_PREFS_MODE);
 		Intent i = new Intent(context, LocationService.class)
 //			.putExtra(LocationService.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, (long) (60000 * Integer.parseInt(context.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.UPDATE_INTVERVAL , "10"))))
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(context.getSharedPreferences(SettingsActivity.SETTINGS, 2).getString(SettingsActivity.ACCURACY , "50")))
+			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
 			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 		
 		/*

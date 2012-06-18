@@ -390,7 +390,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			LocationService.stopService(this).run();
 			//start the new service
 			Intent i = new Intent(this, LocationService.class)
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Integer.parseInt(sharedPrefs.getString(SettingsActivity.ACCURACY , "50")))
+			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
 			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 			this.startService(i);	
 		}	

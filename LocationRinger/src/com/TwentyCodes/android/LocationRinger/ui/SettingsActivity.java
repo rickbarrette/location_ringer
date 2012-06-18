@@ -36,10 +36,6 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 public class SettingsActivity extends PreferenceActivity implements OnPreferenceClickListener {
 	
 	public static final String SETTINGS = "settings";
-	public static final String UPDATE_INTVERVAL = "update_interval";
-	public static final String IGNORE_LOCATION = "ignore_location";
-	public static final String ACCURACY = "accuracy";
-	public static final String TOASTY = "toasty";
 	public static final String EMAIL = "email";
 	public static final String START_ON_BOOT = "start_on_boot";
 	public static final String IS_SERVICE_STARTED = "is_service_started";
