@@ -6,11 +6,8 @@
  */
 package com.TwentyCodes.android.LocationRinger.services;
 
-import java.util.Calendar;
 import java.util.Map.Entry;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
@@ -119,29 +116,6 @@ public class RingerProcessingService extends Service {
 					mBluetoothAdapter.enable();
 				else
 					mBluetoothAdapter.disable();
-		
-		/*
-		 * update interval
-		 */
-		if(values.containsKey(RingerDatabase.KEY_UPDATE_INTERVAL))
-			if (values.get(RingerDatabase.KEY_UPDATE_INTERVAL) != null){
-				Intent i = new Intent(this, LocationService.class)
-				.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-				.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
-				PendingIntent pi = PendingIntent.getService(this, LocationService.REQUEST_CODE, i, 0);
-				
-				final AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-				
-				/*
-				 * cancel the existing schedule
-				 */
-				am.cancel(pi);
-				
-				/*
-				 * reschedule the location service
-				 */
-				am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() +  (long) (60000 * Integer.parseInt(values.getAsString(RingerDatabase.KEY_UPDATE_INTERVAL))), pi);
-			}
 	}
 
 	/**

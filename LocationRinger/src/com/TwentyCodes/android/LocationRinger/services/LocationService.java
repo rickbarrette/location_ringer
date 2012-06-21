@@ -9,6 +9,7 @@ package com.TwentyCodes.android.LocationRinger.services;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.ListActivity;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.SkyHook.SkyHookService;
+import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
 
 /**
@@ -30,27 +32,18 @@ public class LocationService extends SkyHookService {
 	private SharedPreferences mSettings;
 	private NotificationManager mNotificationManager;
 
-	/* (non-Javadoc)
-	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onStartCommand(android.content.Intent, int, int)
+	/**
+	 * convince method for getting the single shot service intent
+	 * @param context
+	 * @return service intent
 	 * @author ricky barrette
 	 */
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		this.mPeriod = Debug.UPDATE_INTERVAL;
-		return super.onStartCommand(intent, flags, startId);
+	public static Intent getSingleShotServiceIntent(Context context) {
+		return new Intent(context, LocationService.class)
+		.putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
+		.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 	}
-
-	/* (non-Javadoc)
-	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onDestroy()
-	 * @author ricky barrette
-	 */
-	@Override
-	public void onDestroy() {
-		this.mSettings.edit().remove(SettingsActivity.IS_SERVICE_STARTED).commit();
-		this.mNotificationManager.cancel(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID);
-		super.onDestroy();
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onCreate()
 	 * @author ricky barrette
@@ -64,6 +57,41 @@ public class LocationService extends SkyHookService {
 		super.onCreate();
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onDestroy()
+	 * @author ricky barrette
+	 */
+	@Override
+	public void onDestroy() {
+		this.mSettings.edit().remove(SettingsActivity.IS_SERVICE_STARTED).commit();
+		this.mNotificationManager.cancel(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID);
+		super.onDestroy();
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onStartCommand(android.content.Intent, int, int)
+	 * @author ricky barrette
+	 */
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		this.mPeriod = Debug.UPDATE_INTERVAL;
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	/**
+	 * Starts the location service in multi shot mode
+	 * @param context
+	 * @return
+	 * @author ricky barrette
+	 */
+	public static ComponentName startMultiShotService(final Context context){
+		Intent i = new Intent(context, LocationService.class)
+		.putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Debug.UPDATE_INTERVAL)
+		.putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
+		.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
+		return context.startService(i);
+	}
+	
 	/**
 	 * starts a simple ongoing notification to inform the user that we are gathering location
 	 * @author ricky barrette
@@ -75,5 +103,15 @@ public class LocationService extends SkyHookService {
 		notifyDetails.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.gathering), intent);
 		notifyDetails.flags |= Notification.FLAG_ONGOING_EVENT;
 		this.mNotificationManager.notify(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID, notifyDetails);
+	}
+
+	/**
+	 * starts the service in single shot mode
+	 * @param context
+	 * @return
+	 * @author ricky barrette
+	 */
+	public static ComponentName startSingleShotService(final Context context){
+		return context.startService(getSingleShotServiceIntent(context));
 	}
 }

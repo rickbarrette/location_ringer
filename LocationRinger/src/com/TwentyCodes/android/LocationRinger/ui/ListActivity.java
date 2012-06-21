@@ -39,7 +39,6 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
-import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.location.PassiveLocationListener;
 import com.skyhookwireless.wps.RegistrationCallback;
 import com.skyhookwireless.wps.WPSContinuation;
@@ -389,10 +388,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 			// cancel the previous service
 			LocationService.stopService(this).run();
 			//start the new service
-			Intent i = new Intent(this, LocationService.class)
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
-			this.startService(i);	
+			LocationService.startMultiShotService(this);
 		}	
 	}
 

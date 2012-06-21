@@ -77,10 +77,7 @@ public class CheckLocationShortcut extends Activity {
         /*
          * start the location service in single shot mode
          */
-        Intent service = new Intent(this, LocationService.class)
-		.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-        .setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
-        this.startService(service);
+        LocationService.startSingleShotService(this);
         
         this.finish();
     }

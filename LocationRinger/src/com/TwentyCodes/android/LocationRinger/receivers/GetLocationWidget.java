@@ -19,7 +19,6 @@ import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
-import com.TwentyCodes.android.debug.LocationLibraryConstants;
 
 /**
  * This widget will be used to force a Location update from the users home screen
@@ -50,9 +49,7 @@ public class GetLocationWidget extends AppWidgetProvider {
         for (int i=0; i<N; i++) {
             int appWidgetId = appWidgetIds[i];
             
-            Intent intent = new Intent(context, LocationService.class)
-			.putExtra(LocationService.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-            .setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
+            Intent intent = LocationService.getSingleShotServiceIntent(context);
                         
             //create a pending intent to start the post activity
             PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent, 0);
