@@ -118,7 +118,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	 * @author ricky barrette
 	 */
 	private void notifyVolumeChanged(int progress) {
-		setIcon(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
+		setIcon(progress == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
 		if(this.mChangedListener != null){
 			final ContentValues info = new ContentValues();
 			info.put(this.mKeyVolume, progress);
@@ -180,7 +180,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		final TextView label = (TextView) view.findViewById(R.id.title);
 		label.setText(mLabel);
 		
-		setIcon(android.R.drawable.ic_lock_silent_mode_off);
+		setIcon(R.drawable.ic_action_volume);
 		
 		this.mRingtone = (EditText) view.findViewById(R.id.ringtone);
 		mVolume = (SeekBar) view.findViewById(R.id.ringtone_volume);
@@ -223,7 +223,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 			mVolume.setProgress(0);
 		}
 		
-		setIcon(mVolume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
+		setIcon(mVolume.getProgress() == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
 		
 		mVolume.setOnSeekBarChangeListener(this);
 		return view;

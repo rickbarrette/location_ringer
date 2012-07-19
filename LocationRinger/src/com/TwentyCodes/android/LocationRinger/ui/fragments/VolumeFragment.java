@@ -127,7 +127,7 @@ public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChan
 		else
 			notifyListener(this.mAudioManager.getStreamVolume(mStream));
 		
-		setIcon(volume.getProgress() == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
+		setIcon(volume.getProgress() == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
 		return view;
 	}
 
@@ -135,7 +135,7 @@ public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChan
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if(fromUser){
 			notifyListener(progress);
-			setIcon(progress == 0 ? android.R.drawable.ic_lock_silent_mode : android.R.drawable.ic_lock_silent_mode_off);
+			setIcon(progress == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
 		}
 	}
 

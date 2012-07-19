@@ -105,11 +105,11 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 				mAdded.add(KEY_ADDED_MUSIC_VOLUME);
 				break;
 			case KEY_ADDED_BT:
-				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this, KEY_ADDED_BT);
+				f = new ToggleButtonFragment(R.drawable.ic_action_bluetooth, this.getString(R.string.bluetooth), RingerDatabase.KEY_BT, this.mInfo, this.mListener, this, KEY_ADDED_BT);
 				mAdded.add(KEY_ADDED_BT);
 				break;
 			case KEY_ADDED_WIFI:
-				f = new ToggleButtonFragment(android.R.drawable.stat_sys_data_bluetooth, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this, KEY_ADDED_WIFI);
+				f = new ToggleButtonFragment(R.drawable.ic_action_wifi, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, this.mInfo, this.mListener, this, KEY_ADDED_WIFI);
 				mAdded.add(KEY_ADDED_WIFI);
 				break;
 				
