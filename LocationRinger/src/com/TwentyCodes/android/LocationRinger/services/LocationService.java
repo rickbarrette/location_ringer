@@ -6,19 +6,18 @@
  */
 package com.TwentyCodes.android.LocationRinger.services;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import anroid.v4.compat.NotificationCompat;
 
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.ListActivity;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
-import com.TwentyCodes.android.SkyHook.SkyHookService;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
 
@@ -26,7 +25,7 @@ import com.TwentyCodes.android.exception.ExceptionHandler;
  * We override the location service so we can attach the exception handler
  * @author ricky barrette
  */
-public class LocationService extends SkyHookService {
+public class LocationService extends com.TwentyCodes.android.location.LocationService {
 
 	private final int GATHERING_LOCATION_ONGING_NOTIFICATION_ID = 232903877;
 	private SharedPreferences mSettings;
@@ -40,8 +39,8 @@ public class LocationService extends SkyHookService {
 	 */
 	public static Intent getSingleShotServiceIntent(Context context) {
 		return new Intent(context, LocationService.class)
-		.putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-		.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
+			.putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
+			.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
 	}
 	
 	/* (non-Javadoc)
@@ -85,10 +84,7 @@ public class LocationService extends SkyHookService {
 	 * @author ricky barrette
 	 */
 	public static ComponentName startMultiShotService(final Context context){
-		Intent i = new Intent(context, LocationService.class)
-		.putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Debug.UPDATE_INTERVAL)
-		.putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY)
-		.setAction(LocationLibraryConstants.INTENT_ACTION_UPDATE);
+		Intent i = getSingleShotServiceIntent(context).putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Debug.UPDATE_INTERVAL);
 		return context.startService(i);
 	}
 	
@@ -98,11 +94,17 @@ public class LocationService extends SkyHookService {
 	 */
 	private void startOnGoingNotification() {
 		this.mNotificationManager = (NotificationManager) this.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notifyDetails = new Notification(R.drawable.icon, this.getString(R.string.app_name), System.currentTimeMillis());
-		PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, ListActivity.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
-		notifyDetails.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.gathering), intent);
-		notifyDetails.flags |= Notification.FLAG_ONGOING_EVENT;
-		this.mNotificationManager.notify(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID, notifyDetails);
+		
+		final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext())
+			.setContentTitle(getString(R.string.app_name))
+			.setContentText(this.getString(R.string.gathering))
+			.setTicker(this.getString(R.string.gathering))
+			.setSmallIcon(R.drawable.icon)
+			.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ListActivity.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
+			.setWhen(System.currentTimeMillis())
+			.setOngoing(true);
+		
+		this.mNotificationManager.notify(this.GATHERING_LOCATION_ONGING_NOTIFICATION_ID, builder.getNotification());
 	}
 
 	/**

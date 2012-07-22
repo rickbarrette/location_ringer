@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.view.ContextMenu;
@@ -188,8 +187,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         	new SkyHookRegistration(this).registerNewUser(this);
         }
         
-        if(!this.getIntent().hasExtra(NO_SPLASH))
-        	showSplashScreen();
+//        if(!this.getIntent().hasExtra(NO_SPLASH))
+//        	showSplashScreen();
         
         if(action != null)
 	        if(action.equals(ACTION_NEW_RINGER))
@@ -409,32 +408,32 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
         setResult(RESULT_OK, intent);
 	}
 
-	/**
-	 * Shows the splash screen over the full Activity
-	 */
-	protected void showSplashScreen() {
-//		mMap.setGPSDialogEnabled(false);
-	    mSplashDialog = new Dialog(this, android.R.style.Theme_Translucent);
-	    mSplashDialog.setContentView(R.layout.powered_by_skyhook);
-	    mSplashDialog.setCancelable(false);
-	    mSplashDialog.show();
-	 
-	    // Set Runnable to remove splash screen just in case
-	    final Handler handler = new Handler();
-	    handler.postDelayed(new Runnable() {
-	      @Override
-	      public void run() {
-	        removeSplashScreen();
-	        
-	        /*
-	         * uncomment the following to display the eula
-	         */
-//	      //loads first boot dialog if this is the first boot
-//			if (! mSettings.getBoolean(Settings.ACCEPTED, false) || Debug.FORCE_FIRSTBOOT_DIALOG)
-//				eulaAlert();
-//			else
-//				update();
-	      }
-	    }, 2000);
-	}
+//	/**
+//	 * Shows the splash screen over the full Activity
+//	 */
+//	protected void showSplashScreen() {
+////		mMap.setGPSDialogEnabled(false);
+//	    mSplashDialog = new Dialog(this, android.R.style.Theme_Translucent);
+//	    mSplashDialog.setContentView(R.layout.powered_by_skyhook);
+//	    mSplashDialog.setCancelable(false);
+//	    mSplashDialog.show();
+//	 
+//	    // Set Runnable to remove splash screen just in case
+//	    final Handler handler = new Handler();
+//	    handler.postDelayed(new Runnable() {
+//	      @Override
+//	      public void run() {
+//	        removeSplashScreen();
+//	        
+//	        /*
+//	         * uncomment the following to display the eula
+//	         */
+////	      //loads first boot dialog if this is the first boot
+////			if (! mSettings.getBoolean(Settings.ACCEPTED, false) || Debug.FORCE_FIRSTBOOT_DIALOG)
+////				eulaAlert();
+////			else
+////				update();
+//	      }
+//	    }, 2000);
+//	}
 }
