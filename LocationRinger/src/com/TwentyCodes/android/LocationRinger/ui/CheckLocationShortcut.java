@@ -26,9 +26,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
-import com.TwentyCodes.android.debug.LocationLibraryConstants;
 
 /**
  * This Activity actually handles two stages of a launcher shortcut's life cycle.

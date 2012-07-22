@@ -71,7 +71,7 @@ public class TitlePageIndicator extends TextView implements PageIndicator, View.
     private int mCurrentOffset;
     private final Paint mPaintText;
     private final Paint mPaintSelected;
-    private Path mPath;
+    private final Path mPath;
     private final Paint mPaintFooterLine;
     private IndicatorStyle mFooterIndicatorStyle;
     private final Paint mPaintFooterIndicator;
@@ -95,6 +95,7 @@ public class TitlePageIndicator extends TextView implements PageIndicator, View.
     public TitlePageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         super.setOnTouchListener(this);
+        mPath = new Path();
 
         //Load defaults from resources
         final Resources res = getResources();
@@ -326,15 +327,16 @@ public class TitlePageIndicator extends TextView implements PageIndicator, View.
         }
 
         //Draw the footer line
-        mPath = new Path();
+        mPath.reset();
         mPath.moveTo(0, height - mFooterLineHeight);
         mPath.lineTo(width, height - mFooterLineHeight);
         mPath.close();
         canvas.drawPath(mPath, mPaintFooterLine);
 
         switch (mFooterIndicatorStyle) {
+        	default:
             case Triangle:
-                mPath = new Path();
+                mPath.reset();
                 mPath.moveTo(halfWidth, height - mFooterLineHeight - mFooterIndicatorHeight);
                 mPath.lineTo(halfWidth + mFooterIndicatorHeight, height - mFooterLineHeight);
                 mPath.lineTo(halfWidth - mFooterIndicatorHeight, height - mFooterLineHeight);
@@ -356,7 +358,7 @@ public class TitlePageIndicator extends TextView implements PageIndicator, View.
                 }
 
                 Rect underlineBounds = bounds.get(page);
-                mPath = new Path();
+                mPath.reset();
                 mPath.moveTo(underlineBounds.left  - mFooterIndicatorUnderlinePadding, height - mFooterLineHeight);
                 mPath.lineTo(underlineBounds.right + mFooterIndicatorUnderlinePadding, height - mFooterLineHeight);
                 mPath.lineTo(underlineBounds.right + mFooterIndicatorUnderlinePadding, height - mFooterLineHeight - mFooterIndicatorHeight);

@@ -79,8 +79,10 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 * @author ricky barrette
 	 */
 	private static void copyFile(final File src, final File dst) throws IOException {
-        final FileChannel inChannel = new FileInputStream(src).getChannel();
-        final FileChannel outChannel = new FileOutputStream(dst).getChannel();
+		final FileInputStream in = new FileInputStream(src);
+		final FileOutputStream out = new FileOutputStream(dst);
+        final FileChannel inChannel = in.getChannel();
+        final FileChannel outChannel = out.getChannel();
         try {
            inChannel.transferTo(0, inChannel.size(), outChannel);
         } finally {
@@ -88,6 +90,11 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
               inChannel.close();
            if (outChannel != null)
               outChannel.close();
+           if(in != null)
+        	   in.close();
+           if(out != null)
+        	   out.close();
+           
         }
      }
 	
