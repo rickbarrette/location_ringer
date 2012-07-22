@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.TwentyCodes.android.LocationRinger"
     android:installLocation="internalOnly"
-    android:versionCode="67"
-    android:versionName="19b5c13" >
+    android:versionCode="70"
+    android:versionName="f06f790" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16"/>
 
@@ -43,7 +43,7 @@
 
         <activity
             android:name=".ui.RingerInformationActivity"
-            android:configChanges="keyboard|orientation" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize" android:launchMode="singleTask"/>
 
         <receiver
             android:name=".receivers.SystemReceiver"

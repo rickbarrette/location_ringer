@@ -124,7 +124,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 		mNotificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
 		final NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext()).setContentTitle(getString(R.string.app_name))
-				.setContentText(this.getString(R.string.gathering)).setTicker(this.getString(R.string.gathering)).setSmallIcon(R.drawable.icon)
+				.setContentText(this.getString(R.string.gathering)).setTicker(this.getString(R.string.gathering)).setSmallIcon(R.drawable.ic_stat_locationringer)
 				.setContentIntent(PendingIntent.getActivity(this, 0, new Intent(this, ListActivity.class), android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
 				.setWhen(System.currentTimeMillis()).setOngoing(true);
 
