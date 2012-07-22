@@ -24,6 +24,7 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 
 /**
  * A simple fragment that displays a toggle button and a title label
+ * 
  * @author ricky
  */
 @SuppressLint("ValidFragment")
@@ -36,55 +37,59 @@ public class ToggleButtonFragment extends BaseFeatureFragment implements OnCheck
 
 	/**
 	 * Creates a new ToggleButtonFtagment
+	 * 
 	 * @author ricky barrette
 	 */
-	public ToggleButtonFragment(int icon, String title, String key, ContentValues info, OnContentChangedListener changedListener, FeatureRemovedListener removedListener, int id) {
+	public ToggleButtonFragment(final int icon, final String title, final String key, final ContentValues info, final OnContentChangedListener changedListener,
+			final FeatureRemovedListener removedListener, final int id) {
 		super(id, R.layout.toggle_button_fragment, icon, removedListener);
-		
-		if ( info == null )
+
+		if (info == null)
 			throw new NullPointerException();
-		if (title == null )
+		if (title == null)
 			throw new NullPointerException();
-		if ( key == null )
+		if (key == null)
 			throw new NullPointerException();
-		if ( changedListener == null )
+		if (changedListener == null)
 			throw new NullPointerException();
-		
-		this.mTitle = title;
-		this.mKey = key;
-		this.mInfo = info;
-		this.mChangedListener = changedListener;
+
+		mTitle = title;
+		mKey = key;
+		mInfo = info;
+		mChangedListener = changedListener;
 	}
 
 	/**
-	 * Called when the fragment's view needs to be created
-	 * (non-Javadoc)
-	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 * Called when the toggle button is clicked (non-Javadoc)
+	 * 
+	 * @see android.widget.CompoundButton.OnCheckedChangeListener#onCheckedChanged(android.widget.CompoundButton,
+	 *      boolean)
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public void onCheckedChanged(final CompoundButton buttonView, final boolean isChecked) {
+		if (mChangedListener != null) {
+			final ContentValues info = new ContentValues();
+			info.put(mKey, isChecked);
+			mChangedListener.onInfoContentChanged(info);
+		}
+	}
+
+	/**
+	 * Called when the fragment's view needs to be created (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater,
+	 *      android.view.ViewGroup, android.os.Bundle)
+	 */
+	@Override
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final TextView t = (TextView) view.findViewById(R.id.title);
-		t.setText(this.mTitle);
-		
+		t.setText(mTitle);
+
 		final ToggleButton b = (ToggleButton) view.findViewById(R.id.toggle);
-		if(this.mInfo.containsKey(this.mKey))
-			b.setChecked(RingerDatabase.parseBoolean(this.mInfo.getAsString(this.mKey)));
+		if (mInfo.containsKey(mKey))
+			b.setChecked(RingerDatabase.parseBoolean(mInfo.getAsString(mKey)));
 		b.setOnCheckedChangeListener(this);
 		return view;
-	}
-
-	/**
-	 * Called when the toggle button is clicked
-	 * (non-Javadoc)
-	 * @see android.widget.CompoundButton.OnCheckedChangeListener#onCheckedChanged(android.widget.CompoundButton, boolean)
-	 */
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		if(this.mChangedListener != null){
-			ContentValues info = new ContentValues();
-			info.put(this.mKey, isChecked);
-			this.mChangedListener.onInfoContentChanged(info);
-		}
 	}
 }

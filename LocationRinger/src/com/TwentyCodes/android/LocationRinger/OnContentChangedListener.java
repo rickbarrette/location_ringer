@@ -8,16 +8,17 @@ package com.TwentyCodes.android.LocationRinger;
 
 import android.content.ContentValues;
 
-
 /**
- * This interface will be used to pass the content updated in fragments down to the main FragmentActivity
+ * This interface will be used to pass the content updated in fragments down to
+ * the main FragmentActivity
+ * 
  * @author ricky
  */
 public interface OnContentChangedListener {
 
-	void onRingerContentChanged(ContentValues ringer);
-	
 	void onInfoContentChanged(ContentValues info);
-	
-	void onInfoContentRemoved(String... keys);	
+
+	void onInfoContentRemoved(String... keys);
+
+	void onRingerContentChanged(ContentValues ringer);
 }

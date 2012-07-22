@@ -24,10 +24,11 @@ public class MapFragment extends BaseMapFragment {
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see com.TwentyCodes.android.fragments.BaseMapFragment#onMapViewCreate(com.TwentyCodes.android.location.MapView)
 	 */
 	@Override
-	public void onMapViewCreate(MapView map) {
+	public void onMapViewCreate(final MapView map) {
 		// TODO Auto-generated method stub
 
 	}

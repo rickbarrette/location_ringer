@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.TwentyCodes.android.LocationRinger"
     android:installLocation="internalOnly"
-    android:versionCode="65"
-    android:versionName="c708c3d" >
+    android:versionCode="67"
+    android:versionName="19b5c13" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="16"/>
 

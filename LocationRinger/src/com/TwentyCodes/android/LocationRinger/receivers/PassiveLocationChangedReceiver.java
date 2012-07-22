@@ -8,11 +8,12 @@ package com.TwentyCodes.android.LocationRinger.receivers;
 
 /**
  * This class will be used to listen for location updates passively.
+ * 
  * @author ricky barrette
  */
 public class PassiveLocationChangedReceiver extends LocationChangedReceiver {
 
-	static{
+	static {
 		TAG = "PassiveLocationChangedReceiver";
 	}
 

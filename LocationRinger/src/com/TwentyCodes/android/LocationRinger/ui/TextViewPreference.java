@@ -11,71 +11,77 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * this class will be a simple TextView to be used in a preference activity. you set the text using the set title tag
+ * this class will be a simple TextView to be used in a preference activity. you
+ * set the text using the set title tag
+ * 
  * @author ricky barrette
  */
 public class TextViewPreference extends Preference {
 
 	/**
-	 * creates a preference that is nothing but a text view 
+	 * creates a preference that is nothing but a text view
+	 * 
 	 * @param context
 	 */
-	public TextViewPreference(Context context) {
+	public TextViewPreference(final Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	/**
 	 * creates a preference that is nothing but a text view
+	 * 
 	 * @param context
 	 * @param attrs
 	 */
-	public TextViewPreference(Context context, AttributeSet attrs) {
+	public TextViewPreference(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
 	}
 
 	/**
 	 * creates a preference that is nothing but a text view
+	 * 
 	 * @param context
 	 * @param attrs
 	 * @param defStyle
 	 */
-	public TextViewPreference(Context context, AttributeSet attrs, int defStyle) {
+	public TextViewPreference(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-	
 	/**
-	 * creates a linear layout the contains only a textview.
-	 * (non-Javadoc)
+	 * creates a linear layout the contains only a textview. (non-Javadoc)
+	 * 
 	 * @see android.preference.Preference#onCreateView(android.view.ViewGroup)
 	 * @param parent
 	 * @return
 	 * @author ricky barrette
 	 */
 	@Override
-	 protected View onCreateView(ViewGroup parent){
-		
+	protected View onCreateView(final ViewGroup parent) {
+
 		/*
-		 * create a vertical linear layout that width and height that wraps content
+		 * create a vertical linear layout that width and height that wraps
+		 * content
 		 */
-		LinearLayout layout = new LinearLayout(getContext());
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		final LinearLayout layout = new LinearLayout(getContext());
+		final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.gravity = Gravity.CENTER;
 		layout.setPadding(15, 5, 10, 5);
 		layout.setOrientation(LinearLayout.VERTICAL);
 
 		layout.removeAllViews();
-		
+
 		/*
-		 * create a textview that will be used to display the title provided in xml
-		 * and add it to the lay out
+		 * create a textview that will be used to display the title provided in
+		 * xml and add it to the lay out
 		 */
-		TextView title = new TextView(getContext());
+		final TextView title = new TextView(getContext());
 		title.setText(getTitle());
 		title.setTextSize(16);
 		title.setTypeface(Typeface.SANS_SERIF);

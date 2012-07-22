@@ -7,17 +7,19 @@
 package com.TwentyCodes.android.LocationRinger.db;
 
 /**
- * This interface will be used to listen to see when the database events are complete
+ * This interface will be used to listen to see when the database events are
+ * complete
+ * 
  * @author ricky barrette
  */
 public interface DatabaseListener {
 
-	public void onDatabaseUpgradeComplete();
+	public void onDatabaseUpgrade();
 
-	public void onRingerDeletionComplete();
+	public void onDatabaseUpgradeComplete();
 
 	public void onRestoreComplete();
 
-	public void onDatabaseUpgrade();
+	public void onRingerDeletionComplete();
 
 }

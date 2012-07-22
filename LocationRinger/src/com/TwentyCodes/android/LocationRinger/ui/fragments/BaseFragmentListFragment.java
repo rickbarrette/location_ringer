@@ -22,6 +22,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This fragment will be used to display a list of fragments
+ * 
  * @author ricky barrette
  */
 public abstract class BaseFragmentListFragment extends Fragment {
@@ -33,9 +34,10 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * Creates a new Populated BaseFragmentListFragment
+	 * 
 	 * @author ricky barrette
 	 */
-	public BaseFragmentListFragment(ArrayList<Fragment> fragments, int layout, int container) {
+	public BaseFragmentListFragment(final ArrayList<Fragment> fragments, final int layout, final int container) {
 		super();
 		mFragments = fragments;
 		mLayout = layout;
@@ -44,11 +46,12 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * Creates a new Empty Base Fragment List
+	 * 
 	 * @param layout
 	 * @param container
 	 * @author ricky barrette
 	 */
-	public BaseFragmentListFragment(int layout, int container) {
+	public BaseFragmentListFragment(final int layout, final int container) {
 		mLayout = layout;
 		mContainer = container;
 		mFragments = new ArrayList<Fragment>();
@@ -56,58 +59,64 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * Adds the fragment to the list
+	 * 
 	 * @param fragment
 	 * @author ricky barrette
 	 */
-	public void add(final Fragment fragment){
-		this.mFragments.add(fragment);
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+	public void add(final Fragment fragment) {
+		mFragments.add(fragment);
+		final FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.add(mContainer, fragment, fragment.getTag());
 		transaction.commit();
 	}
-	
+
 	/**
 	 * Adds a collection ofs fragments to the list
+	 * 
 	 * @param fragments
 	 * @author ricky barrette
 	 */
-	public void addAll(final ArrayList<Fragment> fragments){
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment f : fragments){
-			this.mFragments.add(f);
+	public void addAll(final ArrayList<Fragment> fragments) {
+		final FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		for (final Fragment f : fragments) {
+			mFragments.add(f);
 			transaction.add(mContainer, f, f.getTag());
 		}
 		transaction.commit();
 	}
-	
+
 	/**
-	 * Adds a collection ofs fragments to the list, but doesn't preform any transactions
+	 * Adds a collection ofs fragments to the list, but doesn't preform any
+	 * transactions
+	 * 
 	 * @param fragment
 	 * @author ricky barrette
 	 */
-	protected void addAllInit(final ArrayList<Fragment> fragments){
-		for(Fragment f : fragments){
-			this.mFragments.add(f);
-		}
+	protected void addAllInit(final ArrayList<Fragment> fragments) {
+		for (final Fragment f : fragments)
+			mFragments.add(f);
 	}
-	
+
 	/**
 	 * Loads all the fragments
+	 * 
 	 * @author ricky barrette
 	 */
 	private void loadFragments() {
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment fragment : this.mFragments)
+		final FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		for (final Fragment fragment : mFragments)
 			transaction.add(mContainer, fragment, fragment.getTag());
 		transaction.commit();
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * @see android.support.v4.app.Fragment#onActivityResult(int, int, android.content.Intent)
+	 * 
+	 * @see android.support.v4.app.Fragment#onActivityResult(int, int,
+	 *      android.content.Intent)
 	 */
 	@Override
-	public void onActivityResult(int arg0, int arg1, Intent arg2) {
+	public void onActivityResult(final int arg0, final int arg1, final Intent arg2) {
 		removeFragments();
 		loadFragments();
 		super.onActivityResult(arg0, arg1, arg2);
@@ -115,32 +124,35 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
 	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
-	public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle bundle) {
+	public View onCreateView(final LayoutInflater inflator, final ViewGroup container, final Bundle bundle) {
 		return inflator.inflate(mLayout, null);
 	}
-	
+
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.Fragment#onPause()
 	 */
 	@Override
 	public void onPause() {
-		try{
+		try {
 			removeFragments();
-		} catch(IllegalStateException e){
+		} catch (final IllegalStateException e) {
 			e.printStackTrace();
-			//do nothing
+			// do nothing
 		}
-		Collections.reverse(this.mFragments);
+		Collections.reverse(mFragments);
 		super.onPause();
 	}
-	
+
 	/**
 	 * (non-Javadoc)
+	 * 
 	 * @see android.support.v4.app.Fragment#onResume()
 	 */
 	@Override
@@ -153,26 +165,27 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * Removes a fragment from the list
+	 * 
 	 * @param fragment
 	 * @author ricky barrette
 	 */
-	public void remove(final Fragment fragment){
-		this.mFragments.remove(fragment);
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
+	public void remove(final Fragment fragment) {
+		mFragments.remove(fragment);
+		final FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		transaction.remove(fragment);
 		transaction.commit();
 	}
 
 	/**
 	 * Removes all fragments from the the view
+	 * 
 	 * @throws IllegalStateException
 	 * @author ricky barrette
 	 */
 	private void removeFragments() throws IllegalStateException {
-		final FragmentTransaction transaction = this.getFragmentManager().beginTransaction();
-		for(Fragment fragment : this.mFragments){
-            transaction.remove(fragment);
-		}
+		final FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		for (final Fragment fragment : mFragments)
+			transaction.remove(fragment);
 		transaction.commit();
 	}
 }

@@ -14,7 +14,7 @@ import android.view.MotionEvent;
  * @author ricky
  */
 public class ViewPager extends android.support.v4.view.ViewPager {
-	
+
 	private boolean isEnabled = true;
 
 	/**
@@ -22,7 +22,7 @@ public class ViewPager extends android.support.v4.view.ViewPager {
 	 * @param apiKey
 	 * @author ricky barrette
 	 */
-	public ViewPager(Context context) {
+	public ViewPager(final Context context) {
 		super(context);
 	}
 
@@ -31,27 +31,28 @@ public class ViewPager extends android.support.v4.view.ViewPager {
 	 * @param attrs
 	 * @author ricky barrette
 	 */
-	public ViewPager(Context context, AttributeSet attrs) {
+	public ViewPager(final Context context, final AttributeSet attrs) {
 		super(context, attrs);
-	}
-	
-	/**
-	 * Enables or disabled the scrollview's ability to scroll
-	 * @param enabled
-	 * @author ricky barrette
-	 */
-	public void setScrollEnabled(boolean enabled){
-		isEnabled = enabled;
 	}
 
 	@Override
-	public boolean onInterceptTouchEvent(MotionEvent ev) {
+	public boolean onInterceptTouchEvent(final MotionEvent ev) {
 		return isEnabled ? super.onInterceptTouchEvent(ev) : false;
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onTouchEvent(final MotionEvent ev) {
 		return isEnabled ? super.onTouchEvent(ev) : false;
+	}
+
+	/**
+	 * Enables or disabled the scrollview's ability to scroll
+	 * 
+	 * @param enabled
+	 * @author ricky barrette
+	 */
+	public void setScrollEnabled(final boolean enabled) {
+		isEnabled = enabled;
 	}
 
 }
