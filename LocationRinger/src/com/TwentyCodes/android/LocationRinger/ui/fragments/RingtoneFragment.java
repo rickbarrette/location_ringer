@@ -54,8 +54,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
 
-	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream,
-			final int id) {
+	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream, final int id) {
 		super(id, R.layout.ringtone_fragment, removedListener);
 
 		if (info == null)
