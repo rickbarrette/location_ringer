@@ -66,7 +66,7 @@ public class FirstBootDialog extends Dialog implements android.view.View.OnClick
 	private void build(final Context context) {
 		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		this.setContentView(R.layout.first_boot_dialog);
-		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.icon);
+		setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_launcher);
 		this.setTitle(R.string.welcome);
 		findViewById(R.id.ok_button).setOnClickListener(this);
 	}
