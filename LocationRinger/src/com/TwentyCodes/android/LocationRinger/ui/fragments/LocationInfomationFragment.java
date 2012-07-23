@@ -29,7 +29,7 @@ import com.TwentyCodes.android.LocationRinger.SearchRequestedListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.SearchDialog;
-import com.TwentyCodes.android.SkyHook.SkyHook;
+import com.TwentyCodes.android.location.AndroidGPS;
 import com.TwentyCodes.android.location.GeoPointLocationListener;
 import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.TwentyCodes.android.overlays.RadiusOverlay;
@@ -54,7 +54,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	private ToggleButton mMapEditToggle;
 	private RadiusOverlay mRadiusOverlay;
 	private GeoPoint mPoint;
-	private SkyHook mSkyHook;
+	private AndroidGPS mGPS;
 	private View view;
 
 	/**
@@ -81,10 +81,13 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		if (mEnableScrollingListener != null)
 			mEnableScrollingListener.setScrollEnabled(!isChecked);
 
-		if (isChecked)
-			mSkyHook.getUpdates();
-		else
-			mSkyHook.removeUpdates();
+		if (isChecked) {
+			mGPS.enableLocationUpdates(this);
+			mMap.enableGPSProgess();
+		} else {
+			mGPS.disableLocationUpdates();
+			mMap.disableGPSProgess();
+		}
 
 		mMap.setDoubleTapZoonEnabled(isChecked);
 		// buttons
@@ -123,8 +126,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.map_info_fragment, container, false);
 
-		mSkyHook = new SkyHook(getActivity());
-		mSkyHook.setLocationListener(this);
+		mGPS = new AndroidGPS(getActivity());
 
 		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
@@ -169,23 +171,22 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 */
 	@Override
 	public void onFirstFix(final boolean isFirstFix) {
-		if (isFirstFix)
-			mMap.enableGPSProgess();
-		else
-			mMap.disableGPSProgess();
-
-		if (mPoint != null)
+		if (mPoint != null){
 			/*
 			 * if this is the first fix and the radius overlay does not have a
 			 * point specified then pan the map, and zoom in to the users
 			 * current location
 			 */
-			if (isFirstFix)
+			if (isFirstFix) {
+				mMap.disableGPSProgess();
 				if (mRadiusOverlay.getLocation() == null)
 					if (mMap != null) {
 						mMap.setMapCenter(mPoint);
 						mMap.setZoom(mMap.getMap().getMaxZoomLevel() - 5);
 					}
+			}
+		} else
+			mMap.enableGPSProgess();
 	}
 
 	/**
@@ -231,7 +232,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 */
 	@Override
 	public void onPause() {
-		mSkyHook.removeUpdates();
+		mGPS.disableLocationUpdates();
 		super.onPause();
 	}
 
@@ -263,7 +264,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	@Override
 	public void onResume() {
 		if (mMapEditToggle.isChecked())
-			mSkyHook.getUpdates();
+			mGPS.enableLocationUpdates(this);
 		super.onResume();
 	}
 
@@ -291,7 +292,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 */
 	@Override
 	public void onStop() {
-		mSkyHook.removeUpdates();
+		mGPS.disableLocationUpdates();
 		super.onDestroy();
 	}
 

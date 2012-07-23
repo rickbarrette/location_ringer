@@ -190,7 +190,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 			save();
 			break;
 		case android.R.id.home:
-			final Intent intent = new Intent(this, this.getClass()).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).putExtra(ListActivity.NO_SPLASH, ListActivity.NO_SPLASH);
+			final Intent intent = new Intent(this, ListActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
 			return true;
 		}

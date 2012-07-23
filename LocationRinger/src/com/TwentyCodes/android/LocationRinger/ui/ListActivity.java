@@ -37,14 +37,10 @@ import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
 import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
-import com.TwentyCodes.android.SkyHook.SkyHookRegistration;
 import com.TwentyCodes.android.location.PassiveLocationListener;
-import com.skyhookwireless.wps.RegistrationCallback;
-import com.skyhookwireless.wps.WPSContinuation;
-import com.skyhookwireless.wps.WPSReturnCode;
 
 @SuppressLint("Registered")
-public class ListActivity extends Activity implements OnItemClickListener, OnClickListener, DatabaseListener, RegistrationCallback {
+public class ListActivity extends Activity implements OnItemClickListener, OnClickListener, DatabaseListener {
 
 	private RingerDatabase mDb;
 	private ListView mListView;
@@ -52,7 +48,6 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	private ProgressDialog mProgress;
 	private Dialog mSplashDialog;
 
-	public static final String NO_SPLASH = "no splash";
 	public static final String KEY_RINGER = "key_ringer";
 	public static final String KEY_INFO = "key_info";
 	public static final String KEY_IS_DEFAULT = "key_is_default";
@@ -60,22 +55,6 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	private static final int ACTIVITY_EDIT = 4;
 	private static final String KEY_ROWID = "key_row_id";
 	public static final String ACTION_NEW_RINGER = "action_new_ringer";
-
-	@Override
-	public void done() {
-	}
-
-	@Override
-	public WPSContinuation handleError(final WPSReturnCode arg0) {
-		Toast.makeText(this, R.string.skyhook_error_registration, Toast.LENGTH_SHORT).show();
-		return WPSContinuation.WPS_CONTINUE;
-	}
-
-	@Override
-	public void handleSuccess() {
-		Toast.makeText(this, R.string.registered, Toast.LENGTH_SHORT).show();
-		mSettings.edit().putBoolean(SettingsActivity.IS_REGISTERED, true).commit();
-	}
 
 	/**
 	 * called when the note edit activity finishes (non-Javadoc)
@@ -186,12 +165,6 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 
 		if (mSettings.getBoolean(SettingsActivity.IS_FIRST_BOOT, true))
 			new FirstBootDialog(this).show();
-
-		if (!mSettings.getBoolean(SettingsActivity.IS_REGISTERED, false))
-			new SkyHookRegistration(this).registerNewUser(this);
-
-		// if(!this.getIntent().hasExtra(NO_SPLASH))
-		// showSplashScreen();
 
 		if (action != null)
 			if (action.equals(ACTION_NEW_RINGER))
@@ -418,38 +391,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		final Intent intent = new Intent();
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.new_ringer));
-		final Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.icon);
+		final Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 		setResult(RESULT_OK, intent);
 	}
-
-	// /**
-	// * Shows the splash screen over the full Activity
-	// */
-	// protected void showSplashScreen() {
-	// // mMap.setGPSDialogEnabled(false);
-	// mSplashDialog = new Dialog(this, android.R.style.Theme_Translucent);
-	// mSplashDialog.setContentView(R.layout.powered_by_skyhook);
-	// mSplashDialog.setCancelable(false);
-	// mSplashDialog.show();
-	//
-	// // Set Runnable to remove splash screen just in case
-	// final Handler handler = new Handler();
-	// handler.postDelayed(new Runnable() {
-	// @Override
-	// public void run() {
-	// removeSplashScreen();
-	//
-	// /*
-	// * uncomment the following to display the eula
-	// */
-	// // //loads first boot dialog if this is the first boot
-	// // if (! mSettings.getBoolean(Settings.ACCEPTED, false) ||
-	// Debug.FORCE_FIRSTBOOT_DIALOG)
-	// // eulaAlert();
-	// // else
-	// // update();
-	// }
-	// }, 2000);
-	// }
 }

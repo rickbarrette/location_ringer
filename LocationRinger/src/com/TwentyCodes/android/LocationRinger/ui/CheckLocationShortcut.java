@@ -131,7 +131,7 @@ public class CheckLocationShortcut extends Activity {
 		final Intent intent = new Intent();
 		intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getString(R.string.start_location_service));
-		final Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.icon);
+		final Parcelable iconResource = Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher);
 		intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
 
 		// Now, return the result to the launcher
