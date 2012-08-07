@@ -19,6 +19,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -31,6 +32,7 @@ import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.SearchDialog;
 import com.TwentyCodes.android.location.AndroidGPS;
 import com.TwentyCodes.android.location.GeoPointLocationListener;
+import com.TwentyCodes.android.location.GeoUtils;
 import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.TwentyCodes.android.overlays.RadiusOverlay;
 import com.google.android.maps.GeoPoint;
@@ -56,6 +58,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	private GeoPoint mPoint;
 	private AndroidGPS mGPS;
 	private View view;
+	private TextView mRadiusTextView;
 
 	/**
 	 * Creates a new MapFragment
@@ -130,6 +133,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 
 		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
+		mRadiusTextView = (TextView) view.findViewById(R.id.radius_textview);
 		mRadius.setMax(Debug.MAX_RADIUS_IN_METERS);
 		mMap.setClickable(false);
 		mMapEditToggle = (ToggleButton) view.findViewById(R.id.map_edit_toggle);
@@ -245,6 +249,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 		switch (seekBar.getId()) {
 		case R.id.radius:
+			mRadiusTextView.setText(GeoUtils.distanceToString((Float.valueOf(progress) / 1000) , true));
 			mRadiusOverlay.setRadius(progress);
 			mMap.invalidate();
 			if (mListener != null) {

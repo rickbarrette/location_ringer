@@ -56,4 +56,13 @@
         class="com.TwentyCodes.android.LocationRinger.ui.fragments.MapFragment" >
     </fragment>
 
+    <TextView
+        android:id="@+id/radius_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/mapview"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ff0000" />
+
 </RelativeLayout>
