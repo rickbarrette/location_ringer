@@ -230,11 +230,17 @@ public class RingerProcessingService extends Service {
 			e.printStackTrace();
 		}
 
+		if(intent == null)
+			stopSelf(startId);
+		
 		if (intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED) != null) {
 			mLocation = intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED);
 			processRingers();
-		} else if (Debug.DEBUG)
-			Log.d(TAG, "Location was null");
+		} else {
+			if (Debug.DEBUG)
+				Log.d(TAG, "Location was null");
+			stopSelf(startId);
+		}
 		return super.onStartCommand(intent, flags, startId);
 	}
 
