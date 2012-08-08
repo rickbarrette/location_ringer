@@ -93,5 +93,6 @@
     <string name="my_location">My location</string>
     <string name="map_mode">Map Mode</string>
     <string name="current_ringer">Current Ringer:</string>
+    <string name="preparing_ringer">Prepearing New Ringer</string>
 
 </resources>

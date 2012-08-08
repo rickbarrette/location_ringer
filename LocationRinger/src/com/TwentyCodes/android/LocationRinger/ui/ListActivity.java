@@ -66,6 +66,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
+		mProgress.dismiss();
 
 		if (resultCode == RESULT_OK) {
 
@@ -109,6 +110,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 
 	@Override
 	public void onClick(final View v) {
+		mProgress = ProgressDialog.show(this, "", getText(R.string.preparing_ringer), true, true);
 		final Intent i = new Intent(this, RingerInformationActivity.class);
 		startActivityForResult(i, ACTIVITY_CREATE);
 	}
@@ -251,7 +253,6 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 
 		final ProgressDialog progress = ProgressDialog.show(this, "", getText(R.string.loading), true, true);
 
-		// post to social sites in a new thread to prevent ANRs
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
