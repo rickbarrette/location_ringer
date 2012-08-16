@@ -95,8 +95,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 							mListView.post(new Runnable() {
 								@Override
 								public void run() {
-									progress.dismiss();
 									populate();
+									progress.dismiss();
 								}
 							});
 				}
