@@ -66,7 +66,8 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		mProgress.dismiss();
+		if(mProgress != null)
+			mProgress.dismiss();
 
 		if (resultCode == RESULT_OK) {
 
