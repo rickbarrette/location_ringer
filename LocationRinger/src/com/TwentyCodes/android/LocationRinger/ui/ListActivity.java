@@ -11,11 +11,17 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.media.AudioManager;
+import android.media.RingtoneManager;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.view.ContextMenu;
@@ -203,6 +209,35 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		inflater.inflate(R.menu.ringer_list_menu, menu);
 		return super.onCreateOptionsMenu(menu);
 
+	}
+
+	/**
+	 * Called when the database is first created.
+	 * Here we want to populate the populate the default ringr 
+	 */
+	@Override
+	public void onDatabaseCreate() {
+		final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		final WifiManager wifi= (WifiManager) getSystemService(WIFI_SERVICE);
+		final BluetoothAdapter bt= BluetoothAdapter.getDefaultAdapter();
+		final ContentValues ringer = new ContentValues();
+		final ContentValues info = new ContentValues();
+		ringer.put(RingerDatabase.KEY_RINGER_NAME, getString(R.string.default_ringer));
+		info.put(RingerDatabase.KEY_ALARM_VOLUME, am.getStreamVolume(AudioManager.STREAM_ALARM));
+		info.put(RingerDatabase.KEY_MUSIC_VOLUME, am.getStreamVolume(AudioManager.STREAM_MUSIC));
+		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString());
+		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_NOTIFICATION));
+		info.put(RingerDatabase.KEY_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE).toString());
+		info.put(RingerDatabase.KEY_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_RING));
+		info.put(RingerDatabase.KEY_BT, bt.isEnabled());
+		info.put(RingerDatabase.KEY_WIFI, wifi.isWifiEnabled());
+		
+		
+		new Handler().post(new Runnable(){
+			public void run(){
+				mDb.updateRinger(1, ringer, info);
+			}
+		});
 	}
 
 	/**

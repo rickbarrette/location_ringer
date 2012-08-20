@@ -138,6 +138,8 @@ public class RingerDatabase {
 			db.execSQL("insert into " + RINGER_TABLE + "(" + KEY_RINGER_NAME + ") values ('" + mContext.getString(R.string.default_ringer) + "')");
 			db.execSQL("insert into " + RINGER_INFO_TABLE + "(" + KEY_RINGER_NAME + ", " + KEY + ", " + KEY_VALUE + ") values ('"
 					+ mContext.getString(R.string.default_ringer) + "', '" + KEY_RINGER_DESCRIPTION + "', '" + mContext.getString(R.string.about_default_ringer) + "')");
+			if(mListener != null)
+				mListener.onDatabaseCreate();
 		}
 
 		/**
@@ -256,9 +258,9 @@ public class RingerDatabase {
 	public final static String KEY_NOTIFICATION_RINGTONE = "notification_ringtone";
 	@Deprecated
 	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
-
 	@Deprecated
 	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
+	
 	public final static String KEY_IS_ENABLED = "is_enabled";
 	public final static String KEY_RADIUS = "radius";
 	public final static String KEY_RINGER_NAME = "ringer_name";
