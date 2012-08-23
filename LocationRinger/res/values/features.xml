@@ -8,6 +8,7 @@
         <item>@string/music_volume</item>
         <item>@string/bluetooth</item>
         <item>@string/wifi</item>
+        <item >@string/airplane_mode</item>
     </string-array>
 
 </resources>

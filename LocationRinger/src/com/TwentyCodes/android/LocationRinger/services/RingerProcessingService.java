@@ -23,6 +23,7 @@ import android.net.wifi.WifiManager;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
@@ -118,6 +119,21 @@ public class RingerProcessingService extends Service {
 					mBluetoothAdapter.enable();
 				else
 					mBluetoothAdapter.disable();
+		
+		/*
+		 * airplane mode
+		 */
+		if(values.containsKey(RingerDatabase.KEY_AIRPLANE_MODE)){
+			final boolean airplaneModeEnabled = !RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_AIRPLANE_MODE));
+			// toggle airplane mode
+			Log.d(TAG, "airplane mode has be set "+ Settings.System.putInt(
+					this.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, airplaneModeEnabled ? 0 : 1));
+			
+			// Post an intent to reload
+			Intent changeMode = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+			changeMode.putExtra("state", !airplaneModeEnabled);
+			this.sendBroadcast(changeMode);
+		}
 	}
 
 	/**

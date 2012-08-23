@@ -42,6 +42,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	private static final int KEY_ADDED_MUSIC_VOLUME = 3;
 	private static final int KEY_ADDED_BT = 4;
 	private static final int KEY_ADDED_WIFI = 5;
+	private static final int KEY_ADDED_AIRPLANE_MODE = 6;
 	private final ContentValues mInfo;
 	private final OnContentChangedListener mListener;
 	private final ArrayList<Integer> mAdded;
@@ -116,7 +117,11 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 			f = new ToggleButtonFragment(R.drawable.ic_action_wifi, this.getString(R.string.wifi), RingerDatabase.KEY_WIFI, mInfo, mListener, this, KEY_ADDED_WIFI);
 			mAdded.add(KEY_ADDED_WIFI);
 			break;
-
+			
+		case KEY_ADDED_AIRPLANE_MODE:
+			f = new ToggleButtonFragment(R.drawable.ic_action_airplane, this.getString(R.string.airplane_mode), RingerDatabase.KEY_AIRPLANE_MODE, mInfo, mListener, this, KEY_ADDED_AIRPLANE_MODE);
+			mAdded.add(KEY_ADDED_AIRPLANE_MODE);
+			break;
 		}
 		return f;
 	}
@@ -146,6 +151,10 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 
 		if (mInfo.containsKey(RingerDatabase.KEY_WIFI))
 			what.add(initFeatureFragment(KEY_ADDED_WIFI));
+		
+		if (mInfo.containsKey(RingerDatabase.KEY_AIRPLANE_MODE))
+			what.add(initFeatureFragment(KEY_ADDED_AIRPLANE_MODE));
+		
 		return what;
 	}
 
@@ -275,6 +284,9 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 				break;
 			case KEY_ADDED_WIFI:
 				mListener.onInfoContentRemoved(RingerDatabase.KEY_WIFI);
+				break;
+			case KEY_ADDED_AIRPLANE_MODE:
+				mListener.onInfoContentRemoved(RingerDatabase.KEY_AIRPLANE_MODE);
 				break;
 			}
 		}

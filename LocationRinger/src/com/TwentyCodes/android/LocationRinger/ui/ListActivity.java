@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -231,7 +232,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		info.put(RingerDatabase.KEY_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_RING));
 		info.put(RingerDatabase.KEY_BT, bt.isEnabled());
 		info.put(RingerDatabase.KEY_WIFI, wifi.isWifiEnabled());
-		
+		info.put(RingerDatabase.KEY_AIRPLANE_MODE, Settings.System.getInt(this.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0);
 		
 		new Handler().post(new Runnable(){
 			public void run(){

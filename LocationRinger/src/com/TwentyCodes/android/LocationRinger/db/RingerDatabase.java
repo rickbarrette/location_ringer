@@ -280,8 +280,8 @@ public class RingerDatabase {
 	public static final String KEY_DTMF_VOLUME = "dtmf_volume";
 	public static final String KEY_SYSTEM_VOLUME = "system_volume";
 	public static final String KEY_CALL_VOLUME = "call_volume";
-
 	public static final String KEY_RINGER_DESCRIPTION = "ringer_description";
+	public static final String KEY_AIRPLANE_MODE = "AIRPLANE_MODE";
 
 	/**
 	 * Parses a string boolean from the database

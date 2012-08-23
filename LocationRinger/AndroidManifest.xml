@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.TwentyCodes.android.LocationRinger"
     android:installLocation="internalOnly"
-    android:versionCode="156"
-    android:versionName="ec9f0d1" >
+    android:versionCode="165"
+    android:versionName="f8513d6" >
 
     <uses-sdk android:minSdkVersion="7"/>
 
@@ -21,6 +21,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
     
     <!-- exception handler lib -->
     
@@ -39,7 +40,8 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     
     
-    
+    <!-- licensing library -->
+	<uses-permission android:name="com.android.vending.CHECK_LICENSE"/>
 
     <application
         android:icon="@drawable/ic_launcher"
