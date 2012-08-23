@@ -224,6 +224,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		final ContentValues ringer = new ContentValues();
 		final ContentValues info = new ContentValues();
 		ringer.put(RingerDatabase.KEY_RINGER_NAME, getString(R.string.default_ringer));
+		info.put(RingerDatabase.KEY_RINGER_DESCRIPTION, getString(R.string.about_default_ringer));	
 		info.put(RingerDatabase.KEY_ALARM_VOLUME, am.getStreamVolume(AudioManager.STREAM_ALARM));
 		info.put(RingerDatabase.KEY_MUSIC_VOLUME, am.getStreamVolume(AudioManager.STREAM_MUSIC));
 		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString());
