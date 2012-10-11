@@ -15,7 +15,6 @@ import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +24,10 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ToggleButton;
 
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This fragment will used to allow the user to enter/edit ringer information
@@ -156,13 +155,11 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 
 		final View view = inflater.inflate(R.layout.ringer_about_fragment, container, false);
 
-		if (Debug.DEBUG) {
-			for (final Entry<String, Object> item : mInfo.valueSet())
-				Log.d(TAG, item.getKey() + " = " + item.getValue());
+		for (final Entry<String, Object> item : mInfo.valueSet())
+			Log.d(TAG, item.getKey() + " = " + item.getValue());
 
-			for (final Entry<String, Object> item : mRinger.valueSet())
-				Log.d(TAG, item.getKey() + " = " + item.getValue());
-		}
+		for (final Entry<String, Object> item : mRinger.valueSet())
+			Log.d(TAG, item.getKey() + " = " + item.getValue());
 
 		/*
 		 * ringer name

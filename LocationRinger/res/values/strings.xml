@@ -95,5 +95,6 @@
     <string name="current_ringer">Current Ringer:</string>
     <string name="preparing_ringer">Prepearing New Ringer</string>
     <string name="airplane_mode">Airplane Mode</string>
+    <string name="legal">Legal</string>
 
 </resources>

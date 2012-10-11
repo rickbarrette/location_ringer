@@ -11,11 +11,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
-import android.util.Log;
 
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
-import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.location.PassiveLocationListener;
 
 /**
@@ -42,19 +41,20 @@ public class SystemReceiver extends BroadcastReceiver {
 	 */
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		if (Debug.DEBUG)
-			Log.d(TAG, "onReceive() ~" + intent.getAction());
-		final SharedPreferences systemEventHistory = context.getSharedPreferences(TAG, Debug.SHARED_PREFS_MODE);
+		Log.d(TAG, "onReceive() ~" + intent.getAction());
+		final SharedPreferences systemEventHistory = context.getSharedPreferences(TAG, Constraints.SHARED_PREFS_MODE);
 
 		/*
 		 * if the phone finishes booting, then start the service if the user
 		 * enabled it
 		 */
 		if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED))
-			if (context.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getBoolean(SettingsActivity.START_ON_BOOT, false)) {
-				LocationService.startMultiShotService(context);
-				PassiveLocationListener.requestPassiveLocationUpdates(context, new Intent(context, PassiveLocationChangedReceiver.class));
-			}
+			// if (context.getSharedPreferences(SettingsActivity.SETTINGS,
+			// Constraints.SHARED_PREFS_MODE).getBoolean(SettingsActivity.START_ON_BOOT,
+			// false)) {
+			LocationService.startMultiShotService(context);
+		PassiveLocationListener.requestPassiveLocationUpdates(context, new Intent(context, PassiveLocationChangedReceiver.class));
+		// }
 
 		/*
 		 * if the battery is reported to be low then stop the service, and

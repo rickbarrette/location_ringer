@@ -13,7 +13,7 @@ package com.TwentyCodes.android.LocationRinger.db;
  * @author ricky barrette
  */
 public interface DatabaseListener {
-	
+
 	public void onDatabaseCreate();
 
 	public void onDatabaseUpgrade();
@@ -23,5 +23,5 @@ public interface DatabaseListener {
 	public void onRestoreComplete();
 
 	public void onRingerDeletionComplete();
-	
+
 }

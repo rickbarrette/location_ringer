@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="start_on_boot"
-        android:summary="@string/start_on_boot_about"
-        android:title="@string/start_on_boot" >
-    </CheckBoxPreference>
+<!--     <CheckBoxPreference -->
+<!--         android:defaultValue="false" -->
+<!--         android:key="start_on_boot" -->
+<!--         android:summary="@string/start_on_boot_about" -->
+<!--         android:title="@string/start_on_boot" > -->
+<!--     </CheckBoxPreference> -->
 
     <PreferenceScreen android:title="@string/about" >
         <com.TwentyCodes.android.LocationRinger.ui.TextViewPreference android:title="@string/hello" />
@@ -21,6 +21,10 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/version_info" >
         <com.TwentyCodes.android.exception.VersionInformationPreference />
+        <Preference
+            android:key="legal"
+            android:title="@string/legal" >
+        </Preference>
     </PreferenceCategory>
 
 </PreferenceScreen>

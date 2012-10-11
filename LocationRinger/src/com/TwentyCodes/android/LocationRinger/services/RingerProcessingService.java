@@ -24,10 +24,10 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
-import android.util.Log;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.GetLocationWidget;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
@@ -59,12 +59,11 @@ public class RingerProcessingService extends Service {
 	 * @author ricky barrette
 	 */
 	private void applyRinger(final ContentValues values) {
-		if (Debug.DEBUG)
-			Log.d(TAG, "applyRigner()");
+		Log.d(TAG, "applyRigner()");
 
 		final String name = values.getAsString(RingerDatabase.KEY_RINGER_NAME);
 
-		getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).edit().putString(SettingsActivity.CURRENT, name).commit();
+		getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE).edit().putString(SettingsActivity.CURRENT, name).commit();
 
 		this.sendBroadcast(new Intent(this, GetLocationWidget.class).setAction(GetLocationWidget.ACTION_UPDATE));
 
@@ -84,10 +83,8 @@ public class RingerProcessingService extends Service {
 		if (values.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME))
 			setStreamVolume(values.getAsInteger(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME), AudioManager.STREAM_NOTIFICATION);
 
-		if (Debug.DEBUG) {
-			Log.d(TAG, "Music " + (mAudioManager.isMusicActive() ? "is playing " : "is not playing"));
-			Log.d(TAG, "Wired Headset " + (mAudioManager.isWiredHeadsetOn() ? "is on " : "is off"));
-		}
+		Log.d(TAG, "Music " + (mAudioManager.isMusicActive() ? "is playing " : "is not playing"));
+		Log.d(TAG, "Wired Headset " + (mAudioManager.isWiredHeadsetOn() ? "is on " : "is off"));
 
 		/*
 		 * music volume we will set the music volume only if music is not
@@ -119,18 +116,17 @@ public class RingerProcessingService extends Service {
 					mBluetoothAdapter.enable();
 				else
 					mBluetoothAdapter.disable();
-		
+
 		/*
 		 * airplane mode
 		 */
-		if(values.containsKey(RingerDatabase.KEY_AIRPLANE_MODE)){
+		if (values.containsKey(RingerDatabase.KEY_AIRPLANE_MODE)) {
 			final boolean airplaneModeEnabled = !RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_AIRPLANE_MODE));
 			// toggle airplane mode
-			Log.d(TAG, "airplane mode has be set "+ Settings.System.putInt(
-					this.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, airplaneModeEnabled ? 0 : 1));
-			
+			Log.d(TAG, "airplane mode has be set " + Settings.System.putInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, airplaneModeEnabled ? 0 : 1));
+
 			// Post an intent to reload
-			Intent changeMode = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
+			final Intent changeMode = new Intent(Intent.ACTION_AIRPLANE_MODE_CHANGED);
 			changeMode.putExtra("state", !airplaneModeEnabled);
 			this.sendBroadcast(changeMode);
 		}
@@ -201,11 +197,10 @@ public class RingerProcessingService extends Service {
 	@Override
 	public void onCreate() {
 		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-		if (Debug.DEBUG)
-			Log.d(TAG, "onCreate()");
+		Log.d(TAG, "onCreate()");
 		super.onCreate();
 		mDb = new RingerDatabase(this);
-		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
 		mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -233,8 +228,7 @@ public class RingerProcessingService extends Service {
 	 */
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
-		if (Debug.DEBUG)
-			Log.d(TAG, "onStartCommand: " + startId);
+		Log.d(TAG, "onStartCommand: " + startId);
 		mStartId = startId;
 
 		/*
@@ -246,17 +240,14 @@ public class RingerProcessingService extends Service {
 			e.printStackTrace();
 		}
 
-		if(intent == null)
+		if (intent == null)
 			stopSelf(startId);
-		else {
-			if (intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED) != null) {
-				mLocation = intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED);
-				processRingers();
-			} else {
-				if (Debug.DEBUG)
-					Log.d(TAG, "Location was null");
-				stopSelf(startId);
-			}
+		else if (intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED) != null) {
+			mLocation = intent.getParcelableExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED);
+			processRingers();
+		} else {
+			Log.w(TAG, "Location was null");
+			stopSelf(startId);
 		}
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -276,19 +267,16 @@ public class RingerProcessingService extends Service {
 		final ContentValues ringer = getRinger(1);
 
 		final GeoPoint point = new GeoPoint((int) (mLocation.getLatitude() * 1E6), (int) (mLocation.getLongitude() * 1E6));
-		if (Debug.DEBUG) {
-			Log.d(TAG, "Processing ringers");
-			Log.d(TAG,
-					"Current location " + (int) (mLocation.getLatitude() * 1E6) + ", " + (int) (mLocation.getLongitude() * 1E6) + " @ "
-							+ Float.valueOf(mLocation.getAccuracy()) / 1000 + "km");
-		}
+		Log.d(TAG, "Processing ringers");
+		Log.d(TAG,
+				"Current location " + (int) (mLocation.getLatitude() * 1E6) + ", " + (int) (mLocation.getLongitude() * 1E6) + " @ "
+						+ Float.valueOf(mLocation.getAccuracy()) / 1000 + "km");
 
 		final Cursor c = mDb.getAllRingers();
 		c.moveToFirst();
 		if (c.moveToFirst())
 			do {
-				if (Debug.DEBUG)
-					Log.d(TAG, "Checking ringer " + c.getString(0));
+				Log.d(TAG, "Checking ringer " + c.getString(0));
 
 				if (RingerDatabase.parseBoolean(c.getString(1))) {
 					final ContentValues info = mDb.getRingerInfo(c.getString(0));
@@ -296,7 +284,7 @@ public class RingerProcessingService extends Service {
 						final String[] pointInfo = info.getAsString(RingerDatabase.KEY_LOCATION).split(",");
 						if (GeoUtils.isIntersecting(point, Float.valueOf(mLocation.getAccuracy()) / 1000,
 								new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])),
-								Float.valueOf(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Debug.FUDGE_FACTOR)) {
+								Float.valueOf(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Constraints.FUDGE_FACTOR)) {
 							c.close();
 							getRinger(ringer, index);
 							isDeafult = false;
@@ -311,14 +299,12 @@ public class RingerProcessingService extends Service {
 
 		c.close();
 
-		if (Debug.DEBUG)
-			for (final Entry<String, Object> item : ringer.valueSet())
-				Log.d(TAG, item.getKey());
+		for (final Entry<String, Object> item : ringer.valueSet())
+			Log.d(TAG, item.getKey());
 
 		applyRinger(ringer);
 
-		if (Debug.DEBUG)
-			Log.d(TAG, "Finished processing ringers");
+		Log.d(TAG, "Finished processing ringers");
 
 		// store is default
 		mSettings.edit().putBoolean(SettingsActivity.IS_DEFAULT, isDeafult).commit();

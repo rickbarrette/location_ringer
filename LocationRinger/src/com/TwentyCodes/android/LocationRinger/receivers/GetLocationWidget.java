@@ -12,11 +12,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.RemoteViews;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 
@@ -45,8 +45,7 @@ public class GetLocationWidget extends AppWidgetProvider {
 	 */
 	@Override
 	public void onDeleted(final Context context, final int[] appWidgetIds) {
-		if (Debug.DEBUG)
-			Log.v(TAG, "onDelete()");
+		Log.v(TAG, "onDelete()");
 		super.onDeleted(context, appWidgetIds);
 	}
 
@@ -63,8 +62,7 @@ public class GetLocationWidget extends AppWidgetProvider {
 	 */
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		if (Debug.DEBUG)
-			Log.v(TAG, "onReceive");
+		Log.v(TAG, "onReceive");
 		// v1.5 fix that doesn't call onDelete Action
 		final String action = intent.getAction();
 
@@ -96,8 +94,7 @@ public class GetLocationWidget extends AppWidgetProvider {
 	 */
 	@Override
 	public void onUpdate(final Context context, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
-		if (Debug.DEBUG)
-			Log.v(TAG, "onUpdate()");
+		Log.v(TAG, "onUpdate()");
 		final int N = appWidgetIds.length;
 
 		// Perform this loop procedure for each App Widget that belongs to this
@@ -117,7 +114,7 @@ public class GetLocationWidget extends AppWidgetProvider {
 
 			views.setTextViewText(
 					R.id.widget_label,
-					context.getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).getString(SettingsActivity.CURRENT,
+					context.getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE).getString(SettingsActivity.CURRENT,
 							context.getString(R.string.default_ringer)));
 
 			// Tell the AppWidgetManager to perform an update on the current App

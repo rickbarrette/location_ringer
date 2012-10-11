@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,12 +22,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.SearchRequestedListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.SearchDialog;
 import com.TwentyCodes.android.location.AndroidGPS;
 import com.TwentyCodes.android.location.GeoPointLocationListener;
@@ -134,7 +134,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
 		mRadiusTextView = (TextView) view.findViewById(R.id.radius_textview);
-		mRadius.setMax(Debug.MAX_RADIUS_IN_METERS);
+		mRadius.setMax(Constraints.MAX_RADIUS_IN_METERS);
 		mMap.setClickable(false);
 		mMapEditToggle = (ToggleButton) view.findViewById(R.id.map_edit_toggle);
 		mMapEditToggle.setChecked(false);
@@ -175,7 +175,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 */
 	@Override
 	public void onFirstFix(final boolean isFirstFix) {
-		if (mPoint != null){
+		if (mPoint != null) {
 			/*
 			 * if this is the first fix and the radius overlay does not have a
 			 * point specified then pan the map, and zoom in to the users
@@ -211,8 +211,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	@Override
 	public void onLocationSelected(final GeoPoint point) {
 		if (point != null) {
-			if (Debug.DEBUG)
-				Log.d(TAG, "onLocationSelected() " + point.toString());
+			Log.d(TAG, "onLocationSelected() " + point.toString());
 
 			if (mRadiusOverlay != null)
 				mRadiusOverlay.setLocation(point);
@@ -225,7 +224,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 				info.put(RingerDatabase.KEY_LOCATION, point.toString());
 				mListener.onInfoContentChanged(info);
 			}
-		} else if (Debug.DEBUG)
+		} else
 			Log.d(TAG, "onLocationSelected() Location was null");
 	}
 
@@ -249,7 +248,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 		switch (seekBar.getId()) {
 		case R.id.radius:
-			mRadiusTextView.setText(GeoUtils.distanceToString((Float.valueOf(progress) / 1000) , true));
+			mRadiusTextView.setText(GeoUtils.distanceToString(Float.valueOf(progress) / 1000, true));
 			mRadiusOverlay.setRadius(progress);
 			mMap.invalidate();
 			if (mListener != null) {

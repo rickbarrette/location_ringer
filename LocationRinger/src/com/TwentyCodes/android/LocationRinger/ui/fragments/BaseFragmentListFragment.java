@@ -13,12 +13,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.Log;
 
 /**
  * This fragment will be used to display a list of fragments
@@ -157,8 +156,7 @@ public abstract class BaseFragmentListFragment extends Fragment {
 	 */
 	@Override
 	public void onResume() {
-		if (Debug.DEBUG)
-			Log.v(TAG, "onResume()");
+		Log.v(TAG, "onResume()");
 		loadFragments();
 		super.onResume();
 	}

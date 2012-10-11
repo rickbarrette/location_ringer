@@ -9,7 +9,6 @@ package com.TwentyCodes.android.LocationRinger.ui;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,9 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This adapter will be used to populate the list view with all the ringers
@@ -106,21 +105,19 @@ public class RingerListAdapter extends BaseAdapter {
 			// and the ImageView.
 			holder = (ViewHolder) convertView.getTag();
 
-		if (Debug.DEBUG) {
-			Log.d(TAG, "postion = " + position);
+		Log.d(TAG, "postion = " + position);
 
-			if (convertView == null)
-				Log.e(TAG, "convertview is null!!!");
+		if (convertView == null)
+			Log.e(TAG, "convertview is null!!!");
 
-			if (holder == null)
-				Log.e(TAG, "holder is null!!!");
+		if (holder == null)
+			Log.e(TAG, "holder is null!!!");
 
-			if (holder.title == null)
-				Log.e(TAG, "holder.text is null!!!");
+		if (holder.title == null)
+			Log.e(TAG, "holder.text is null!!!");
 
-			if (holder.checkbox == null)
-				Log.e(TAG, "holder.checkbox is null!!!");
-		}
+		if (holder.checkbox == null)
+			Log.e(TAG, "holder.checkbox is null!!!");
 
 		/*
 		 * Bind the data efficiently with the holder. Remember that you should

@@ -18,7 +18,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,10 +28,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This fragment will be for ringtone settings
@@ -54,7 +53,8 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
 
-	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream, final int id) {
+	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream,
+			final int id) {
 		super(id, R.layout.ringtone_fragment, removedListener);
 
 		if (info == null)
@@ -179,9 +179,8 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-		if (Debug.DEBUG)
-			for (final Entry<String, Object> item : mInfo.valueSet())
-				Log.d(TAG, item.getKey() + " = " + item.getValue());
+		for (final Entry<String, Object> item : mInfo.valueSet())
+			Log.d(TAG, item.getKey() + " = " + item.getValue());
 
 		/*
 		 * initialize the views

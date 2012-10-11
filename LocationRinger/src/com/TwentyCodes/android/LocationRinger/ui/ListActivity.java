@@ -38,10 +38,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.DatabaseListener;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.receivers.PassiveLocationChangedReceiver;
 import com.TwentyCodes.android.LocationRinger.services.LocationService;
 import com.TwentyCodes.android.location.PassiveLocationListener;
@@ -73,7 +73,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if(mProgress != null)
+		if (mProgress != null)
 			mProgress.dismiss();
 
 		if (resultCode == RESULT_OK) {
@@ -171,7 +171,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		mListView.setEmptyView(findViewById(android.R.id.empty));
 		findViewById(R.id.add_ringer_button).setOnClickListener(this);
 		populate();
-		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
 
 		if (mSettings.getBoolean(SettingsActivity.IS_FIRST_BOOT, true))
 			new FirstBootDialog(this).show();
@@ -213,18 +213,18 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	}
 
 	/**
-	 * Called when the database is first created.
-	 * Here we want to populate the populate the default ringr 
+	 * Called when the database is first created. Here we want to populate the
+	 * populate the default ringr
 	 */
 	@Override
 	public void onDatabaseCreate() {
 		final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		final WifiManager wifi= (WifiManager) getSystemService(WIFI_SERVICE);
-		final BluetoothAdapter bt= BluetoothAdapter.getDefaultAdapter();
+		final WifiManager wifi = (WifiManager) getSystemService(WIFI_SERVICE);
+		final BluetoothAdapter bt = BluetoothAdapter.getDefaultAdapter();
 		final ContentValues ringer = new ContentValues();
 		final ContentValues info = new ContentValues();
 		ringer.put(RingerDatabase.KEY_RINGER_NAME, getString(R.string.default_ringer));
-		info.put(RingerDatabase.KEY_RINGER_DESCRIPTION, getString(R.string.about_default_ringer));	
+		info.put(RingerDatabase.KEY_RINGER_DESCRIPTION, getString(R.string.about_default_ringer));
 		info.put(RingerDatabase.KEY_ALARM_VOLUME, am.getStreamVolume(AudioManager.STREAM_ALARM));
 		info.put(RingerDatabase.KEY_MUSIC_VOLUME, am.getStreamVolume(AudioManager.STREAM_MUSIC));
 		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString());
@@ -233,10 +233,11 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		info.put(RingerDatabase.KEY_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_RING));
 		info.put(RingerDatabase.KEY_BT, bt.isEnabled());
 		info.put(RingerDatabase.KEY_WIFI, wifi.isWifiEnabled());
-		info.put(RingerDatabase.KEY_AIRPLANE_MODE, Settings.System.getInt(this.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0);
-		
-		new Handler().post(new Runnable(){
-			public void run(){
+		info.put(RingerDatabase.KEY_AIRPLANE_MODE, Settings.System.getInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0);
+
+		new Handler().post(new Runnable() {
+			@Override
+			public void run() {
 				mDb.updateRinger(1, ringer, info);
 			}
 		});
@@ -408,7 +409,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	 * @author ricky barrette
 	 */
 	private void restartService() {
-		final SharedPreferences sharedPrefs = getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		final SharedPreferences sharedPrefs = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
 		if (!sharedPrefs.getBoolean(SettingsActivity.IS_SERVICE_STARTED, false)) {
 			// cancel the previous service
 			com.TwentyCodes.android.location.LocationService.stopService(this).run();

@@ -14,8 +14,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import anroid.v4.compat.NotificationCompat;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.ListActivity;
 import com.TwentyCodes.android.LocationRinger.ui.SettingsActivity;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
@@ -36,7 +36,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	 * @author ricky barrette
 	 */
 	public static Intent getSingleShotServiceIntent(final Context context) {
-		return new Intent(context, LocationService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Debug.ACCURACY).setAction(
+		return new Intent(context, LocationService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Constraints.ACCURACY).setAction(
 				LocationLibraryConstants.INTENT_ACTION_UPDATE);
 	}
 
@@ -48,7 +48,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	 * @author ricky barrette
 	 */
 	public static ComponentName startMultiShotService(final Context context) {
-		final Intent i = getSingleShotServiceIntent(context).putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Debug.UPDATE_INTERVAL);
+		final Intent i = getSingleShotServiceIntent(context).putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Constraints.UPDATE_INTERVAL);
 		return context.startService(i);
 	}
 
@@ -79,7 +79,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	@Override
 	public void onCreate() {
 		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE);
+		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
 		mSettings.edit().putBoolean(SettingsActivity.IS_SERVICE_STARTED, true).commit();
 		startOnGoingNotification();
 		super.onCreate();
@@ -110,7 +110,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	 */
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
-		mPeriod = Debug.UPDATE_INTERVAL;
+		mPeriod = Constraints.UPDATE_INTERVAL;
 		return super.onStartCommand(intent, flags, startId);
 	}
 

@@ -26,10 +26,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This class will be the main interface between location ringer and it's
@@ -76,11 +76,9 @@ public class RingerDatabase {
 			if (cursor.moveToFirst())
 				do {
 					final ContentValues ringer = new ContentValues();
-					if (Debug.DEBUG)
-						Log.v(TAG, "Converting: " + cursor.getString(0));
+					Log.v(TAG, "Converting: " + cursor.getString(0));
 					for (int i = 0; i < count; i++) {
-						if (Debug.DEBUG)
-							Log.v(TAG, i + " = " + cursor.getColumnName(i) + " ~ " + cursor.getString(i));
+						Log.v(TAG, i + " = " + cursor.getColumnName(i) + " ~ " + cursor.getString(i));
 						switch (i) {
 						case 0: // ringer name
 							ringer.put(cursor.getColumnName(i), cursor.getString(0));
@@ -131,14 +129,14 @@ public class RingerDatabase {
 		 */
 		@Override
 		public void onCreate(final SQLiteDatabase db) {
-			if (Debug.DROP_TABLE_EVERY_TIME)
+			if (Constraints.DROP_TABLE_EVERY_TIME)
 				db.execSQL("DROP TABLE IF EXISTS " + RINGER_TABLE);
 			createDatabase(db);
 			// insert the default ringer into this table
 			db.execSQL("insert into " + RINGER_TABLE + "(" + KEY_RINGER_NAME + ") values ('" + mContext.getString(R.string.default_ringer) + "')");
 			db.execSQL("insert into " + RINGER_INFO_TABLE + "(" + KEY_RINGER_NAME + ", " + KEY + ", " + KEY_VALUE + ") values ('"
 					+ mContext.getString(R.string.default_ringer) + "', '" + KEY_RINGER_DESCRIPTION + "', '" + mContext.getString(R.string.about_default_ringer) + "')");
-			if(mListener != null)
+			if (mListener != null)
 				mListener.onDatabaseCreate();
 		}
 
@@ -183,8 +181,7 @@ public class RingerDatabase {
 						c.moveToFirst();
 						if (c.moveToFirst())
 							do {
-								if (Debug.DEBUG)
-									Log.d(TAG, "Moving: " + c.getInt(0) + " " + c.getString(1) + " " + c.getInt(2) + ", " + c.getInt(3) + " @ " + c.getInt(4) + "m");
+								Log.d(TAG, "Moving: " + c.getInt(0) + " " + c.getString(1) + " " + c.getInt(2) + ", " + c.getInt(3) + " @ " + c.getInt(4) + "m");
 								final ContentValues ringer = new ContentValues();
 								final ContentValues info = new ContentValues();
 								ringer.put(KEY_RINGER_NAME, c.getString(1));
@@ -260,7 +257,7 @@ public class RingerDatabase {
 	public final static String KEY_RINGTONE_IS_SILENT = "ringtone_is_silent";
 	@Deprecated
 	public final static String KEY_NOTIFICATION_IS_SILENT = "notification_is_silent";
-	
+
 	public final static String KEY_IS_ENABLED = "is_enabled";
 	public final static String KEY_RADIUS = "radius";
 	public final static String KEY_RINGER_NAME = "ringer_name";
@@ -569,8 +566,7 @@ public class RingerDatabase {
 	public boolean isRingerEnabled(final long id) {
 		final Cursor cursor = mDb.query(RINGER_TABLE, new String[] { KEY_IS_ENABLED }, "id = " + id, null, null, null, null);
 		if (cursor.moveToFirst()) {
-			if (Debug.DEBUG)
-				Log.d(TAG, "isRingerEnabled(" + id + ") = " + cursor.getString(0));
+			Log.d(TAG, "isRingerEnabled(" + id + ") = " + cursor.getString(0));
 			return parseBoolean(cursor.getString(0));
 		}
 		return false;
@@ -608,8 +604,7 @@ public class RingerDatabase {
 	}
 
 	public int setRingerEnabled(final long id, final boolean enabled) {
-		if (Debug.DEBUG)
-			Log.d(TAG, "setRingerEnabled(" + id + ") = " + enabled);
+		Log.d(TAG, "setRingerEnabled(" + id + ") = " + enabled);
 		final ContentValues values = new ContentValues();
 		values.put(KEY_IS_ENABLED, enabled);
 		return mDb.update(RINGER_TABLE, values, "id" + "= " + id, null);

@@ -11,8 +11,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This class will be used to display the first boot dialog
@@ -76,7 +76,7 @@ public class FirstBootDialog extends Dialog implements android.view.View.OnClick
 	 */
 	@Override
 	public void onClick(final View arg0) {
-		getContext().getSharedPreferences(SettingsActivity.SETTINGS, Debug.SHARED_PREFS_MODE).edit().putBoolean(SettingsActivity.IS_FIRST_BOOT, false).commit();
+		getContext().getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE).edit().putBoolean(SettingsActivity.IS_FIRST_BOOT, false).commit();
 		dismiss();
 	}
 

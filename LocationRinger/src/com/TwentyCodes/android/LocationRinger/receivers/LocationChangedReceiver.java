@@ -8,9 +8,9 @@ package com.TwentyCodes.android.LocationRinger.receivers;
 
 import android.content.Intent;
 import android.location.Location;
-import android.util.Log;
 
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.services.RingerProcessingService;
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.location.BaseLocationReceiver;
@@ -28,11 +28,9 @@ public class LocationChangedReceiver extends BaseLocationReceiver {
 	@Override
 	public void onLocationUpdate(final Location location) {
 		if (location != null)
-			if (location.getAccuracy() <= Debug.IGNORE)
+			if (location.getAccuracy() <= Constraints.IGNORE)
 				mContext.startService(new Intent(mContext, RingerProcessingService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED, location));
-			else if (Debug.DEBUG)
-				Log.d(TAG, "location accuracy = " + location.getAccuracy() + " ignoring");
-			else if (Debug.DEBUG)
-				Log.d(TAG, "location was null");
+		Log.d(TAG, "location accuracy = " + location.getAccuracy() + " ignoring");
+		Log.d(TAG, "location was null");
 	}
 }

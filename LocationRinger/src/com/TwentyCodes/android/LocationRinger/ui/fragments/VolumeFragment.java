@@ -13,7 +13,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +21,10 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.TwentyCodes.android.LocationRinger.FeatureRemovedListener;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This fragment will represent the volume fragments
@@ -127,9 +126,8 @@ public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChan
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 
-		if (Debug.DEBUG)
-			for (final Entry<String, Object> item : mInfo.valueSet())
-				Log.d(TAG, item.getKey() + " = " + item.getValue());
+		for (final Entry<String, Object> item : mInfo.valueSet())
+			Log.d(TAG, item.getKey() + " = " + item.getValue());
 
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final TextView label = (TextView) view.findViewById(R.id.title);

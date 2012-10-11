@@ -20,17 +20,17 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
 import com.TwentyCodes.android.LocationRinger.EnableScrollingListener;
+import com.TwentyCodes.android.LocationRinger.Log;
 import com.TwentyCodes.android.LocationRinger.OnContentChangedListener;
 import com.TwentyCodes.android.LocationRinger.R;
 import com.TwentyCodes.android.LocationRinger.db.RingerDatabase;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.FeatureListFragment;
 import com.TwentyCodes.android.LocationRinger.ui.fragments.LocationInfomationFragment;
@@ -81,7 +81,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		/*
 		 * Set up the action bar if required
 		 */
-		if (Debug.SUPPORTS_HONEYCOMB)
+		if (Constraints.SUPPORTS_HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		mData = new Intent().putExtras(intent);
@@ -157,10 +157,8 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 */
 	@Override
 	public void onInfoContentChanged(final ContentValues values) {
-		if (Debug.DEBUG) {
-			Log.v(TAG, "onInfoContentChanged()");
-			logContentValues(values);
-		}
+		Log.v(TAG, "onInfoContentChanged()");
+		logContentValues(values);
 		mInfo.putAll(values);
 	}
 
@@ -225,10 +223,8 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 */
 	@Override
 	public void onRingerContentChanged(final ContentValues values) {
-		if (Debug.DEBUG) {
-			Log.v(TAG, "onRingerContentChanged()");
-			logContentValues(values);
-		}
+		Log.v(TAG, "onRingerContentChanged()");
+		logContentValues(values);
 		mRinger.putAll(values);
 	}
 

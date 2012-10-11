@@ -26,8 +26,9 @@ import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.MenuItem;
 
+import com.TwentyCodes.android.LocationRinger.Constraints;
+import com.TwentyCodes.android.LocationRinger.LegalActivity;
 import com.TwentyCodes.android.LocationRinger.R;
-import com.TwentyCodes.android.LocationRinger.debug.Debug;
 
 /**
  * This is the settings activity for location ringer
@@ -47,6 +48,7 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	public static final String RESTORE = "restore";
 	public static final String BACKUP = "backup";
 	public static final String CURRENT = "current";
+	private static final String LEGAL = "legal";
 
 	/**
 	 * Backs up the database
@@ -123,7 +125,8 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 			e.printStackTrace();
 		}
 
-		context.getSharedPreferences(SETTINGS, Debug.SHARED_PREFS_MODE).edit().remove(IS_FIRST_RINGER_PROCESSING).remove(IS_DEFAULT).remove(IS_SERVICE_STARTED).commit();
+		context.getSharedPreferences(SETTINGS, Constraints.SHARED_PREFS_MODE).edit().remove(IS_FIRST_RINGER_PROCESSING).remove(IS_DEFAULT).remove(IS_SERVICE_STARTED)
+				.commit();
 	}
 
 	/**
@@ -163,15 +166,16 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getPreferenceManager().setSharedPreferencesMode(Debug.SHARED_PREFS_MODE);
+		getPreferenceManager().setSharedPreferencesMode(Constraints.SHARED_PREFS_MODE);
 		getPreferenceManager().setSharedPreferencesName(SETTINGS);
 		addPreferencesFromResource(R.xml.setings);
 		findPreference(EMAIL).setOnPreferenceClickListener(this);
+		findPreference(LEGAL).setOnPreferenceClickListener(this);
 
 		/*
 		 * Set up the action bar if required
 		 */
-		if (Debug.SUPPORTS_HONEYCOMB)
+		if (Constraints.SUPPORTS_HONEYCOMB)
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
@@ -197,7 +201,10 @@ public class SettingsActivity extends PreferenceActivity implements OnPreference
 	 */
 	@Override
 	public boolean onPreferenceClick(final Preference preference) {
-		this.startActivity(generateEmailIntent());
+		if (preference.getKey().equals(EMAIL))
+			this.startActivity(generateEmailIntent());
+		if (preference.getKey().equals(LEGAL))
+			this.startActivity(new Intent(this, LegalActivity.class));
 		return false;
 	}
 }
