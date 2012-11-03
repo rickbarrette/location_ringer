@@ -46,8 +46,8 @@
     <string name="toasty_about">Display a toast message when applying ringers</string>
     <string name="accuracy_about">Minimum required accuracy to report</string>
     <string name="update_interval_about">Amount of time between updates</string>
-    <string name="email">twentycodes@gmail.com</string>
-    <string name="email_about">Send an email with ideas or problems to help make this application even better! Good or bad we want to know what you think!</string>
+    <string name="email">rickbarrette@gmail.com</string>
+    <string name="email_about">Send an email with ideas or problems to help make this application even better! Good or bad I want to know what you think!</string>
     <string name="contact_us">Contact Us</string>
     <string name="version_info">Version Information</string>
     <string name="start_on_boot">Start on boot</string>
