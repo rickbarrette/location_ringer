@@ -8,6 +8,7 @@
         android:id="@+id/ringer_enabled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:textOff="@string/disable"
         android:textOn="@string/enable" />
 

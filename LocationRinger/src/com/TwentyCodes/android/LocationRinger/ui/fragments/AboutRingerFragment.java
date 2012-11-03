@@ -186,6 +186,7 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 		if (mRinger.containsKey(RingerDatabase.KEY_IS_ENABLED))
 			mRingerEnabled.setChecked(mRinger.getAsBoolean(RingerDatabase.KEY_IS_ENABLED));
 		mRingerEnabled.setOnCheckedChangeListener(this);
+		onCheckedChanged(mRingerEnabled, mRingerEnabled.isChecked());
 
 		return view;
 	}
