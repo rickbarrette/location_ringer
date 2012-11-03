@@ -6,12 +6,14 @@
  */
 package com.TwentyCodes.android.LocationRinger.services;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.SystemClock;
 import anroid.v4.compat.NotificationCompat;
 
 import com.TwentyCodes.android.LocationRinger.Constraints;
@@ -47,9 +49,9 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	 * @return
 	 * @author ricky barrette
 	 */
-	public static ComponentName startMultiShotService(final Context context) {
-		final Intent i = getSingleShotServiceIntent(context).putExtra(LocationLibraryConstants.INTENT_EXTRA_PERIOD_BETWEEN_UPDATES, Constraints.UPDATE_INTERVAL);
-		return context.startService(i);
+	public static void startMultiShotService(final Context context) {
+		final AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+		am.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), Constraints.UPDATE_INTERVAL, PendingIntent.getService(context, 0, getSingleShotServiceIntent(context), PendingIntent.FLAG_UPDATE_CURRENT));
 	}
 
 	/**
@@ -97,21 +99,6 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 		mSettings.edit().remove(SettingsActivity.IS_SERVICE_STARTED).commit();
 		mNotificationManager.cancel(GATHERING_LOCATION_ONGING_NOTIFICATION_ID);
 		super.onDestroy();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.TwentyCodes.android.SkyHook.SkyHookService#onStartCommand(android
-	 * .content.Intent, int, int)
-	 * 
-	 * @author ricky barrette
-	 */
-	@Override
-	public int onStartCommand(final Intent intent, final int flags, final int startId) {
-		mPeriod = Constraints.UPDATE_INTERVAL;
-		return super.onStartCommand(intent, flags, startId);
 	}
 
 	/**
