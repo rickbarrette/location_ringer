@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Location Ringer allows you to create location based ringer profiles called Ringers. Ringers allow you to have your phone automatically change basic settings based on where you are. For example you can have your phone automatically become silent when you go to work, or automatically enable your wireless when you get home.\n\nTo Start simply set your default settings in the Default Ringer, and create new ringers as they are needed.\n\nThe Default Ringer is applied when there are no applicable Ringers for your current location.</string>
+    <string name="hello">Location Ringer allows you to create location based ringer profiles called Ringers. Ringers allow you to have your phone automatically change basic settings based on where you are. For example you can have your phone automatically become silent when you go to work, or automatically enable your wireless when you get home.\n\nTo Start simply review your default settings in the Default Ringer and SAVE it. Then you can create new ringers as they are needed.\n\nThe Default Ringer is applied when there are no applicable Ringers for your current location.</string>
     <string name="app_name">Location Ringer beta</string>
     <string name="silent_enabled">Silent Enabled</string>
     <string name="silent_disabled">Silent Disabled</string>
