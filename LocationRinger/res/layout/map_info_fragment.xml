@@ -53,7 +53,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/buttons"
         android:layout_below="@id/map_controls"
-        class="com.TwentyCodes.android.LocationRinger.ui.fragments.MapFragment" >
+        class="org.RickBarrette.android.LocationRinger.ui.fragments.MapFragment" >
     </fragment>
 
     <TextView

@@ -9,7 +9,7 @@
 <!--     </CheckBoxPreference> -->
 
     <PreferenceScreen android:title="@string/about" >
-        <com.TwentyCodes.android.LocationRinger.ui.TextViewPreference android:title="@string/hello" />
+        <org.RickBarrette.android.LocationRinger.ui.TextViewPreference android:title="@string/hello" />
     </PreferenceScreen>
 
     <PreferenceCategory android:title="@string/contact_us" >

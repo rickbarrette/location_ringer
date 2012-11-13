@@ -24,7 +24,7 @@
         android:id="@+id/ringer_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
+        class="org.RickBarrette.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
         android:imeOptions="actionNext"
         android:inputType="textCapWords"
         android:singleLine="true" />
@@ -41,7 +41,7 @@
         android:id="@+id/ringer_description"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.TwentyCodes.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
+        class="org.RickBarrette.android.LocationRinger.ui.fragments.AboutRingerFragment$ListeningEditText"
         android:inputType="textCapSentences" />
 
 </LinearLayout>
