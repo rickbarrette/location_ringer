@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.RickBarrette.android.LocationRinger"
     android:installLocation="internalOnly"
-    android:versionCode="207"
+    android:versionCode="209"
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="8" />
@@ -13,6 +13,9 @@
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="true" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
