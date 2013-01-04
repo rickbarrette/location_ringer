@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.RickBarrette.android.LocationRinger.Constraints;
 import org.RickBarrette.android.LocationRinger.Log;
 import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+import org.RickBarrette.android.LocationRinger.receivers.BluetoothReceiver;
 import org.RickBarrette.android.LocationRinger.receivers.GetLocationWidget;
 import org.RickBarrette.android.LocationRinger.ui.SettingsActivity;
 
@@ -24,6 +25,8 @@ import android.database.Cursor;
 import android.location.Location;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.IBinder;
@@ -105,18 +108,30 @@ public class RingerProcessingService extends Service {
 				setStreamVolume(values.getAsInteger(RingerDatabase.KEY_ALARM_VOLUME), AudioManager.STREAM_ALARM);
 
 		/*
-		 * wifi & bluetooth
+		 * wifi
+		 * 
+		 * only change wifi state IF NOT connected
 		 */
-		if (values.containsKey(RingerDatabase.KEY_WIFI))
-			if (mWifiManager != null)
-				mWifiManager.setWifiEnabled(RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_WIFI)));
+		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-		if (values.containsKey(RingerDatabase.KEY_BT))
-			if (mBluetoothAdapter != null)
-				if (RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_BT)))
-					mBluetoothAdapter.enable();
-				else
-					mBluetoothAdapter.disable();
+		if (! wifiNetInfo.isConnected())
+			if (values.containsKey(RingerDatabase.KEY_WIFI))
+				if (mWifiManager != null)
+					mWifiManager.setWifiEnabled(RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_WIFI)));
+
+		/*
+		 * bluetooth
+		 * 
+		 * only updated bt state IF NOT connected
+		 */
+		if(getSharedPreferences(BluetoothReceiver.TAG, Context.MODE_MULTI_PROCESS).getInt(BluetoothReceiver.NUMBER_CONNECTED, 0) < 1)
+			if (values.containsKey(RingerDatabase.KEY_BT))
+				if (mBluetoothAdapter != null)
+					if (RingerDatabase.parseBoolean(values.getAsString(RingerDatabase.KEY_BT)))
+						mBluetoothAdapter.enable();
+					else
+						mBluetoothAdapter.disable();
 
 		/*
 		 * airplane mode
