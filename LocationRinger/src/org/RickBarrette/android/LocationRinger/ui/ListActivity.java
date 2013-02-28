@@ -26,6 +26,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +46,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.TwentyCodes.android.exception.ExceptionHandler;
 import com.TwentyCodes.android.location.PassiveLocationListener;
 
 @SuppressLint("Registered")
@@ -150,6 +152,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
 
 		final Intent intent = getIntent();
 		final String action = intent.getAction();
@@ -228,9 +231,11 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		info.put(RingerDatabase.KEY_RINGER_DESCRIPTION, getString(R.string.about_default_ringer));
 		info.put(RingerDatabase.KEY_ALARM_VOLUME, am.getStreamVolume(AudioManager.STREAM_ALARM));
 		info.put(RingerDatabase.KEY_MUSIC_VOLUME, am.getStreamVolume(AudioManager.STREAM_MUSIC));
-		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION).toString());
+		Uri ringtoneURI = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_NOTIFICATION);
+		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI, ringtoneURI != null ? ringtoneURI.toString() : null);
 		info.put(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_NOTIFICATION));
-		info.put(RingerDatabase.KEY_RINGTONE_URI, RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE).toString());
+		Uri notificationURI = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_RINGTONE);
+		info.put(RingerDatabase.KEY_RINGTONE_URI, notificationURI != null ? notificationURI.toString() : null);
 		info.put(RingerDatabase.KEY_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_RING));
 		info.put(RingerDatabase.KEY_BT, bt.isEnabled());
 		info.put(RingerDatabase.KEY_WIFI, wifi.isWifiEnabled());
