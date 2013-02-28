@@ -18,6 +18,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 import anroid.v4.compat.NotificationCompat;
 
@@ -72,10 +75,10 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 
 	private NotificationManager mNotificationManager;
 
+	private WifiManager mWifiManager;
+
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onCreate()
 	 * 
 	 * @author ricky barrette
 	 */
@@ -85,13 +88,18 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
 		mSettings.edit().putBoolean(SettingsActivity.IS_SERVICE_STARTED, true).commit();
 		startOnGoingNotification();
+		
+		/*
+		 * enable wifi to aid in finding location.
+		 * This will allow for faster location fixes
+		 */
+		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		mWifiManager.setWifiEnabled(true);
 		super.onCreate();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see com.TwentyCodes.android.SkyHook.SkyHookService#onDestroy()
 	 * 
 	 * @author ricky barrette
 	 */
@@ -99,6 +107,16 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	public void onDestroy() {
 		mSettings.edit().remove(SettingsActivity.IS_SERVICE_STARTED).commit();
 		mNotificationManager.cancel(GATHERING_LOCATION_ONGING_NOTIFICATION_ID);
+		
+		/*
+		 * disable wifi IF NOT connected to a network
+		 */
+		ConnectivityManager connManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+		if (! wifiNetInfo.isConnected())
+			mWifiManager.setWifiEnabled(false);
+		
 		super.onDestroy();
 	}
 
