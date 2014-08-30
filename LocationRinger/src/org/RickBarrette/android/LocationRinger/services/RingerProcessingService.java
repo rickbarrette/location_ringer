@@ -6,15 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.services;
 
-import java.util.Map.Entry;
-
-import org.RickBarrette.android.LocationRinger.Constraints;
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-import org.RickBarrette.android.LocationRinger.receivers.BluetoothReceiver;
-import org.RickBarrette.android.LocationRinger.receivers.GetLocationWidget;
-import org.RickBarrette.android.LocationRinger.ui.SettingsActivity;
-
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
@@ -33,11 +24,18 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
-
 import com.TwentyCodes.android.debug.LocationLibraryConstants;
 import com.TwentyCodes.android.exception.ExceptionHandler;
 import com.TwentyCodes.android.location.GeoUtils;
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
+import org.RickBarrette.android.LocationRinger.Constraints;
+import org.RickBarrette.android.LocationRinger.Log;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+import org.RickBarrette.android.LocationRinger.receivers.BluetoothReceiver;
+import org.RickBarrette.android.LocationRinger.receivers.GetLocationWidget;
+import org.RickBarrette.android.LocationRinger.ui.SettingsActivity;
+
+import java.util.Map.Entry;
 
 /**
  * This service will handle processing the users location and the ringers
@@ -59,7 +57,7 @@ public class RingerProcessingService extends Service {
 	/**
 	 * Applies a ringers options to the current system settings
 	 * 
-	 * @param id
+	 * @param values
 	 * @author ricky barrette
 	 */
 	private void applyRinger(final ContentValues values) {
@@ -151,12 +149,8 @@ public class RingerProcessingService extends Service {
 	/**
 	 * Apply the ring tone
 	 * 
-	 * @param stream
-	 *            audio stream to apply to
-	 * @param isSilent
-	 *            true if silent
-	 * @param uri
-	 *            of ringtone, if null silent will be applied
+	 * @param type audio stream to apply to
+	 * @param uri of ringtone, if null silent will be applied
 	 * @return string uri of applied ringtone, null if silent was applied
 	 * @author ricky barrette
 	 */
@@ -282,7 +276,7 @@ public class RingerProcessingService extends Service {
 		 */
 		final ContentValues ringer = getRinger(1);
 
-		final GeoPoint point = new GeoPoint((int) (mLocation.getLatitude() * 1E6), (int) (mLocation.getLongitude() * 1E6));
+		final LatLng point = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
 		Log.d(TAG, "Processing ringers");
 		Log.d(TAG,
 				"Current location " + (int) (mLocation.getLatitude() * 1E6) + ", " + (int) (mLocation.getLongitude() * 1E6) + " @ "
@@ -299,7 +293,7 @@ public class RingerProcessingService extends Service {
 					if (info.containsKey(RingerDatabase.KEY_LOCATION) && info.containsKey(RingerDatabase.KEY_RADIUS)) {
 						final String[] pointInfo = info.getAsString(RingerDatabase.KEY_LOCATION).split(",");
 						if (GeoUtils.isIntersecting(point, Float.valueOf(mLocation.getAccuracy()) / 1000,
-								new GeoPoint(Integer.parseInt(pointInfo[0]), Integer.parseInt(pointInfo[1])),
+								new LatLng(Double.parseDouble(pointInfo[0]), Double.parseDouble(pointInfo[1])),
 								Float.valueOf(info.getAsInteger(RingerDatabase.KEY_RADIUS)) / 1000, Constraints.FUDGE_FACTOR)) {
 							c.close();
 							getRinger(ringer, index);

@@ -6,14 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.R;
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Handler;
@@ -21,18 +13,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
-
 import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.TwentyCodes.android.location.ReverseGeocoder;
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.model.LatLng;
+import org.RickBarrette.android.LocationRinger.Log;
+import org.RickBarrette.android.LocationRinger.R;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * This dialog will be used to get users input for the address that they want to
@@ -100,12 +93,11 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 	 * @return GeoPoint of the place
 	 * @author ricky barrette
 	 */
-	private GeoPoint getCoords(final int index) {
+	private LatLng getCoords(final int index) {
 		Log.d(TAG, "getCoords()");
 		try {
 			final JSONArray coords = mResults.getJSONObject(index).getJSONObject("Point").getJSONArray("coordinates");
-			Log.d(TAG, "creating geopoint: " + new GeoPoint((int) (coords.getDouble(1) * 1E6), (int) (coords.getDouble(0) * 1E6)).toString());
-			return new GeoPoint((int) (coords.getDouble(1) * 1E6), (int) (coords.getDouble(0) * 1E6));
+			return new LatLng(coords.getDouble(1), coords.getDouble(0));
 		} catch (final JSONException e) {
 			e.printStackTrace();
 		}
