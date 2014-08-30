@@ -67,7 +67,6 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	/**
 	 * Called when the activity is first created (non-Javadoc)
 	 * 
-	 * @see android.support.v4.app.FragmentActivity#onCreate(android.os.Bundle)
 	 */
 	@SuppressLint("NewApi")
 	@Override

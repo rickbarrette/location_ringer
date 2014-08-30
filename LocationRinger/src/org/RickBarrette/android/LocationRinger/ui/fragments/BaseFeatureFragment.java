@@ -6,17 +6,16 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
-import org.RickBarrette.android.LocationRinger.R;
-
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
+import org.RickBarrette.android.LocationRinger.R;
 
 /**
  * This is a simple extention of a fragment that will allow for storage of an id

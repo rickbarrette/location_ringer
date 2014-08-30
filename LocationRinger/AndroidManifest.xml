@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.RickBarrette.android.LocationRinger"
     android:installLocation="internalOnly"
-    android:versionCode="236"
-    android:versionName="ff72f9d" >
+    android:versionCode="248"
+    android:versionName="8cc52de" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="11" />
 
     <uses-feature
         android:name="android.hardware.location"
@@ -42,9 +42,6 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Custom" >
-        <uses-library
-            android:name="com.google.android.maps"
-            android:required="true" />
 
         <activity
             android:name=".ui.ListActivity"
@@ -59,8 +56,6 @@
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
         </activity>
-
-        <uses-library android:name="com.google.android.maps" />
 
         <activity
             android:name=".ui.RingerInformationActivity"
@@ -140,6 +135,26 @@
                 <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED"/>
             </intent-filter>
         </receiver>
+
+        <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+
+        <!--
+        Maps V1
+        ricky beta release	0rKmsWMM0D-IRAEgcSZEqwZCs_8AUwxjYjj0bnA
+        ricky				0rKmsWMM0D-LWOndcfwrmW-S0OXlnQl2SJCMeTg
+        TWENTYCODES 		0rKmsWMM0D-K15bEM_kwabPbNhsn4dp4rcq2q5Q
+        -->
+
+        <!--
+        Maps v2
+        Debug               AIzaSyCSqR3sQvE957QUuSfrIgLdhmneB__ljXQ
+        -->
+        <meta-data
+                android:name="com.google.android.maps.v2.API_KEY"
+                android:value="AIzaSyCSqR3sQvE957QUuSfrIgLdhmneB__ljXQ"/>
     </application>
+
 
 </manifest>

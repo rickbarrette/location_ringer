@@ -6,13 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import java.util.Map.Entry;
-
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -28,6 +21,12 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ToggleButton;
+import org.RickBarrette.android.LocationRinger.Log;
+import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
+import org.RickBarrette.android.LocationRinger.R;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+
+import java.util.Map.Entry;
 
 /**
  * This fragment will used to allow the user to enter/edit ringer information

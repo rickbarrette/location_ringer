@@ -6,13 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import java.util.ArrayList;
-
-import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -27,6 +20,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
+import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
+import org.RickBarrette.android.LocationRinger.R;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+
+import java.util.ArrayList;
 
 /**
  * This fragment will be used to display a list of features
@@ -48,7 +47,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 	private final ArrayList<Integer> mAdded;
 
 	/**
-	 * Creates a new empty feature list fragment
+	 * Creates a new .gitkeep feature list fragment
 	 * 
 	 * @param info
 	 * @param listener
@@ -228,7 +227,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 
 	/**
 	 * Called when the activity is first created (non-Javadoc)
-	 * 
+	 *
 	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -252,7 +251,7 @@ public class FeatureListFragment extends BaseFragmentListFragment implements OnC
 
 	/**
 	 * Called when a fragment needs to be removed (non-Javadoc)
-	 * 
+	 *
 	 * @see org.RickBarrette.android.LocationRinger.FeatureRemovedListener#onFeatureRemoved(android.support.v4.app.Fragment)
 	 */
 	@Override

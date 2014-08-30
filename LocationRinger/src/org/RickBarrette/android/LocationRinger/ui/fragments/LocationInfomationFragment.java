@@ -6,15 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import org.RickBarrette.android.LocationRinger.Constraints;
-import org.RickBarrette.android.LocationRinger.EnableScrollingListener;
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.SearchRequestedListener;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-import org.RickBarrette.android.LocationRinger.ui.SearchDialog;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -23,20 +14,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
+import android.widget.*;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
-
 import com.TwentyCodes.android.location.AndroidGPS;
-import com.TwentyCodes.android.location.GeoPointLocationListener;
 import com.TwentyCodes.android.location.GeoUtils;
+import com.TwentyCodes.android.location.LatLngListener;
 import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.TwentyCodes.android.overlays.RadiusOverlay;
-import com.google.android.maps.GeoPoint;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import org.RickBarrette.android.LocationRinger.*;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+import org.RickBarrette.android.LocationRinger.ui.SearchDialog;
 
 /**
  * This fragment will be used to display and allow the user to edit the ringers
@@ -45,7 +37,7 @@ import com.google.android.maps.GeoPoint;
  * @author ricky
  */
 @SuppressLint("ValidFragment")
-public class LocationInfomationFragment extends Fragment implements GeoPointLocationListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener,
+public class LocationInfomationFragment extends Fragment implements LatLngListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener,
 		OnLocationSelectedListener, SearchRequestedListener {
 
 	private static final String TAG = "RingerInformationHowActivity";
@@ -56,7 +48,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	private MapFragment mMap;
 	private ToggleButton mMapEditToggle;
 	private RadiusOverlay mRadiusOverlay;
-	private GeoPoint mPoint;
+	private LatLng mPoint;
 	private AndroidGPS mGPS;
 	private View view;
 	private TextView mRadiusTextView;
@@ -65,7 +57,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * Creates a new MapFragment
 	 * 
 	 * @author ricky barrette
-	 * @param ringerInformationActivity
 	 */
 	public LocationInfomationFragment(final ContentValues info, final OnContentChangedListener listener, final EnableScrollingListener enabledListener) {
 		mInfo = info;
@@ -85,18 +76,18 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		if (mEnableScrollingListener != null)
 			mEnableScrollingListener.setScrollEnabled(!isChecked);
 
-		if (isChecked) {
-			mGPS.enableLocationUpdates(this);
-			mMap.enableGPSProgess();
-		} else {
-			mGPS.disableLocationUpdates();
-			mMap.disableGPSProgess();
-		}
-
-		mMap.setDoubleTapZoonEnabled(isChecked);
-		// buttons
-		mMap.setBuiltInZoomControls(isChecked);
-		mMap.setClickable(isChecked);
+//		/*if (isChecked) {
+//			mGPS.enableLocationUpdates(this);
+//			mMap.enableGPSProgess();
+//		} else {
+//			mGPS.disableLocationUpdates();
+//			mMap.disableGPSProgess();
+//		}
+//
+//		mMap.setDoubleTapZoonEnabled(isChecked);
+//		// buttons
+//		mMap.setBuiltInZoomControls(isChecked);
+//		mMap.setClickable(isChecked);*/
 		mRadius.setEnabled(isChecked);
 		Toast.makeText(getActivity(), isChecked ? getString(R.string.map_editing_enabled) : getString(R.string.map_editiing_disabled), Toast.LENGTH_SHORT).show();
 	}
@@ -115,10 +106,10 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 			break;
 		case R.id.my_location:
 			if (mPoint != null)
-				mMap.setMapCenter(mPoint);
+				mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(mPoint));
 			break;
 		case R.id.map_mode:
-			mMap.setSatellite(mMap.isSatellite() ? false : true);
+			mMap.getMap().setMapType(mMap.getMap().getMapType() == GoogleMap.MAP_TYPE_NORMAL ? GoogleMap.MAP_TYPE_NORMAL : GoogleMap.MAP_TYPE_SATELLITE);
 			break;
 		case R.id.search:
 			new SearchDialog(getActivity(), this).show();
@@ -132,34 +123,39 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 
 		mGPS = new AndroidGPS(getActivity());
 
-		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
+//		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
 		mRadiusTextView = (TextView) view.findViewById(R.id.radius_textview);
 		mRadius.setMax(Constraints.MAX_RADIUS_IN_METERS);
-		mMap.setClickable(false);
+
+		//TODO extend GoogleMap to intercept clicks
+//		mMap.setClickable(false);
+
 		mMapEditToggle = (ToggleButton) view.findViewById(R.id.map_edit_toggle);
 		mMapEditToggle.setChecked(false);
 		mMapEditToggle.setOnCheckedChangeListener(this);
 		mRadiusOverlay = new RadiusOverlay();
 		mRadiusOverlay.setLocationSelectedListener(this);
 		mRadius.setOnSeekBarChangeListener(this);
-		mMap.addOverlay(mRadiusOverlay);
+		mMap.getMap().addCircle(mRadiusOverlay.getCircleOptions());
 		mRadius.setEnabled(false);
 
 		if (mInfo.get(RingerDatabase.KEY_LOCATION) != null) {
 			final String[] point = mInfo.getAsString(RingerDatabase.KEY_LOCATION).split(",");
-			mRadiusOverlay.setLocation(new GeoPoint(Integer.parseInt(point[0]), Integer.parseInt(point[1])));
+			mRadiusOverlay.setLocation(new LatLng(Integer.parseInt(point[0]), Integer.parseInt(point[1])));
 		}
 
 		if (mInfo.get(RingerDatabase.KEY_RADIUS) != null)
 			mRadius.setProgress(mInfo.getAsInteger(RingerDatabase.KEY_RADIUS));
 
 		if (mRadiusOverlay.getLocation() != null) {
-			mMap.setMapCenter(mRadiusOverlay.getLocation());
-			mMap.setZoom(16);
+			mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(mRadiusOverlay.getLocation()));
+			//todo zoom
+//			mMap.setZoom(16);
 		}
 
-		mMap.setDoubleTapZoonEnabled(false);
+		//
+//		mMap.setDoubleTapZoonEnabled(false);
 
 		view.findViewById(R.id.my_location).setOnClickListener(this);
 		view.findViewById(R.id.mark_my_location).setOnClickListener(this);
@@ -171,27 +167,29 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 
 	/**
 	 * Called when the location is a first fix (non-Javadoc)
+	 *
+	 * todo fix this
 	 * 
-	 * @see com.TwentyCodes.android.location.GeoPointLocationListener#onFirstFix(boolean)
+	 * @see com.TwentyCodes.android.location.LatLngListener#onFirstFix(boolean)
 	 */
 	@Override
 	public void onFirstFix(final boolean isFirstFix) {
-		if (mPoint != null) {
-			/*
-			 * if this is the first fix and the radius overlay does not have a
-			 * point specified then pan the map, and zoom in to the users
-			 * current location
-			 */
-			if (isFirstFix) {
-				mMap.disableGPSProgess();
-				if (mRadiusOverlay.getLocation() == null)
-					if (mMap != null) {
-						mMap.setMapCenter(mPoint);
-						mMap.setZoom(mMap.getMap().getMaxZoomLevel() - 5);
-					}
-			}
-		} else
-			mMap.enableGPSProgess();
+//		if (mPoint != null) {
+//			/*
+//			 * if this is the first fix and the radius overlay does not have a
+//			 * point specified then pan the map, and zoom in to the users
+//			 * current location
+//			 */
+//			if (isFirstFix) {
+//				mMap.disableGPSProgess();
+//				if (mRadiusOverlay.getLocation() == null)
+//					if (mMap != null) {
+//						mMap.setMapCenter(mPoint);
+//						mMap.setZoom(mMap.getMap().getMaxZoomLevel() - 5);
+//					}
+//			}
+//		} else
+//			mMap.enableGPSProgess();
 	}
 
 	/**
@@ -200,17 +198,17 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	 * @author ricky barrette
 	 */
 	@Override
-	public void onLocationChanged(final GeoPoint point, final int accuracy) {
+	public void onLocationChanged(final LatLng point, final int accuracy) {
 		mPoint = point;
 	}
 
 	/**
 	 * Called when a location has been selected (non-Javadoc)
 	 * 
-	 * @see com.TwentyCodes.android.location.OnLocationSelectedListener#onLocationSelected(com.google.android.maps.GeoPoint)
+//	 * @see com.TwentyCodes.android.location.OnLocationSelectedListener#onLocationSelected(com.google.android.maps.GeoPoint)
 	 */
 	@Override
-	public void onLocationSelected(final GeoPoint point) {
+	public void onLocationSelected(final LatLng point) {
 		if (point != null) {
 			Log.d(TAG, "onLocationSelected() " + point.toString());
 
@@ -218,7 +216,7 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 				mRadiusOverlay.setLocation(point);
 
 			if (mMap != null)
-				mMap.setMapCenter(point);
+				mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(point));
 
 			if (mListener != null) {
 				final ContentValues info = new ContentValues();
@@ -232,7 +230,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see android.support.v4.app.Fragment#onPause()
 	 */
 	@Override
 	public void onPause() {
@@ -251,7 +248,8 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 		case R.id.radius:
 			mRadiusTextView.setText(GeoUtils.distanceToString(Float.valueOf(progress) / 1000, true));
 			mRadiusOverlay.setRadius(progress);
-			mMap.invalidate();
+			//todo invalidate this shit
+//			mMap.invalidate();
 			if (mListener != null) {
 				final ContentValues info = new ContentValues();
 				info.put(RingerDatabase.KEY_RADIUS, progress);
@@ -264,7 +262,6 @@ public class LocationInfomationFragment extends Fragment implements GeoPointLoca
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see android.support.v4.app.Fragment#onResume()
 	 */
 	@Override
 	public void onResume() {

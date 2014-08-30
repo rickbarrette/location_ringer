@@ -296,7 +296,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onItemClick(final AdapterView<?> arg0, final View v, final int postion, final long id) {
 
-		final ProgressDialog progress = ProgressDialog.show(this, "", getText(R.string.loading), true, true);
+		final ProgressDialog progress = null; //ProgressDialog.show(this.getParent(), "", getText(R.string.loading), true, true);
 
 		new Thread(new Runnable() {
 			@Override

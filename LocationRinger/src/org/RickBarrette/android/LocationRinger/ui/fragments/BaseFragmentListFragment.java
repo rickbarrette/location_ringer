@@ -111,7 +111,7 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see android.support.v4.app.Fragment#onActivityResult(int, int,
 	 *      android.content.Intent)
 	 */
@@ -124,7 +124,7 @@ public abstract class BaseFragmentListFragment extends Fragment {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
 	 *      android.view.ViewGroup, android.os.Bundle)
 	 */
