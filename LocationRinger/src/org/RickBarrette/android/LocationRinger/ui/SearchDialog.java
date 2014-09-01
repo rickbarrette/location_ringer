@@ -23,6 +23,7 @@ import org.RickBarrette.android.LocationRinger.Log;
 import org.RickBarrette.android.LocationRinger.R;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,7 +78,7 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 		final ArrayList<String> list = new ArrayList<String>();
 		try {
 			for (int i = 0; i < mResults.length(); i++)
-				list.add(mResults.getJSONObject(i).getString("address"));
+				list.add(mResults.getJSONObject(i).getString("formatted_address"));
 		} catch (final JSONException e) {
 			e.printStackTrace();
 			return null;
@@ -96,8 +97,8 @@ public class SearchDialog extends Dialog implements android.view.View.OnClickLis
 	private LatLng getCoords(final int index) {
 		Log.d(TAG, "getCoords()");
 		try {
-			final JSONArray coords = mResults.getJSONObject(index).getJSONObject("Point").getJSONArray("coordinates");
-			return new LatLng(coords.getDouble(1), coords.getDouble(0));
+			final JSONObject coords = mResults.getJSONObject(index).getJSONObject("geometry").getJSONObject("location");
+			return new LatLng(coords.getDouble("lat"), coords.getDouble("lng"));
 		} catch (final JSONException e) {
 			e.printStackTrace();
 		}

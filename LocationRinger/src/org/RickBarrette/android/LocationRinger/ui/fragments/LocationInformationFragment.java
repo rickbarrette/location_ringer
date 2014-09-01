@@ -87,10 +87,7 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			mMap.setOnMapClickListener(null);
 		}
 
-//		mMap.setDoubleTapZoonEnabled(isChecked);
-//		// buttons
-//		mMap.setBuiltInZoomControls(isChecked);
-//		mMap.setClickable(isChecked);*/
+		enableMap(isChecked);
 		mRadius.setEnabled(isChecked);
 		Toast.makeText(getActivity(), isChecked ? getString(R.string.map_editing_enabled) : getString(R.string.map_editiing_disabled), Toast.LENGTH_SHORT).show();
 	}
@@ -120,6 +117,13 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		}
 	}
 
+	/**
+	 * Called when the fragment view is being created
+	 * @param inflater
+	 * @param container
+	 * @param savedInstanceState
+	 * @return
+	 */
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.map_info_fragment, container, false);
@@ -130,9 +134,6 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
 		mRadiusTextView = (TextView) view.findViewById(R.id.radius_textview);
 		mRadius.setMax(Constraints.MAX_RADIUS_IN_METERS);
-
-		//TODO extend GoogleMap to intercept clicks
-//		mMap.setClickable(false);
 
 		mMapEditToggle = (ToggleButton) view.findViewById(R.id.map_edit_toggle);
 		mMapEditToggle.setChecked(false);
@@ -178,9 +179,10 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			 */
 			if (isFirstFix) {
 //				mMap.disableGPSProgess();
-				if (mMap != null) {
-					mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mPoint, 14));
-				}
+				if (mMap != null)
+					if(mCircle.getCenter() == new LatLng(0, 0));
+						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mPoint, 14));
+
 			}
 		}
 //		else
@@ -218,8 +220,6 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		case R.id.radius:
 			mRadiusTextView.setText(GeoUtils.distanceToString(Float.valueOf(progress) / 1000, true));
 			mCircle.setRadius(progress);
-			//todo invalidate this shit
-//			mMap.invalidate();
 			if (mListener != null) {
 				final ContentValues info = new ContentValues();
 				info.put(RingerDatabase.KEY_RADIUS, progress);
@@ -306,6 +306,7 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 	 */
 	private void setUpMap() {
 
+		//Create the circle overlay and add it to the map
 		final CircleOptions circle =  new CircleOptions();
 		circle.strokeColor(Color.GREEN);
 		circle.fillColor(Color.argb(100, 0, 255, 0));
@@ -313,19 +314,21 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		circle.radius(0);
 		mCircle = mMap.addCircle(circle);
 
-		if (mCircle.getCenter() != null) {
-			mMap.moveCamera(CameraUpdateFactory.newLatLng(mCircle.getCenter()));
-			//todo zoom
-//			mMap.setZoom(16);
-		}
-
-
-//		mMap.addCircle(mRadiusOverlay.getCircleOptions());
-
-		//
-//		mMap.setDoubleTapZoonEnabled(false);
+		enableMap(false);
 	}
 
+	/**
+	 * Enables/Disables the zoom and scroll gestures of the map
+	 * @param isEnabled
+	 */
+	private void enableMap(final boolean isEnabled){
+		mMap.getUiSettings().setAllGesturesEnabled(isEnabled);
+		mMap.getUiSettings().setZoomControlsEnabled(isEnabled);
+	}
+	/**
+	 * Called when the Map is clicked
+	 * @param point
+	 */
 	@Override
 	public void onMapClick(LatLng point) {
 		if (point != null) {
@@ -348,6 +351,10 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			Log.d(TAG, "onLocationSelected() Location was null");
 	}
 
+	/**
+	 * Called when a location is selected in the search dialog
+	 * @param point
+	 */
 	@Override
 	public void onLocationSelected(LatLng point) {
 		onMapClick(point);
