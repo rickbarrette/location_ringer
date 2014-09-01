@@ -239,7 +239,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 		info.put(RingerDatabase.KEY_RINGTONE_VOLUME, am.getStreamVolume(AudioManager.STREAM_RING));
 		info.put(RingerDatabase.KEY_BT, bt.isEnabled());
 		info.put(RingerDatabase.KEY_WIFI, wifi.isWifiEnabled());
-		info.put(RingerDatabase.KEY_AIRPLANE_MODE, Settings.System.getInt(getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0);
+		info.put(RingerDatabase.KEY_AIRPLANE_MODE, Settings.System.getInt(getContentResolver(), Settings.Global.AIRPLANE_MODE_ON, 0) != 0);
 
 		new Handler().post(new Runnable() {
 			@Override
@@ -296,7 +296,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 	@Override
 	public void onItemClick(final AdapterView<?> arg0, final View v, final int postion, final long id) {
 
-		final ProgressDialog progress = null; //ProgressDialog.show(this.getParent(), "", getText(R.string.loading), true, true);
+//		final ProgressDialog progress = ProgressDialog.show(this.getParent(), "", getText(R.string.loading), true, true);
 
 		new Thread(new Runnable() {
 			@Override
@@ -327,7 +327,7 @@ public class ListActivity extends Activity implements OnItemClickListener, OnCli
 					i.putExtra(KEY_INFO, mDb.getRingerInfo(r.getAsString(RingerDatabase.KEY_RINGER_NAME)));
 				}
 
-				progress.dismiss();
+//				progress.dismiss();
 
 				// start the ringer info activity in editor mode
 				startActivityForResult(i, ACTIVITY_EDIT);

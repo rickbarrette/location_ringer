@@ -8,6 +8,7 @@ package org.RickBarrette.android.LocationRinger.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,10 +22,11 @@ import com.TwentyCodes.android.location.AndroidGPS;
 import com.TwentyCodes.android.location.GeoUtils;
 import com.TwentyCodes.android.location.LatLngListener;
 import com.TwentyCodes.android.location.OnLocationSelectedListener;
-import com.TwentyCodes.android.overlays.RadiusOverlay;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import org.RickBarrette.android.LocationRinger.*;
 import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
@@ -37,28 +39,27 @@ import org.RickBarrette.android.LocationRinger.ui.SearchDialog;
  * @author ricky
  */
 @SuppressLint("ValidFragment")
-public class LocationInfomationFragment extends Fragment implements LatLngListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener,
-		OnLocationSelectedListener, SearchRequestedListener {
+public class LocationInformationFragment extends Fragment implements LatLngListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, SearchRequestedListener, GoogleMap.OnMapClickListener, OnLocationSelectedListener {
 
 	private static final String TAG = "RingerInformationHowActivity";
 	private final ContentValues mInfo;
 	private final OnContentChangedListener mListener;
 	private final EnableScrollingListener mEnableScrollingListener;
 	private SeekBar mRadius;
-	private MapFragment mMap;
+	private GoogleMap mMap;
 	private ToggleButton mMapEditToggle;
-	private RadiusOverlay mRadiusOverlay;
 	private LatLng mPoint;
 	private AndroidGPS mGPS;
 	private View view;
 	private TextView mRadiusTextView;
+	private Circle mCircle;
 
 	/**
 	 * Creates a new MapFragment
 	 * 
 	 * @author ricky barrette
 	 */
-	public LocationInfomationFragment(final ContentValues info, final OnContentChangedListener listener, final EnableScrollingListener enabledListener) {
+	public LocationInformationFragment(final ContentValues info, final OnContentChangedListener listener, final EnableScrollingListener enabledListener) {
 		mInfo = info;
 		mListener = listener;
 		mEnableScrollingListener = enabledListener;
@@ -76,14 +77,16 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 		if (mEnableScrollingListener != null)
 			mEnableScrollingListener.setScrollEnabled(!isChecked);
 
-//		/*if (isChecked) {
-//			mGPS.enableLocationUpdates(this);
+		if (isChecked) {
+			mGPS.enableLocationUpdates(this);
 //			mMap.enableGPSProgess();
-//		} else {
-//			mGPS.disableLocationUpdates();
+			mMap.setOnMapClickListener(this);
+		} else {
+			mGPS.disableLocationUpdates();
 //			mMap.disableGPSProgess();
-//		}
-//
+			mMap.setOnMapClickListener(null);
+		}
+
 //		mMap.setDoubleTapZoonEnabled(isChecked);
 //		// buttons
 //		mMap.setBuiltInZoomControls(isChecked);
@@ -102,14 +105,14 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 		switch (v.getId()) {
 		case R.id.mark_my_location:
 			if (mPoint != null)
-				onLocationSelected(mPoint);
+				onMapClick(mPoint);
 			break;
 		case R.id.my_location:
 			if (mPoint != null)
-				mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(mPoint));
+				mMap.moveCamera(CameraUpdateFactory.newLatLng(mPoint));
 			break;
 		case R.id.map_mode:
-			mMap.getMap().setMapType(mMap.getMap().getMapType() == GoogleMap.MAP_TYPE_NORMAL ? GoogleMap.MAP_TYPE_NORMAL : GoogleMap.MAP_TYPE_SATELLITE);
+			mMap.setMapType(mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL ? GoogleMap.MAP_TYPE_SATELLITE : GoogleMap.MAP_TYPE_NORMAL);
 			break;
 		case R.id.search:
 			new SearchDialog(getActivity(), this).show();
@@ -120,10 +123,10 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.map_info_fragment, container, false);
+		setUpMapIfNeeded();
 
 		mGPS = new AndroidGPS(getActivity());
 
-//		mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
 		mRadius = (SeekBar) view.findViewById(R.id.radius);
 		mRadiusTextView = (TextView) view.findViewById(R.id.radius_textview);
 		mRadius.setMax(Constraints.MAX_RADIUS_IN_METERS);
@@ -134,28 +137,21 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 		mMapEditToggle = (ToggleButton) view.findViewById(R.id.map_edit_toggle);
 		mMapEditToggle.setChecked(false);
 		mMapEditToggle.setOnCheckedChangeListener(this);
-		mRadiusOverlay = new RadiusOverlay();
-		mRadiusOverlay.setLocationSelectedListener(this);
+
 		mRadius.setOnSeekBarChangeListener(this);
-		mMap.getMap().addCircle(mRadiusOverlay.getCircleOptions());
 		mRadius.setEnabled(false);
 
 		if (mInfo.get(RingerDatabase.KEY_LOCATION) != null) {
 			final String[] point = mInfo.getAsString(RingerDatabase.KEY_LOCATION).split(",");
-			mRadiusOverlay.setLocation(new LatLng(Integer.parseInt(point[0]), Integer.parseInt(point[1])));
+			final LatLng location = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
+
+			mCircle.setCenter(location);
+			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
 		}
 
-		if (mInfo.get(RingerDatabase.KEY_RADIUS) != null)
+		if (mInfo.get(RingerDatabase.KEY_RADIUS) != null) {
 			mRadius.setProgress(mInfo.getAsInteger(RingerDatabase.KEY_RADIUS));
-
-		if (mRadiusOverlay.getLocation() != null) {
-			mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(mRadiusOverlay.getLocation()));
-			//todo zoom
-//			mMap.setZoom(16);
 		}
-
-		//
-//		mMap.setDoubleTapZoonEnabled(false);
 
 		view.findViewById(R.id.my_location).setOnClickListener(this);
 		view.findViewById(R.id.mark_my_location).setOnClickListener(this);
@@ -169,62 +165,36 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 	 * Called when the location is a first fix (non-Javadoc)
 	 *
 	 * todo fix this
-	 * 
+	 *
 	 * @see com.TwentyCodes.android.location.LatLngListener#onFirstFix(boolean)
 	 */
 	@Override
 	public void onFirstFix(final boolean isFirstFix) {
-//		if (mPoint != null) {
-//			/*
-//			 * if this is the first fix and the radius overlay does not have a
-//			 * point specified then pan the map, and zoom in to the users
-//			 * current location
-//			 */
-//			if (isFirstFix) {
+		if (mPoint != null) {
+			/*
+			 * if this is the first fix and the radius overlay does not have a
+			 * point specified then pan the map, and zoom in to the users
+			 * current location
+			 */
+			if (isFirstFix) {
 //				mMap.disableGPSProgess();
-//				if (mRadiusOverlay.getLocation() == null)
-//					if (mMap != null) {
-//						mMap.setMapCenter(mPoint);
-//						mMap.setZoom(mMap.getMap().getMaxZoomLevel() - 5);
-//					}
-//			}
-//		} else
+				if (mMap != null) {
+					mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mPoint, 14));
+				}
+			}
+		}
+//		else
 //			mMap.enableGPSProgess();
 	}
 
 	/**
-	 * Called when skyhook has a location to report
+	 * Called when the GPS has a location to report
 	 * 
 	 * @author ricky barrette
 	 */
 	@Override
 	public void onLocationChanged(final LatLng point, final int accuracy) {
 		mPoint = point;
-	}
-
-	/**
-	 * Called when a location has been selected (non-Javadoc)
-	 * 
-//	 * @see com.TwentyCodes.android.location.OnLocationSelectedListener#onLocationSelected(com.google.android.maps.GeoPoint)
-	 */
-	@Override
-	public void onLocationSelected(final LatLng point) {
-		if (point != null) {
-			Log.d(TAG, "onLocationSelected() " + point.toString());
-
-			if (mRadiusOverlay != null)
-				mRadiusOverlay.setLocation(point);
-
-			if (mMap != null)
-				mMap.getMap().moveCamera(CameraUpdateFactory.newLatLng(point));
-
-			if (mListener != null) {
-				final ContentValues info = new ContentValues();
-				info.put(RingerDatabase.KEY_LOCATION, point.toString());
-				mListener.onInfoContentChanged(info);
-			}
-		} else
-			Log.d(TAG, "onLocationSelected() Location was null");
 	}
 
 	/**
@@ -247,7 +217,7 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 		switch (seekBar.getId()) {
 		case R.id.radius:
 			mRadiusTextView.setText(GeoUtils.distanceToString(Float.valueOf(progress) / 1000, true));
-			mRadiusOverlay.setRadius(progress);
+			mCircle.setRadius(progress);
 			//todo invalidate this shit
 //			mMap.invalidate();
 			if (mListener != null) {
@@ -267,6 +237,7 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 	public void onResume() {
 		if (mMapEditToggle.isChecked())
 			mGPS.enableLocationUpdates(this);
+		setUpMapIfNeeded();
 		super.onResume();
 	}
 
@@ -300,5 +271,85 @@ public class LocationInfomationFragment extends Fragment implements LatLngListen
 
 	@Override
 	public void onStopTrackingTouch(final SeekBar seekBar) {
+	}
+
+	/**
+	 * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
+	 * installed) and the map has not already been instantiated.. This will ensure that we only ever
+	 * call {@link #setUpMap()} once when {@link #mMap} is not null.
+	 * <p>
+	 * If it isn't installed {@link SupportMapFragment} (and
+	 * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
+	 * install/update the Google Play services APK on their device.
+	 * <p>
+	 * A user can return to this FragmentActivity after following the prompt and correctly
+	 * installing/updating/enabling the Google Play services. Since the FragmentActivity may not have been
+	 * completely destroyed during this process (it is likely that it would only be stopped or
+	 * paused), {@link #onCreate(Bundle)} may not be called again so we should call this method in
+	 * {@link #onResume()} to guarantee that it will be called.
+	 */
+	private void setUpMapIfNeeded() {
+		// Do a null check to confirm that we have not already instantiated the map.
+		if (mMap == null) {
+			// Try to obtain the map from the SupportMapFragment.
+			mMap = ((SupportMapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			// Check if we were successful in obtaining the map.
+			if (mMap != null) {
+				setUpMap();
+			}
+		}
+	}
+
+	/**
+	 * This is where we can add markers or lines, add listeners or move the camera.
+	 * This should only be called once and when we are sure that {@link #mMap} is not null.
+	 */
+	private void setUpMap() {
+
+		final CircleOptions circle =  new CircleOptions();
+		circle.strokeColor(Color.GREEN);
+		circle.fillColor(Color.argb(100, 0, 255, 0));
+		circle.center(new LatLng(0, 0));
+		circle.radius(0);
+		mCircle = mMap.addCircle(circle);
+
+		if (mCircle.getCenter() != null) {
+			mMap.moveCamera(CameraUpdateFactory.newLatLng(mCircle.getCenter()));
+			//todo zoom
+//			mMap.setZoom(16);
+		}
+
+
+//		mMap.addCircle(mRadiusOverlay.getCircleOptions());
+
+		//
+//		mMap.setDoubleTapZoonEnabled(false);
+	}
+
+	@Override
+	public void onMapClick(LatLng point) {
+		if (point != null) {
+			Log.d(TAG, "onLocationSelected() " + point.toString());
+
+			if (mCircle != null)
+				mCircle.setCenter(point);
+
+			if (mMap != null)
+				mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
+
+			if (mListener != null) {
+				final ContentValues info = new ContentValues();
+				final StringBuilder sb = new StringBuilder();
+				sb.append(point.latitude).append(",").append(point.longitude);
+				info.put(RingerDatabase.KEY_LOCATION, sb.toString());
+				mListener.onInfoContentChanged(info);
+			}
+		} else
+			Log.d(TAG, "onLocationSelected() Location was null");
+	}
+
+	@Override
+	public void onLocationSelected(LatLng point) {
+		onMapClick(point);
 	}
 }

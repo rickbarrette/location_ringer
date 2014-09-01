@@ -48,12 +48,12 @@
         android:visibility="gone" />
 
     <fragment
-        android:id="@+id/mapview"
+        android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/buttons"
         android:layout_below="@id/map_controls"
-        class="org.RickBarrette.android.LocationRinger.ui.fragments.MapFragment" >
+        class="com.google.android.gms.maps.SupportMapFragment" >
     </fragment>
 
     <TextView
@@ -61,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/mapview"
+        android:layout_alignTop="@+id/map"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#ff0000" />
 

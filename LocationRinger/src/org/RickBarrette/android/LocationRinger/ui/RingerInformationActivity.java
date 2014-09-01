@@ -17,7 +17,7 @@ import org.RickBarrette.android.LocationRinger.R;
 import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
 import org.RickBarrette.android.LocationRinger.ui.fragments.AboutRingerFragment;
 import org.RickBarrette.android.LocationRinger.ui.fragments.FeatureListFragment;
-import org.RickBarrette.android.LocationRinger.ui.fragments.LocationInfomationFragment;
+import org.RickBarrette.android.LocationRinger.ui.fragments.LocationInformationFragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -51,7 +51,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	private ContentValues mInfo;
 	private Intent mData;
 	private ViewPager mPager;
-	private LocationInfomationFragment mLocationInfomationFragment;
+	private LocationInformationFragment mLocationInfomationFragment;
 
 	/**
 	 * Logs the content values
@@ -119,7 +119,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		 * Location page
 		 */
 		if (!isDefault) {
-			mLocationInfomationFragment = new LocationInfomationFragment(mInfo, this, this);
+			mLocationInfomationFragment = new LocationInformationFragment(mInfo, this, this);
 			fragments.add(mLocationInfomationFragment);
 		}
 
