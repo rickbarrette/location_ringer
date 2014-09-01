@@ -53,6 +53,8 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 	private View view;
 	private TextView mRadiusTextView;
 	private Circle mCircle;
+	private ProgressBar mProgress;
+
 
 	/**
 	 * Creates a new MapFragment
@@ -79,11 +81,11 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 
 		if (isChecked) {
 			mGPS.enableLocationUpdates(this);
-//			mMap.enableGPSProgess();
+			mProgress.setVisibility(View.VISIBLE);
 			mMap.setOnMapClickListener(this);
 		} else {
 			mGPS.disableLocationUpdates();
-//			mMap.disableGPSProgess();
+			mProgress.setVisibility(View.INVISIBLE);
 			mMap.setOnMapClickListener(null);
 		}
 
@@ -142,6 +144,8 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		mRadius.setOnSeekBarChangeListener(this);
 		mRadius.setEnabled(false);
 
+		mProgress = (ProgressBar) view.findViewById(R.id.map_progress);
+
 		if (mInfo.get(RingerDatabase.KEY_LOCATION) != null) {
 			final String[] point = mInfo.getAsString(RingerDatabase.KEY_LOCATION).split(",");
 			final LatLng location = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
@@ -178,15 +182,14 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			 * current location
 			 */
 			if (isFirstFix) {
-//				mMap.disableGPSProgess();
+				mProgress.setVisibility(View.INVISIBLE);
 				if (mMap != null)
-					if(mCircle.getCenter() == new LatLng(0, 0));
+					if(mCircle.getCenter().equals(new LatLng(0, 0)))
 						mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mPoint, 14));
 
 			}
-		}
-//		else
-//			mMap.enableGPSProgess();
+		} else
+			mProgress.setVisibility(View.VISIBLE);
 	}
 
 	/**
@@ -325,6 +328,7 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 		mMap.getUiSettings().setAllGesturesEnabled(isEnabled);
 		mMap.getUiSettings().setZoomControlsEnabled(isEnabled);
 	}
+
 	/**
 	 * Called when the Map is clicked
 	 * @param point
