@@ -21,6 +21,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ToggleButton;
+import org.RickBarrette.android.LocationRinger.Constraints;
 import org.RickBarrette.android.LocationRinger.Log;
 import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
 import org.RickBarrette.android.LocationRinger.R;
@@ -154,11 +155,13 @@ public class AboutRingerFragment extends Fragment implements OnCheckedChangeList
 
 		final View view = inflater.inflate(R.layout.ringer_about_fragment, container, false);
 
-		for (final Entry<String, Object> item : mInfo.valueSet())
-			Log.d(TAG, item.getKey() + " = " + item.getValue());
+		if(Constraints.VERBOSE) {
+			for (final Entry<String, Object> item : mInfo.valueSet())
+				Log.d(TAG, item.getKey() + " = " + item.getValue());
 
-		for (final Entry<String, Object> item : mRinger.valueSet())
-			Log.d(TAG, item.getKey() + " = " + item.getValue());
+			for (final Entry<String, Object> item : mRinger.valueSet())
+				Log.d(TAG, item.getKey() + " = " + item.getValue());
+		}
 
 		/*
 		 * ringer name

@@ -60,7 +60,8 @@ public class RingerProcessingService extends Service {
 	 * @author ricky barrette
 	 */
 	private void applyRinger(final ContentValues values) {
-		Log.d(TAG, "applyRigner()");
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "applyRigner()");
 
 		final String name = values.getAsString(RingerDatabase.KEY_RINGER_NAME);
 
@@ -72,7 +73,11 @@ public class RingerProcessingService extends Service {
 		 * ringtone & volume
 		 */
 		if (values.containsKey(RingerDatabase.KEY_RINGTONE_URI))
-			Log.d(TAG, "Ringtone: " + applyRingtone(RingtoneManager.TYPE_RINGTONE, values.getAsString(RingerDatabase.KEY_RINGTONE_URI)));
+			if(Constraints.VERBOSE)
+				Log.v(TAG, "Ringtone: " + applyRingtone(RingtoneManager.TYPE_RINGTONE, values.getAsString(RingerDatabase.KEY_RINGTONE_URI)));
+			else
+				applyRingtone(RingtoneManager.TYPE_RINGTONE, values.getAsString(RingerDatabase.KEY_RINGTONE_URI));
+
 		if (values.containsKey(RingerDatabase.KEY_RINGTONE_VOLUME))
 			setStreamVolume(values.getAsInteger(RingerDatabase.KEY_RINGTONE_VOLUME), AudioManager.STREAM_RING);
 
@@ -80,12 +85,18 @@ public class RingerProcessingService extends Service {
 		 * notification ringtone & volume
 		 */
 		if (values.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI))
-			Log.d(TAG, "Notification Ringtone: " + applyRingtone(RingtoneManager.TYPE_NOTIFICATION, values.getAsString(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI)));
+			if(Constraints.VERBOSE)
+				Log.v(TAG, "Notification Ringtone: " + applyRingtone(RingtoneManager.TYPE_NOTIFICATION, values.getAsString(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI)));
+			else
+				applyRingtone(RingtoneManager.TYPE_NOTIFICATION, values.getAsString(RingerDatabase.KEY_NOTIFICATION_RINGTONE_URI));
+
 		if (values.containsKey(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME))
 			setStreamVolume(values.getAsInteger(RingerDatabase.KEY_NOTIFICATION_RINGTONE_VOLUME), AudioManager.STREAM_NOTIFICATION);
 
-		Log.d(TAG, "Music " + (mAudioManager.isMusicActive() ? "is playing " : "is not playing"));
-		Log.d(TAG, "Wired Headset " + (mAudioManager.isWiredHeadsetOn() ? "is on " : "is off"));
+		if(Constraints.VERBOSE) {
+			Log.v(TAG, "Music " + (mAudioManager.isMusicActive() ? "is playing " : "is not playing"));
+			Log.v(TAG, "Wired Headset " + (mAudioManager.isWiredHeadsetOn() ? "is on " : "is off"));
+		}
 
 		/*
 		 * music volume we will set the music volume only if music is not
@@ -208,7 +219,8 @@ public class RingerProcessingService extends Service {
 	@Override
 	public void onCreate() {
 		Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(this));
-		Log.d(TAG, "onCreate()");
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "onCreate()");
 		super.onCreate();
 		mDb = new RingerDatabase(this);
 		mSettings = getSharedPreferences(SettingsActivity.SETTINGS, Constraints.SHARED_PREFS_MODE);
@@ -239,7 +251,9 @@ public class RingerProcessingService extends Service {
 	 */
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
-		Log.d(TAG, "onStartCommand: " + startId);
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "onStartCommand: " + startId);
+
 		mStartId = startId;
 
 		/*
@@ -278,16 +292,18 @@ public class RingerProcessingService extends Service {
 		final ContentValues ringer = getRinger(1);
 
 		final LatLng point = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
-		Log.d(TAG, "Processing ringers");
-		Log.d(TAG,
-				"Current location " + (int) (mLocation.getLatitude() * 1E6) + ", " + (int) (mLocation.getLongitude() * 1E6) + " @ "
-						+ Float.valueOf(mLocation.getAccuracy()) / 1000 + "km");
+
+		if(Constraints.VERBOSE) {
+			Log.v(TAG, "Processing ringers");
+			Log.v(TAG, "Current location " + (int) (mLocation.getLatitude() * 1E6) + ", " + (int) (mLocation.getLongitude() * 1E6) + " @ " + Float.valueOf(mLocation.getAccuracy()) / 1000 + "km");
+		}
 
 		final Cursor c = mDb.getAllRingers();
 		c.moveToFirst();
 		if (c.moveToFirst())
 			do {
-				Log.d(TAG, "Checking ringer " + c.getString(0));
+				if(Constraints.VERBOSE)
+					Log.v(TAG, "Checking ringer " + c.getString(0));
 
 				if (RingerDatabase.parseBoolean(c.getString(1))) {
 					final ContentValues info = mDb.getRingerInfo(c.getString(0));
@@ -310,14 +326,17 @@ public class RingerProcessingService extends Service {
 
 		c.close();
 
-		for (final Entry<String, Object> item : ringer.valueSet())
-			Log.d(TAG, item.getKey());
+
+		if(Constraints.VERBOSE)
+			for (final Entry<String, Object> item : ringer.valueSet())
+				Log.v(TAG, item.getKey());
 
 		applyRinger(ringer);
 
-		Log.d(TAG, "Finished processing ringers");
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "Finished processing ringers");
 
-		// store is default
+		// store isDefault
 		mSettings.edit().putBoolean(SettingsActivity.IS_DEFAULT, isDeafult).commit();
 
 		this.stopSelf(mStartId);

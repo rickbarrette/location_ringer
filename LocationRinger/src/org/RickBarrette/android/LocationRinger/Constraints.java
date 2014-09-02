@@ -52,7 +52,7 @@ public class Constraints {
 	/**
 	 * Set this boolean to true to enable verbose logging
 	 */
-	public static final boolean VERBOSE = true;
+	public static final boolean VERBOSE = false;
 
 	/**
 	 * Set this boolean to true to enable warning logging
@@ -65,7 +65,7 @@ public class Constraints {
 	public static final boolean WTF = true;
 
 	/**
-	 * Clears the database everytime it is initialized
+	 * Clears the database every time it is initialized
 	 */
 	public static final boolean DROP_TABLES_EVERY_TIME = false;
 

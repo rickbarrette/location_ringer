@@ -56,8 +56,9 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 * @author ricky barrette
 	 */
 	private void logContentValues(final ContentValues values) {
-		for (final Entry<String, Object> item : values.valueSet())
-			Log.d(TAG, item.getKey() + " = " + item.getValue());
+		if(Constraints.VERBOSE)
+			for (final Entry<String, Object> item : values.valueSet())
+				Log.v(TAG, item.getKey() + " = " + item.getValue());
 	}
 
 	/**
@@ -153,8 +154,10 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 */
 	@Override
 	public void onInfoContentChanged(final ContentValues values) {
-		Log.v(TAG, "onInfoContentChanged()");
-		logContentValues(values);
+		if(Constraints.VERBOSE) {
+			Log.v(TAG, "onInfoContentChanged()");
+			logContentValues(values);
+		}
 		mInfo.putAll(values);
 	}
 
@@ -219,8 +222,10 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	 */
 	@Override
 	public void onRingerContentChanged(final ContentValues values) {
-		Log.v(TAG, "onRingerContentChanged()");
-		logContentValues(values);
+		if(Constraints.VERBOSE) {
+			Log.v(TAG, "onRingerContentChanged()");
+			logContentValues(values);
+		}
 		mRinger.putAll(values);
 	}
 

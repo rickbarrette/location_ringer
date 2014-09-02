@@ -28,10 +28,12 @@ public class LocationChangedReceiver extends BaseLocationReceiver {
 
 	@Override
 	public void onLocationUpdate(final Location location) {
-		if (location != null)
+		if (location != null) {
 			if (location.getAccuracy() <= Constraints.IGNORE)
 				mContext.startService(new Intent(mContext, RingerProcessingService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_LOCATION_CHANGED, location));
-		Log.d(TAG, "location accuracy = " + location.getAccuracy() + " ignoring");
-		Log.d(TAG, "location was null");
+			else if (Constraints.VERBOSE)
+				Log.v(TAG, "location accuracy = " + location.getAccuracy() + " ignoring");
+		} else if(Constraints.VERBOSE)
+				Log.v(TAG, "location was null");
 	}
 }

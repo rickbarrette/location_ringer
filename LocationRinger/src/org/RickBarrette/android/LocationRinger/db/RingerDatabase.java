@@ -76,9 +76,11 @@ public class RingerDatabase {
 			if (cursor.moveToFirst())
 				do {
 					final ContentValues ringer = new ContentValues();
-					Log.v(TAG, "Converting: " + cursor.getString(0));
+					if(Constraints.VERBOSE)
+						Log.v(TAG, "Converting: " + cursor.getString(0));
 					for (int i = 0; i < count; i++) {
-						Log.v(TAG, i + " = " + cursor.getColumnName(i) + " ~ " + cursor.getString(i));
+						if(Constraints.VERBOSE)
+							Log.v(TAG, i + " = " + cursor.getColumnName(i) + " ~ " + cursor.getString(i));
 						switch (i) {
 						case 0: // ringer name
 							ringer.put(cursor.getColumnName(i), cursor.getString(0));
@@ -149,7 +151,8 @@ public class RingerDatabase {
 		 */
 		@Override
 		public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
-			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
+			if(Constraints.INFO)
+				Log.i(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
 			if (mListener != null)
 				mListener.onDatabaseUpgrade();
@@ -181,7 +184,8 @@ public class RingerDatabase {
 						c.moveToFirst();
 						if (c.moveToFirst())
 							do {
-								Log.d(TAG, "Moving: " + c.getInt(0) + " " + c.getString(1) + " " + c.getInt(2) + ", " + c.getInt(3) + " @ " + c.getInt(4) + "m");
+								if(Constraints.VERBOSE)
+									Log.v(TAG, "Moving: " + c.getInt(0) + " " + c.getString(1) + " " + c.getInt(2) + ", " + c.getInt(3) + " @ " + c.getInt(4) + "m");
 								final ContentValues ringer = new ContentValues();
 								final ContentValues info = new ContentValues();
 								ringer.put(KEY_RINGER_NAME, c.getString(1));
@@ -566,7 +570,8 @@ public class RingerDatabase {
 	public boolean isRingerEnabled(final long id) {
 		final Cursor cursor = mDb.query(RINGER_TABLE, new String[] { KEY_IS_ENABLED }, "id = " + id, null, null, null, null);
 		if (cursor.moveToFirst()) {
-			Log.d(TAG, "isRingerEnabled(" + id + ") = " + cursor.getString(0));
+			if(Constraints.VERBOSE)
+				Log.v(TAG, "isRingerEnabled(" + id + ") = " + cursor.getString(0));
 			return parseBoolean(cursor.getString(0));
 		}
 		return false;
@@ -604,7 +609,8 @@ public class RingerDatabase {
 	}
 
 	public int setRingerEnabled(final long id, final boolean enabled) {
-		Log.d(TAG, "setRingerEnabled(" + id + ") = " + enabled);
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "setRingerEnabled(" + id + ") = " + enabled);
 		final ContentValues values = new ContentValues();
 		values.put(KEY_IS_ENABLED, enabled);
 		return mDb.update(RINGER_TABLE, values, "id" + "= " + id, null);

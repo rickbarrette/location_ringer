@@ -6,12 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui;
 
-import java.util.List;
-
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +15,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
+import org.RickBarrette.android.LocationRinger.Constraints;
+import org.RickBarrette.android.LocationRinger.Log;
+import org.RickBarrette.android.LocationRinger.R;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+
+import java.util.List;
 
 /**
  * This adapter will be used to populate the list view with all the ringers
@@ -47,7 +47,6 @@ public class RingerListAdapter extends BaseAdapter {
 	 * Creates a new RingerListAdapter
 	 * 
 	 * @param context
-	 * @param listener
 	 * @param db
 	 * @author ricky barrette
 	 */
@@ -105,19 +104,22 @@ public class RingerListAdapter extends BaseAdapter {
 			// and the ImageView.
 			holder = (ViewHolder) convertView.getTag();
 
-		Log.d(TAG, "postion = " + position);
+		if(Constraints.VERBOSE)
+			Log.v(TAG, "postion = " + position);
 
-		if (convertView == null)
-			Log.e(TAG, "convertview is null!!!");
+		if(Constraints.ERROR) {
+			if (convertView == null)
+				Log.e(TAG, "convertview is null!!!");
 
-		if (holder == null)
-			Log.e(TAG, "holder is null!!!");
+			if (holder == null)
+				Log.e(TAG, "holder is null!!!");
 
-		if (holder.title == null)
-			Log.e(TAG, "holder.text is null!!!");
+			if (holder.title == null)
+				Log.e(TAG, "holder.text is null!!!");
 
-		if (holder.checkbox == null)
-			Log.e(TAG, "holder.checkbox is null!!!");
+			if (holder.checkbox == null)
+				Log.e(TAG, "holder.checkbox is null!!!");
+		}
 
 		/*
 		 * Bind the data efficiently with the holder. Remember that you should
