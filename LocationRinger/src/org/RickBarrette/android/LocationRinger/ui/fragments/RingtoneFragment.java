@@ -151,18 +151,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 
 		if (resultCode == Activity.RESULT_OK) {
 			final Uri tone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-			if (tone == null) {
-				mRingtone.setText(R.string.silent);
-				mVolume.setEnabled(false);
-				mVolume.setProgress(0);
-				notifyVolumeChanged(0);
-			} else {
-				mVolume.setEnabled(true);
-
-				final Ringtone ringtone = RingtoneManager.getRingtone(mActivity, Uri.parse(tone.toString()));
-				mTone = ringtone.getTitle(mActivity);
-			}
-
+			updateToneUri(tone);
 			notifyRingtoneChanged(tone);
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -223,23 +212,10 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		 * ringtone & uri
 		 */
 		if (mInfo.containsKey(mKeyUri)) {
-			try {
-				mRingtoneURI = Uri.parse(mInfo.getAsString(mKeyUri));
-			} catch (final NullPointerException e) {
-				mRingtoneURI = null;
-			}
-			mVolume.setEnabled(mInfo.getAsString(mKeyUri) != null);
+			updateTone(mInfo.getAsString(mKeyUri));
 		} else {
-			mRingtoneURI = RingtoneManager.getActualDefaultRingtoneUri(getActivity(), mType);
+			updateToneUri(RingtoneManager.getActualDefaultRingtoneUri(getActivity(), mType));
 			notifyRingtoneChanged(mRingtoneURI);
-		}
-
-		try {
-			mRingtone.setText(RingtoneManager.getRingtone(getActivity(), mRingtoneURI).getTitle(getActivity()));
-		} catch (final NullPointerException e) {
-			mVolume.setEnabled(false);
-			mRingtone.setText(R.string.silent);
-			mVolume.setProgress(0);
 		}
 
 		setIcon(mVolume.getProgress() == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
@@ -249,6 +225,57 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		return view;
 	}
 
+	/**
+	 * Trys to parse the string into a Uri and updates the UI
+	 * @param uri
+	 */
+	private void updateTone(String uri){
+		try {
+			updateToneUri(Uri.parse(uri));
+		} catch (final NullPointerException e) {
+			updateToneUri(null);
+		}
+	}
+
+	/**
+	 * Updates UI
+	 * @param uri
+	 */
+	private void updateToneUri(final Uri uri){
+		mVolume.setEnabled(uri != null);
+		mRingtoneURI = uri;
+
+		//get the name of the ringtone
+		try {
+			if(uri == null)
+				throw new NullPointerException();
+			mTone = RingtoneManager.getRingtone(getActivity(), uri).getTitle(getActivity());
+			final Ringtone ringtone = RingtoneManager.getRingtone(mActivity, uri);
+		} catch (final NullPointerException e) {
+			mTone = mActivity.getString(R.string.silent);
+		}
+
+		//update the ringtone text view
+		mRingtone.setText(mTone);
+
+		//enable or disable volume
+		if(uri == null){
+			mVolume.setProgress(0);
+			mVolume.setEnabled(false);
+			mVolume.setProgress(0);
+			notifyVolumeChanged(0);
+		} else
+			mVolume.setEnabled(true);
+
+		setIcon(mVolume.getProgress() == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
+	}
+
+	/**
+	 * Called when the volume progress bar is updated
+	 * @param seekBar
+	 * @param progress
+	 * @param fromUser
+	 */
 	@Override
 	public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 		if (fromUser)
@@ -263,12 +290,19 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	public void onStopTrackingTouch(final SeekBar seekBar) {
 	}
 
+	/**
+	 * Called when the fragment is attached. need to save a reference to the activity
+	 * @param activity
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		mActivity = activity;
 	}
 
+	/**
+	 * Called when resuming. Had to update the ringtone edit text here
+	 */
 	@Override
 	public void onResume(){
 		if(mTone != null){
@@ -277,5 +311,4 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		}
 		super.onResume();
 	}
-
 }
