@@ -7,6 +7,7 @@
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ public class BaseFeatureFragment extends Fragment implements OnClickListener {
 	private final int mIconRes;
 	private final int mLayout;
 	private ImageView mIcon;
+	private Activity mActivity;
 
 	/**
 	 * Creates a new Feature Fragment
@@ -105,6 +107,12 @@ public class BaseFeatureFragment extends Fragment implements OnClickListener {
 	 * @author ricky barrette
 	 */
 	public void setIcon(final int icon) {
-		mIcon.setImageDrawable(getActivity().getResources().getDrawable(icon));
+		mIcon.setImageDrawable(mActivity.getResources().getDrawable(icon));
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mActivity = activity;
 	}
 }
