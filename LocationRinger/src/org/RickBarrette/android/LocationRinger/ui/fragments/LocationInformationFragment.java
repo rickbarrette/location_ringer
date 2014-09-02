@@ -358,15 +358,23 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			if (mMap != null)
 				mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
 
-			if (mListener != null) {
-				final ContentValues info = new ContentValues();
-				final StringBuilder sb = new StringBuilder();
-				sb.append(point.latitude).append(",").append(point.longitude);
-				info.put(RingerDatabase.KEY_LOCATION, sb.toString());
-				mListener.onInfoContentChanged(info);
-			}
+			updateLocation(point);
 		} else
 			Log.d(TAG, "onLocationSelected() Location was null");
+	}
+
+	/**
+	 * Updates the location used in the database and notifies maintainer
+	 * @param location
+	 */
+	private void updateLocation(LatLng location) {
+		if (mListener != null) {
+			final ContentValues info = new ContentValues();
+			final StringBuilder sb = new StringBuilder();
+			sb.append(location.latitude).append(",").append(location.longitude);
+			info.put(RingerDatabase.KEY_LOCATION, sb.toString());
+			mListener.onInfoContentChanged(info);
+		}
 	}
 
 	/**
@@ -381,18 +389,36 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			mMarker.setPosition(point);
 	}
 
+	/**
+	 * Called at the start of a marker's drag cycle
+	 * @param marker
+	 */
 	@Override
 	public void onMarkerDragStart(Marker marker) {
-		updateOverlay(marker.getPosition());
+		final LatLng location = marker.getPosition();
+		updateOverlay(location);
+		updateLocation(location);
 	}
 
+	/**
+	 * Called when a marker is being dragged
+	 * @param marker
+	 */
 	@Override
 	public void onMarkerDrag(Marker marker) {
-		updateOverlay(marker.getPosition());
+		final LatLng location = marker.getPosition();
+		updateOverlay(location);
+		updateLocation(location);
 	}
 
+	/**
+	 * Called at the end of a marker's drag cycle
+	 * @param marker
+	 */
 	@Override
 	public void onMarkerDragEnd(Marker marker) {
-		updateOverlay(marker.getPosition());
+		final LatLng location = marker.getPosition();
+		updateOverlay(location);
+		updateLocation(location);
 	}
 }
