@@ -25,9 +25,7 @@ import com.TwentyCodes.android.location.OnLocationSelectedListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
-import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.*;
 import org.RickBarrette.android.LocationRinger.*;
 import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
 import org.RickBarrette.android.LocationRinger.ui.SearchDialog;
@@ -39,7 +37,7 @@ import org.RickBarrette.android.LocationRinger.ui.SearchDialog;
  * @author ricky
  */
 @SuppressLint("ValidFragment")
-public class LocationInformationFragment extends Fragment implements LatLngListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, SearchRequestedListener, GoogleMap.OnMapClickListener, OnLocationSelectedListener {
+public class LocationInformationFragment extends Fragment implements LatLngListener, OnClickListener, OnCheckedChangeListener, OnSeekBarChangeListener, SearchRequestedListener, GoogleMap.OnMapClickListener, OnLocationSelectedListener, GoogleMap.OnMarkerDragListener {
 
 	private static final String TAG = "RingerInformationHowActivity";
 	private final ContentValues mInfo;
@@ -54,6 +52,7 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 	private TextView mRadiusTextView;
 	private Circle mCircle;
 	private ProgressBar mProgress;
+	private Marker mMarker;
 
 
 	/**
@@ -151,6 +150,7 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 			final LatLng location = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
 
 			mCircle.setCenter(location);
+			mMarker.setPosition(location);
 			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
 		}
 
@@ -168,8 +168,6 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 
 	/**
 	 * Called when the location is a first fix (non-Javadoc)
-	 *
-	 * todo fix this
 	 *
 	 * @see com.TwentyCodes.android.location.LatLngListener#onFirstFix(boolean)
 	 */
@@ -311,11 +309,19 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 
 		//Create the circle overlay and add it to the map
 		final CircleOptions circle =  new CircleOptions();
-		circle.strokeColor(Color.GREEN);
-		circle.fillColor(Color.argb(100, 0, 255, 0));
+		circle.strokeColor(Color.BLUE);
+		circle.fillColor(Color.argb(100, 0, 0, 255));
 		circle.center(new LatLng(0, 0));
 		circle.radius(0);
 		mCircle = mMap.addCircle(circle);
+
+		final MarkerOptions marker = new MarkerOptions();
+		marker.draggable(true);
+		marker.position(mCircle.getCenter());
+		marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+		mMarker = mMap.addMarker(marker);
+
+		mMap.setOnMarkerDragListener(this);
 
 		enableMap(false);
 	}
@@ -335,11 +341,19 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 	 */
 	@Override
 	public void onMapClick(LatLng point) {
+		onLocationSelected(point);
+	}
+
+	/**
+	 * Called when a location is selected in the search dialog
+	 * @param point
+	 */
+	@Override
+	public void onLocationSelected(LatLng point) {
 		if (point != null) {
 			Log.d(TAG, "onLocationSelected() " + point.toString());
 
-			if (mCircle != null)
-				mCircle.setCenter(point);
+			updateOverlay(point);
 
 			if (mMap != null)
 				mMap.moveCamera(CameraUpdateFactory.newLatLng(point));
@@ -356,11 +370,29 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 	}
 
 	/**
-	 * Called when a location is selected in the search dialog
+	 * Updates the marker and the circle
 	 * @param point
 	 */
+	private void updateOverlay(final LatLng point) {
+		if (mCircle != null)
+			mCircle.setCenter(point);
+
+		if(mMarker != null)
+			mMarker.setPosition(point);
+	}
+
 	@Override
-	public void onLocationSelected(LatLng point) {
-		onMapClick(point);
+	public void onMarkerDragStart(Marker marker) {
+		updateOverlay(marker.getPosition());
+	}
+
+	@Override
+	public void onMarkerDrag(Marker marker) {
+		updateOverlay(marker.getPosition());
+	}
+
+	@Override
+	public void onMarkerDragEnd(Marker marker) {
+		updateOverlay(marker.getPosition());
 	}
 }
