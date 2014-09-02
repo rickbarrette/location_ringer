@@ -6,19 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui;
 
-import java.util.ArrayList;
-import java.util.Map.Entry;
-
-import org.RickBarrette.android.LocationRinger.Constraints;
-import org.RickBarrette.android.LocationRinger.EnableScrollingListener;
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-import org.RickBarrette.android.LocationRinger.ui.fragments.AboutRingerFragment;
-import org.RickBarrette.android.LocationRinger.ui.fragments.FeatureListFragment;
-import org.RickBarrette.android.LocationRinger.ui.fragments.LocationInformationFragment;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -34,10 +21,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
-
 import com.TwentyCodes.android.exception.ExceptionHandler;
 import com.jakewharton.android.viewpagerindicator.TitlePageIndicator;
 import com.jakewharton.android.viewpagerindicator.TitledFragmentAdapter;
+import org.RickBarrette.android.LocationRinger.*;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+import org.RickBarrette.android.LocationRinger.ui.fragments.AboutRingerFragment;
+import org.RickBarrette.android.LocationRinger.ui.fragments.FeatureListFragment;
+import org.RickBarrette.android.LocationRinger.ui.fragments.LocationInformationFragment;
+import org.RickBarrette.android.LocationRinger.ui.fragments.RingtoneFragment;
+
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  * This activity will handle displaying ringer options
@@ -52,6 +47,7 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 	private Intent mData;
 	private ViewPager mPager;
 	private LocationInformationFragment mLocationInfomationFragment;
+	private Fragment mFragmentCallBack;
 
 	/**
 	 * Logs the content values
@@ -274,4 +270,26 @@ public class RingerInformationActivity extends FragmentActivity implements OnCon
 		mPager.setScrollEnabled(enabled);
 	}
 
+	/**
+	 * Handles results from activities. checks for a call back
+	 * @param requestCode
+	 * @param resultCode
+	 * @param data
+	 */
+	@Override
+	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if(mFragmentCallBack != null) {
+			mFragmentCallBack.onActivityResult(requestCode, resultCode, data);
+			mFragmentCallBack = null;
+		} else
+			super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	/**
+	 * Sets up a call back for a fragment
+	 * @param fragmentCallBack
+	 */
+	public void setFragmentCallBack(RingtoneFragment fragmentCallBack) {
+		mFragmentCallBack = fragmentCallBack;
+	}
 }

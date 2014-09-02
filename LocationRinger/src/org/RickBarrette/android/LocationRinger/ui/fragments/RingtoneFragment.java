@@ -6,14 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import java.util.Map.Entry;
-
-import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
@@ -24,6 +16,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,6 +25,11 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import org.RickBarrette.android.LocationRinger.*;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+import org.RickBarrette.android.LocationRinger.ui.RingerInformationActivity;
+
+import java.util.Map.Entry;
 
 /**
  * This fragment will be for ringtone settings
@@ -52,9 +50,10 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	private EditText mRingtone;
 	private Uri mRingtoneURI;
 	private SeekBar mVolume;
+	private Activity mActivity;
+	private String mTone;
 
-	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream,
-			final int id) {
+	public RingtoneFragment(final ContentValues info, final OnContentChangedListener changedListener, final FeatureRemovedListener removedListener, final int stream, final int id) {
 		super(id, R.layout.ringtone_fragment, removedListener);
 
 		if (info == null)
@@ -100,7 +99,15 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
 		intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
 		intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
-		startActivityForResult(intent, ringtoneCode);
+
+		if (Constraints.DEBUG)
+			Log.d(TAG, TAG + ".getRingtoneURI " + this.getFragmentId());
+
+		FragmentActivity activity = this.getActivity();
+		if ( activity instanceof RingerInformationActivity)
+			((RingerInformationActivity) activity).setFragmentCallBack(this);
+
+		mActivity.startActivityForResult(intent, ringtoneCode);
 	}
 
 	/**
@@ -139,6 +146,9 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 	 */
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+		if (Constraints.DEBUG)
+				Log.d(TAG, "onActivityResult");
+
 		if (resultCode == Activity.RESULT_OK) {
 			final Uri tone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
 			if (tone == null) {
@@ -148,8 +158,9 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 				notifyVolumeChanged(0);
 			} else {
 				mVolume.setEnabled(true);
-				final Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(tone.toString()));
-				mRingtone.setText(ringtone.getTitle(getActivity()));
+
+				final Ringtone ringtone = RingtoneManager.getRingtone(mActivity, Uri.parse(tone.toString()));
+				mTone = ringtone.getTitle(mActivity);
 			}
 
 			notifyRingtoneChanged(tone);
@@ -234,6 +245,7 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		setIcon(mVolume.getProgress() == 0 ? R.drawable.ic_action_silent : R.drawable.ic_action_volume);
 
 		mVolume.setOnSeekBarChangeListener(this);
+
 		return view;
 	}
 
@@ -249,6 +261,21 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 
 	@Override
 	public void onStopTrackingTouch(final SeekBar seekBar) {
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mActivity = activity;
+	}
+
+	@Override
+	public void onResume(){
+		if(mTone != null){
+			mRingtone.setText(mTone);
+			mTone = null;
+		}
+		super.onResume();
 	}
 
 }
