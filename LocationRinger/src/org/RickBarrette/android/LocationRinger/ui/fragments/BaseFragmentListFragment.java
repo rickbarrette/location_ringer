@@ -6,11 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import org.RickBarrette.android.LocationRinger.Log;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +13,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import org.RickBarrette.android.LocationRinger.Log;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -89,7 +88,7 @@ public abstract class BaseFragmentListFragment extends Fragment {
 	 * Adds a collection ofs fragments to the list, but doesn't preform any
 	 * transactions
 	 * 
-	 * @param fragment
+	 * @param fragments
 	 * @author ricky barrette
 	 */
 	protected void addAllInit(final ArrayList<Fragment> fragments) {

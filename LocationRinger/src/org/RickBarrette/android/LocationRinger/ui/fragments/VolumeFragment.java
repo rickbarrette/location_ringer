@@ -6,14 +6,6 @@
  */
 package org.RickBarrette.android.LocationRinger.ui.fragments;
 
-import java.util.Map.Entry;
-
-import org.RickBarrette.android.LocationRinger.FeatureRemovedListener;
-import org.RickBarrette.android.LocationRinger.Log;
-import org.RickBarrette.android.LocationRinger.OnContentChangedListener;
-import org.RickBarrette.android.LocationRinger.R;
-import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -25,6 +17,10 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import org.RickBarrette.android.LocationRinger.*;
+import org.RickBarrette.android.LocationRinger.db.RingerDatabase;
+
+import java.util.Map.Entry;
 
 /**
  * This fragment will represent the volume fragments
@@ -126,8 +122,9 @@ public class VolumeFragment extends BaseFeatureFragment implements OnSeekBarChan
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
 
-		for (final Entry<String, Object> item : mInfo.valueSet())
-			Log.d(TAG, item.getKey() + " = " + item.getValue());
+		if(Constraints.VERBOSE)
+			for (final Entry<String, Object> item : mInfo.valueSet())
+				Log.v(TAG, item.getKey() + " = " + item.getValue());
 
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final TextView label = (TextView) view.findViewById(R.id.title);

@@ -100,8 +100,8 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, false);
 		intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
 
-		if (Constraints.DEBUG)
-			Log.d(TAG, TAG + ".getRingtoneURI " + this.getFragmentId());
+		if (Constraints.VERBOSE)
+			Log.v(TAG, TAG + ".getRingtoneURI " + this.getFragmentId());
 
 		FragmentActivity activity = this.getActivity();
 		if ( activity instanceof RingerInformationActivity)
@@ -179,8 +179,9 @@ public class RingtoneFragment extends BaseFeatureFragment implements OnClickList
 		final View view = super.onCreateView(inflater, container, savedInstanceState);
 		final AudioManager audioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
 
-		for (final Entry<String, Object> item : mInfo.valueSet())
-			Log.d(TAG, item.getKey() + " = " + item.getValue());
+		if(Constraints.VERBOSE)
+			for (final Entry<String, Object> item : mInfo.valueSet())
+				Log.v(TAG, item.getKey() + " = " + item.getValue());
 
 		/*
 		 * initialize the views
