@@ -145,17 +145,37 @@ public class LocationInformationFragment extends Fragment implements LatLngListe
 
 		mProgress = (ProgressBar) view.findViewById(R.id.map_progress);
 
+		if (mInfo.get(RingerDatabase.KEY_RADIUS) != null) {
+			mRadius.setProgress(mInfo.getAsInteger(RingerDatabase.KEY_RADIUS));
+		}
+
 		if (mInfo.get(RingerDatabase.KEY_LOCATION) != null) {
 			final String[] point = mInfo.getAsString(RingerDatabase.KEY_LOCATION).split(",");
 			final LatLng location = new LatLng(Double.parseDouble(point[0]), Double.parseDouble(point[1]));
 
 			mCircle.setCenter(location);
 			mMarker.setPosition(location);
-			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
-		}
 
-		if (mInfo.get(RingerDatabase.KEY_RADIUS) != null) {
-			mRadius.setProgress(mInfo.getAsInteger(RingerDatabase.KEY_RADIUS));
+			mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+				@Override
+				public void onMapLoaded() {
+					if(Constraints.DEBUG)
+						Log.d(TAG,"onMapLoaded()");
+					final LatLngBounds.Builder builder = LatLngBounds.builder();
+					builder.include(location);
+					builder.include(GeoUtils.distanceFrom(location, mRadius.getProgress(), 90));
+					mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),25, 25, 5));
+//					mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+					if(Constraints.DEBUG){
+						final MarkerOptions marker = new MarkerOptions();
+						marker.position(location);
+						marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+						mMap.addMarker(marker);
+					}
+
+				}
+			});
+
 		}
 
 		view.findViewById(R.id.my_location).setOnClickListener(this);

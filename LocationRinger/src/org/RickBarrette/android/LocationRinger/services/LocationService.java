@@ -42,8 +42,7 @@ public class LocationService extends com.TwentyCodes.android.location.LocationSe
 	 * @author ricky barrette
 	 */
 	public static Intent getSingleShotServiceIntent(final Context context) {
-		return new Intent(context, LocationService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Constraints.ACCURACY).setAction(
-				LocationLibraryConstants.INTENT_ACTION_UPDATE);
+		return new Intent(context, LocationService.class).putExtra(LocationLibraryConstants.INTENT_EXTRA_REQUIRED_ACCURACY, Constraints.ACCURACY).setAction(				LocationLibraryConstants.INTENT_ACTION_UPDATE);
 	}
 
 	/**
